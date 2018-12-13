@@ -11,6 +11,5 @@ cmake --build . --config Debug
 ```
 
 ### 付费支持
-- 提供安装、代码理解、开发环境安装、开发指导、和指标开发等付费支持服务。
 - WeChat: kldcty
 - QQ: 1106628276
