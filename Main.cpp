@@ -167,6 +167,10 @@ void Func6(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
     {
         Bi2(nCount, pOut, pIn, pHigh, pLow);
     }
+    else if (iBi == 3)
+    {
+        Bi3(nCount, pOut, pIn, pHigh, pLow);
+    }
     else
     {
         Bi0(nCount, pOut, pIn, pHigh, pLow);

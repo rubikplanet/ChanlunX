@@ -616,3 +616,75 @@ void Bi2(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow) {
 	delete[] pOutLow;
 	delete[] pInclude;
 }
+
+void Bi3(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
+{
+
+    float *pDirection = new float[nCount];
+    float *pOutHigh = new float[nCount];
+    float *pOutLow = new float[nCount];
+    float *pInclude = new float[nCount];
+
+    BaoHan(nCount, pDirection, pOutHigh, pOutLow, pInclude, pHigh, pLow);
+
+    for (int i = 1; i < nCount; i++)
+    {
+        if (pDirection[i-1] == 1 && pDirection[i] == -1)
+        {
+            pOut[i-1] = 1;
+        }
+        else if (pDirection[i-1] == -1 && pDirection[i] == 1)
+        {
+            pOut[i-1] = -1;
+        }
+        else
+        {
+            pOut[i-1] = 0;
+        }
+    }
+    if (pDirection[nCount-1]== 1)
+    {
+        pOut[nCount-1] = 1;
+    }
+    else if (pDirection[nCount-1]== -1)
+    {
+        pOut[nCount-1] = -1;
+    }
+
+    for (int i = 0; i < nCount; i++)
+    {
+        if (pOut[i] == 1)
+        {
+            int d = i;
+            for (int j = i - 1; j >= 0; j--)
+            {
+                if (pOut[j] == -1) break;
+                if (pHigh[j] > pHigh[d])
+                {
+                    pOut[d] = 0;
+                    d = j;
+                    pOut[d] = 1;
+                }
+            }
+        }
+        else if (pOut[i] == -1)
+        {
+            int d = i;
+            for (int j = i - 1; j >= 0; j--)
+            {
+                if (pOut[j] == 1) break;
+                if (pLow[j] < pLow[d])
+                {
+                    pOut[d] = 0;
+                    d = j;
+                    pOut[d] = -1;
+                }
+            }
+        }
+    }
+
+    delete []pDirection;
+    delete []pOutHigh;
+    delete []pOutLow;
+    delete []pInclude;
+}
