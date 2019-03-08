@@ -1,4 +1,4 @@
-#ifndef INIREADER_H
+﻿#ifndef INIREADER_H
 #define INIREADER_H
 
 #include <windows.h>

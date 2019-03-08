@@ -1,12 +1,12 @@
-#include "BaoHan.h"
+ï»¿#include "BaoHan.h"
 
 void BaoHan(int nCount, float *pDirection, float *pOutHigh, float *pOutLow,
 		float *pInclude, float *pHigh, float *pLow) {
-	// ÏÈÅÐ¶ÏµÚ1¸ùºÍµÚ2¸ùÁ½¸ùKÏßÊÇÊ²Ã´×´Ì¬
-	// ÅÅÁÐ¿ÉÄÜÓÐ4ÖÖÇé¿ö
+	// å…ˆåˆ¤æ–­ç¬¬1æ ¹å’Œç¬¬2æ ¹ä¸¤æ ¹Kçº¿æ˜¯ä»€ä¹ˆçŠ¶æ€
+	// æŽ’åˆ—å¯èƒ½æœ‰4ç§æƒ…å†µ
 	if (pHigh[1] > pHigh[0] && pLow[1] > pLow[0]) {
-		// Ç°ºóÁ½¸ùKÏßÃ»ÓÐ°üº¬¹ØÏµ
-		// ÇÒKÏßÉÏÉý
+		// å‰åŽä¸¤æ ¹Kçº¿æ²¡æœ‰åŒ…å«å…³ç³»
+		// ä¸”Kçº¿ä¸Šå‡
 		pDirection[0] = 1;
 		pDirection[1] = 1;
 
@@ -19,8 +19,8 @@ void BaoHan(int nCount, float *pDirection, float *pOutHigh, float *pOutLow,
 		pOutLow[0] = pLow[0];
 		pOutLow[1] = pLow[1];
 	} else if (pHigh[1] < pHigh[0] && pLow[1] < pLow[0]) {
-		// Ç°ºóÁ½¸ùKÏßÃ»ÓÐ°üº¬¹ØÏµ
-		// ÇÒÏÂ½µ
+		// å‰åŽä¸¤æ ¹Kçº¿æ²¡æœ‰åŒ…å«å…³ç³»
+		// ä¸”ä¸‹é™
 		pDirection[0] = -1;
 		pDirection[1] = -1;
 
@@ -33,10 +33,10 @@ void BaoHan(int nCount, float *pDirection, float *pOutHigh, float *pOutLow,
 		pOutLow[0] = pLow[0];
 		pOutLow[1] = pLow[1];
 	} else if (pHigh[1] <= pHigh[0] && pLow[1] >= pLow[0]) {
-		// ºóÃæKÏß±»Ç°ÃæKÏß°üº¬
-		// ³õÊ¼»¯Ê±ÎÒÃÇ°ÑÕâÖÖÇé¿ö¶¨ÒåÎªKÏÈÏÂ½µ
-		// ¶øÇÒµÚ2¸ùKÏÈÉèÎª°üº¬×´Ì¬
-		// ±»Ç°ÃæKÏß°üº¬»òÕß°ÑÇ°ÃæKÏß°üº¬£¬ÎÒÃÇ¶¼°ÑÕâ¸öKÏßÉèÖÃÎª°üº¬×´Ì¬
+		// åŽé¢Kçº¿è¢«å‰é¢Kçº¿åŒ…å«
+		// åˆå§‹åŒ–æ—¶æˆ‘ä»¬æŠŠè¿™ç§æƒ…å†µå®šä¹‰ä¸ºKå…ˆä¸‹é™
+		// è€Œä¸”ç¬¬2æ ¹Kå…ˆè®¾ä¸ºåŒ…å«çŠ¶æ€
+		// è¢«å‰é¢Kçº¿åŒ…å«æˆ–è€…æŠŠå‰é¢Kçº¿åŒ…å«ï¼Œæˆ‘ä»¬éƒ½æŠŠè¿™ä¸ªKçº¿è®¾ç½®ä¸ºåŒ…å«çŠ¶æ€
 		pDirection[0] = -1;
 		pDirection[1] = -1;
 
@@ -52,8 +52,8 @@ void BaoHan(int nCount, float *pDirection, float *pOutHigh, float *pOutLow,
 		pOutLow[0] = low;
 		pOutLow[1] = low;
 	} else {
-		// ºóÃæKÏß°üº¬ÁËÇ°ÃæµÄKÏß
-		// ÕâÖÖ×´Ì¬ÎÒÃÇÊÇÈÏÎªKÏßÊÇÉÏÉýµÄ
+		// åŽé¢Kçº¿åŒ…å«äº†å‰é¢çš„Kçº¿
+		// è¿™ç§çŠ¶æ€æˆ‘ä»¬æ˜¯è®¤ä¸ºKçº¿æ˜¯ä¸Šå‡çš„
 		pDirection[0] = 1;
 		pDirection[1] = 1;
 
@@ -69,7 +69,7 @@ void BaoHan(int nCount, float *pDirection, float *pOutHigh, float *pOutLow,
 		pOutLow[0] = low;
 		pOutLow[1] = low;
 	}
-	// ´ÓµÚ3¸ùKÏß¿ªÊ¼£¬ÎÒÃÇ¾ÍÒÀ´Î°´¿ÎÎÄ±ê×¼´¦Àí
+	// ä»Žç¬¬3æ ¹Kçº¿å¼€å§‹ï¼Œæˆ‘ä»¬å°±ä¾æ¬¡æŒ‰è¯¾æ–‡æ ‡å‡†å¤„ç†
 	for (int i = 2; i < nCount; i++) {
 		if (pHigh[i] > pOutHigh[i - 1] && pLow[i] > pOutLow[i - 1]) {
 			pDirection[i] = 1;

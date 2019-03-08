@@ -1,4 +1,4 @@
-#ifndef INIWRITER_H
+﻿#ifndef INIWRITER_H
 #define INIWRITER_H
 
 #include <windows.h>

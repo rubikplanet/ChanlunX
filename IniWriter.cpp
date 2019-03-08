@@ -1,4 +1,4 @@
-#include "IniWriter.h"
+﻿#include "IniWriter.h"
 #include <iostream>
 #include <windows.h>
 

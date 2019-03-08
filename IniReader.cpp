@@ -1,4 +1,4 @@
-#include "IniReader.h"
+﻿#include "IniReader.h"
 #include <iostream>
 #include <windows.h>
 

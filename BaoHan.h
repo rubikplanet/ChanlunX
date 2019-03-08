@@ -1,11 +1,11 @@
-#ifndef __BAO_HAN_H__
+ï»¿#ifndef __BAO_HAN_H__
 #define __BAO_HAN_H__
 
 #pragma pack(push,1)
 
-// ´¦Àí£ËÏßµÄ°üº¬¹ØÏµ
-// ÊäÈëÊÇKÏß¸ß£¨*pHigh£©ºÍKÏßµÍ£¨*pLow£©
-// Êä³öÊÇKÏßµÄ·½Ïò£¨*pDirection£©¡¢´¦ÀíºóµÄ£ËÏß¸ß£¨*pOutHigh£©¡¢´¦ÀíºóµÄKÏßµÍ£¨*pOutLow£©¡¢KÏßÊÇ·ñÓĞ°üº¬£¨*pInclude£©
+// å¤„ç†ï¼«çº¿çš„åŒ…å«å…³ç³»
+// è¾“å…¥æ˜¯Kçº¿é«˜ï¼ˆ*pHighï¼‰å’ŒKçº¿ä½ï¼ˆ*pLowï¼‰
+// è¾“å‡ºæ˜¯Kçº¿çš„æ–¹å‘ï¼ˆ*pDirectionï¼‰ã€å¤„ç†åçš„ï¼«çº¿é«˜ï¼ˆ*pOutHighï¼‰ã€å¤„ç†åçš„Kçº¿ä½ï¼ˆ*pOutLowï¼‰ã€Kçº¿æ˜¯å¦æœ‰åŒ…å«ï¼ˆ*pIncludeï¼‰
 void BaoHan(int nCount, float *pDirection, float *pOutHigh, float *pOutLow,
 		float *pInclude, float *pHigh, float *pLow);
 
