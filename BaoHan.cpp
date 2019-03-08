@@ -1,7 +1,6 @@
 ﻿#include "BaoHan.h"
 
-void BaoHan(int nCount, float *pDirection, float *pOutHigh, float *pOutLow,
-		float *pInclude, float *pHigh, float *pLow) {
+void BaoHan(int nCount, float *pDirection, float *pOutHigh, float *pOutLow, float *pInclude, float *pHigh, float *pLow) {
 	// 先判断第1根和第2根两根K线是什么状态
 	// 排列可能有4种情况
 	if (pHigh[1] > pHigh[0] && pLow[1] > pLow[0]) {

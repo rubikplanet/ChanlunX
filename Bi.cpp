@@ -107,7 +107,7 @@ bool HasTempBi(int nState, int nCount, int i, float *pHigh, float *pLow,
 		float *pInclude, float *pOutHigh, float *pOutLow) {
 	int kCount = 1;
 	if (nState == 1) // 找向上笔
-			{
+	{
 		for (int x = i; x < nCount; x++) {
 			if (pLow[x] < pLow[i]) {
 				return false;
@@ -163,9 +163,8 @@ void Bi0(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow) {
 				nLastD = i;
 				pOut[nLastD] = -1;
 				kCountUp = 1;
-			}
-			// 向下笔中遇到K线不出新低。
-			else {
+			} else {
+                // 向下笔中遇到K线不出新低。
 				if (pInclude[i] == 0) {
 					if (pDirection[i] == 1) {
 						kCountUp++;
@@ -177,11 +176,7 @@ void Bi0(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow) {
 						}
 					}
 				}
-				if ((kCountUp >= 5
-						|| IsStrongMove(i, nState, nLastD, nLastG, pHigh, pLow,
-								pOut)
-						|| IsReverseJump(i, nState, nLastD, nLastG, pHigh, pLow))
-						&& LastIsMax(pHigh, nLastD, i)) {
+				if ((kCountUp >= 5 || IsStrongMove(i, nState, nLastD, nLastG, pHigh, pLow, pOut) || IsReverseJump(i, nState, nLastD, nLastG, pHigh, pLow)) && LastIsMax(pHigh, nLastD, i)) {
 					nState = 1;
 					nLastG = i;
 					pOut[nLastG] = 1;
@@ -195,9 +190,8 @@ void Bi0(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow) {
 				nLastG = i;
 				pOut[nLastG] = 1;
 				kCountDown = 1;
-			}
-			// 向上笔中遇到K线不出新高。
-			else {
+			} else {
+                // 向上笔中遇到K线不出新高。
 				if (pInclude[i] == 0) {
 					if (pDirection[i] == -1) {
 						kCountDown++;
@@ -209,11 +203,7 @@ void Bi0(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow) {
 						}
 					}
 				}
-				if ((kCountDown >= 5
-						|| IsStrongMove(i, nState, nLastD, nLastG, pHigh, pLow,
-								pOut)
-						|| IsReverseJump(i, nState, nLastD, nLastG, pHigh, pLow))
-						&& LastIsMin(pLow, nLastG, i)) {
+				if ((kCountDown >= 5 || IsStrongMove(i, nState, nLastD, nLastG, pHigh, pLow, pOut) || IsReverseJump(i, nState, nLastD, nLastG, pHigh, pLow)) && LastIsMin(pLow, nLastG, i)) {
 					// 转向到向下笔状态
 					nState = -1;
 					nLastD = i;
