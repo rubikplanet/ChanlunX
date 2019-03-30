@@ -35,26 +35,11 @@ void Func2(int nCount, float *pOut, float *pHigh, float *pLow, float *pIgnore)
 }
 
 //=============================================================================
-// 输出函数3号：包含处理后的K线高
+// 输出函数3号：输出段的端点
 //=============================================================================
 void Func3(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
 {
-    float *pDirection = new float[nCount];
-    float *pOutHigh = new float[nCount];
-    float *pOutLow = new float[nCount];
-    float *pInclude = new float[nCount];
-
-    BaoHan(nCount, pDirection, pOutHigh, pOutLow, pInclude, pHigh, pLow);
-
-    for (int i = 0; i < nCount; i++)
-    {
-        pOut[i] = pOutHigh[i];
-    }
-
-    delete []pDirection;
-    delete []pOutHigh;
-    delete []pOutLow;
-    delete []pInclude;
+    Duan(nCount, pOut, pIn, pHigh, pLow);
 }
 
 //=============================================================================
