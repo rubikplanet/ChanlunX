@@ -1,5 +1,6 @@
 ﻿#include <iostream>
 #include <fstream>
+#include <exception>
 #include "BiChuLi.h"
 #include "KxianChuLi.h"
 
@@ -25,15 +26,12 @@ bool ifChengbi(vector<Kxian> &tempKxianList, int direction)
                 break;
             }
         }
+        if (i >= tempKxianList.size()) {
+            // 下降K线都没找到
+            return false;
+        }
         // 找前面的最低价
         float zuiDiJia = tempKxianList.at(i).di;
-        for (int j = i - 1; j >= 0; j--)
-        {
-            if (tempKxianList.at(j).di < zuiDiJia)
-            {
-                zuiDiJia = tempKxianList.at(j).di;
-            }
-        }
         // 如果出现了更低价，这个笔就成立了
         for (unsigned int j = i + 1; j < tempKxianList.size(); j++)
         {
@@ -56,15 +54,12 @@ bool ifChengbi(vector<Kxian> &tempKxianList, int direction)
                 break;
             }
         }
+        if (i >= tempKxianList.size()) {
+            // 上升K线都没找到
+            return false;
+        }
         // 找前面的最高价
         float zuiGaoJia = tempKxianList.at(i).gao;
-        for (int j = i - 1; j >= 0; j--)
-        {
-            if (tempKxianList.at(j).gao > zuiGaoJia)
-            {
-                zuiGaoJia = tempKxianList.at(j).gao;
-            }
-        }
         // 如果出现了更高价，这个笔就成立了
         for (unsigned int j = i + 1; j < tempKxianList.size(); j++)
         {
@@ -79,110 +74,109 @@ bool ifChengbi(vector<Kxian> &tempKxianList, int direction)
 
 void BiChuLi::handle(vector<Kxian> &kxianList)
 {
-    ofstream fout("D:\\BI.TXT", ofstream::out);
-    vector<Kxian> tempKxianList; // 临时未成笔K线的保存
-    for (vector<Kxian>::iterator iter = kxianList.begin(); iter != kxianList.end(); iter++)
+    ofstream fout(".\\T0002\\dlls\\BI.TXT", ofstream::out);
+    try
     {
-        fout<<(*iter).kaiShi<<endl;
-        if (this->biList.empty())
+        vector<Kxian> tempKxianList; // 临时未成笔K线的保存
+        for (vector<Kxian>::iterator iter = kxianList.begin(); iter != kxianList.end(); iter++)
         {
-            fout<<"第一笔开始"<<endl;
-            // 第一笔生成中，也是假设第一笔是向上的
-            Bi bi;
-            bi.fangXiang = 1;
-            bi.kaiShi = (*iter).kaiShi;
-            bi.jieShu = (*iter).jieShu;
-            bi.gao = (*iter).gao;
-            bi.di = (*iter).di;
-            bi.kxianList.push_back(*iter);
-            this->biList.push_back(bi);
-        }
-        else
-        {
-            if (this->biList.back().fangXiang == 1)
+            if (this->biList.empty())
             {
-                // 上一笔是向上笔
-                if ((*iter).gao >= this->biList.back().gao)
-                {
-                    fout<<"向上笔延续"<<endl;
-                    // 向上笔继续延续
-                    this->biList.back().jieShu = (*iter).jieShu;
-                    this->biList.back().gao = (*iter).gao;
-                    fout<<"笔高"<<this->biList.back().gao<<endl;
-                    if (tempKxianList.size() > 0)
-                    {
-                        for (vector<Kxian>::iterator it = tempKxianList.begin(); it != tempKxianList.end(); it++)
-                        {
-                            this->biList.back().kxianList.push_back(*it);
-                        }
-                        tempKxianList.clear();
-                    }
-                    this->biList.back().kxianList.push_back(*iter);
-                }
-                else
-                {
-                    tempKxianList.push_back(*iter);
-                    // 有没有成新的向下笔
-                    if (ifChengbi(tempKxianList, -1))
-                    {
-                        fout<<"新向下笔成立"<<endl;
-                        Bi bi;
-                        bi.fangXiang = -1;
-                        bi.kaiShi = this->biList.back().jieShu;
-                        bi.jieShu = tempKxianList.back().jieShu;
-                        bi.di = tempKxianList.back().di;
-                        bi.gao = this->biList.back().gao;
-                        for (vector<Kxian>::iterator it = tempKxianList.begin(); it != tempKxianList.end(); it++)
-                        {
-                            bi.kxianList.push_back(*it);
-                        }
-                        tempKxianList.clear();
-                        this->biList.push_back(bi);
-                    }
-                }
+                // 第一笔生成中，也是假设第一笔是向上的
+                Bi bi;
+                bi.fangXiang = 1;
+                bi.kaiShi = (*iter).kaiShi;
+                bi.jieShu = (*iter).jieShu;
+                bi.gao = (*iter).gao;
+                bi.di = (*iter).di;
+                bi.kxianList.push_back(*iter);
+                this->biList.push_back(bi);
             }
-            else if (this->biList.back().fangXiang == -1)
+            else
             {
-                // 上一笔是向下笔
-                if ((*iter).di <= this->biList.back().di)
+                if (this->biList.back().fangXiang == 1)
                 {
-                    fout<<"向下笔延续"<<endl;
-                    // 向下笔继续延续
-                    this->biList.back().jieShu = (*iter).jieShu;
-                    this->biList.back().di = (*iter).di;
-                    fout<<"笔低"<<this->biList.back().di<<endl;
-                    if (tempKxianList.size() > 0)
+                    // 上一笔是向上笔
+                    if ((*iter).gao >= this->biList.back().gao)
                     {
-                        for (vector<Kxian>::iterator it = tempKxianList.begin(); it != tempKxianList.end(); it++)
+                        // 向上笔继续延续
+                        this->biList.back().jieShu = (*iter).jieShu;
+                        this->biList.back().gao = (*iter).gao;
+                        if (tempKxianList.size() > 0)
                         {
-                            this->biList.back().kxianList.push_back(*it);
+                            for (vector<Kxian>::iterator it = tempKxianList.begin(); it != tempKxianList.end(); it++)
+                            {
+                                this->biList.back().kxianList.push_back(*it);
+                            }
+                            tempKxianList.clear();
                         }
-                        tempKxianList.clear();
+                        this->biList.back().kxianList.push_back(*iter);
                     }
-                    this->biList.back().kxianList.push_back(*iter);
-                }
-                else
-                {
-                    tempKxianList.push_back(*iter);
-                    // 有没有成新的向上笔
-                    if (ifChengbi(tempKxianList, 1))
+                    else
                     {
-                        fout<<"新向上笔成立"<<endl;
-                        Bi bi;
-                        bi.fangXiang = 1;
-                        bi.kaiShi = this->biList.back().jieShu;
-                        bi.jieShu = tempKxianList.back().jieShu;
-                        bi.gao = tempKxianList.back().gao;
-                        bi.di = this->biList.back().di;
-                        for (vector<Kxian>::iterator it = tempKxianList.begin(); it != tempKxianList.end(); it++)
+                        tempKxianList.push_back(*iter);
+                        // 有没有成新的向下笔
+                        if (ifChengbi(tempKxianList, -1))
                         {
-                            bi.kxianList.push_back(*it);
+                            Bi bi;
+                            bi.fangXiang = -1;
+                            bi.kaiShi = this->biList.back().jieShu;
+                            bi.jieShu = tempKxianList.back().jieShu;
+                            bi.di = tempKxianList.back().di;
+                            bi.gao = this->biList.back().gao;
+                            for (vector<Kxian>::iterator it = tempKxianList.begin(); it != tempKxianList.end(); it++)
+                            {
+                                bi.kxianList.push_back(*it);
+                            }
+                            tempKxianList.clear();
+                            this->biList.push_back(bi);
                         }
-                        tempKxianList.clear();
-                        this->biList.push_back(bi);
+                    }
+                }
+                else if (this->biList.back().fangXiang == -1)
+                {
+                    // 上一笔是向下笔
+                    if ((*iter).di <= this->biList.back().di)
+                    {
+                        // 向下笔继续延续
+                        this->biList.back().jieShu = (*iter).jieShu;
+                        this->biList.back().di = (*iter).di;
+                        if (tempKxianList.size() > 0)
+                        {
+                            for (vector<Kxian>::iterator it = tempKxianList.begin(); it != tempKxianList.end(); it++)
+                            {
+                                this->biList.back().kxianList.push_back(*it);
+                            }
+                            tempKxianList.clear();
+                        }
+                        this->biList.back().kxianList.push_back(*iter);
+                    }
+                    else
+                    {
+                        tempKxianList.push_back(*iter);
+                        // 有没有成新的向上笔
+                        if (ifChengbi(tempKxianList, 1))
+                        {
+                            Bi bi;
+                            bi.fangXiang = 1;
+                            bi.kaiShi = this->biList.back().jieShu;
+                            bi.jieShu = tempKxianList.back().jieShu;
+                            bi.gao = tempKxianList.back().gao;
+                            bi.di = this->biList.back().di;
+                            for (vector<Kxian>::iterator it = tempKxianList.begin(); it != tempKxianList.end(); it++)
+                            {
+                                bi.kxianList.push_back(*it);
+                            }
+                            tempKxianList.clear();
+                            this->biList.push_back(bi);
+                        }
                     }
                 }
             }
         }
+    }
+    catch (exception& e)
+    {
+        fout << e.what() << endl;
     }
 }

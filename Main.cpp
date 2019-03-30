@@ -19,7 +19,7 @@ BOOL APIENTRY DllMain( HANDLE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
 }
 
 //=============================================================================
-// 输出函数1号：输出笔顶底端点
+// 输出函数1号：输出简笔顶底端点
 //=============================================================================
 void Func1(int nCount, float *pOut, float *pHigh, float *pLow, float *pIgnore)
 {
@@ -27,26 +27,11 @@ void Func1(int nCount, float *pOut, float *pHigh, float *pLow, float *pIgnore)
 }
 
 //=============================================================================
-// 输出函数2号：是否是有包含关系的K线
+// 输出函数2号：输出标准笔顶底端点
 //=============================================================================
-void Func2(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
+void Func2(int nCount, float *pOut, float *pHigh, float *pLow, float *pIgnore)
 {
-    float *pDirection = new float[nCount];
-    float *pOutHigh = new float[nCount];
-    float *pOutLow = new float[nCount];
-    float *pInclude = new float[nCount];
-
-    BaoHan(nCount, pDirection, pOutHigh, pOutLow, pInclude, pHigh, pLow);
-
-    for (int i = 0; i < nCount; i++)
-    {
-        pOut[i] = pInclude[i];
-    }
-
-    delete []pDirection;
-    delete []pOutHigh;
-    delete []pOutLow;
-    delete []pInclude;
+    Bi2(nCount, pOut, pHigh, pLow, pIgnore);
 }
 
 //=============================================================================
