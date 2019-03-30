@@ -19,26 +19,11 @@ BOOL APIENTRY DllMain( HANDLE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
 }
 
 //=============================================================================
-// 输出函数1号：K线方向
+// 输出函数1号：输出笔顶底端点
 //=============================================================================
-void Func1(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
+void Func1(int nCount, float *pOut, float *pHigh, float *pLow, float *pIgnore)
 {
-    float *pDirection = new float[nCount];
-    float *pOutHigh = new float[nCount];
-    float *pOutLow = new float[nCount];
-    float *pInclude = new float[nCount];
-
-    BaoHan(nCount, pDirection, pOutHigh, pOutLow, pInclude, pHigh, pLow);
-
-    for (int i = 0; i < nCount; i++)
-    {
-        pOut[i] = pDirection[i];
-    }
-
-    delete []pDirection;
-    delete []pOutHigh;
-    delete []pOutLow;
-    delete []pInclude;
+    Bi1(nCount, pOut, pHigh, pLow, pIgnore);
 }
 
 //=============================================================================
@@ -151,30 +136,9 @@ void Func5(int nCount, float *pOut, float *pIn1, float *pIn2, float *pInclude)
 //=============================================================================
 // 输出函数6号：输出笔顶底端点
 //=============================================================================
-void Func6(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
+void Func6(int nCount, float *pOut, float *pHigh, float *pLow, float *pIgnore)
 {
-    CIniReader IniReader(".\\T0002\\dlls\\ChanLunX.ini");
-    int iBi = IniReader.ReadInteger("PeiZhi", "Bi", 0);
-    if (iBi == 0)
-    {
-        Bi0(nCount, pOut, pIn, pHigh, pLow);
-    }
-    else if (iBi == 1)
-    {
-        Bi1(nCount, pOut, pIn, pHigh, pLow);
-    }
-    else if (iBi == 2)
-    {
-        Bi2(nCount, pOut, pIn, pHigh, pLow);
-    }
-    else if (iBi == 3)
-    {
-        Bi3(nCount, pOut, pIn, pHigh, pLow);
-    }
-    else
-    {
-        Bi0(nCount, pOut, pIn, pHigh, pLow);
-    }
+    Bi1(nCount, pOut, pHigh, pLow, pIgnore);
 }
 
 //=============================================================================

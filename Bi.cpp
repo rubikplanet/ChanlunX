@@ -1,5 +1,11 @@
-﻿#include "BaoHan.h"
+﻿#include <iostream>
+#include <fstream>
+#include "BaoHan.h"
 #include "Bi.h"
+#include "KxianChuLi.h"
+#include "BiChuLi.h"
+
+using namespace std;
 
 // 从fromIndex到toIndex，最后一个值是最低的
 int LastIsMin(float *pLow, int fromIndex, int toIndex) {
@@ -140,295 +146,37 @@ bool HasTempBi(int nState, int nCount, int i, float *pHigh, float *pLow,
 	return true;
 }
 
-void Bi0(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow) {
-	float *pDirection = new float[nCount];
-	float *pOutHigh = new float[nCount];
-	float *pOutLow = new float[nCount];
-	float *pInclude = new float[nCount];
-
-	BaoHan(nCount, pDirection, pOutHigh, pOutLow, pInclude, pHigh, pLow);
-
-	pOut[0] = -1; // -1表示笔底，1表示笔顶，初始化是第一根K线认为是一个底。
-	int nState = -1; // -1表示向下笔中，1表示向上笔中，初始化时候认为是向下笔的延续中
-	int nLastD = 0; // 底位置
-	int nLastG = -1; // 顶位置，初始化没有顶
-	int kCountDown = 5; // 计数K线数量，初始值假设已经向下笔第五根K线
-	int kCountUp = 1;
-
-	for (int i = 1; i < nCount; i++) {
-		if (nState == -1) {
-			// 向下笔中遇到K线出新低，底就要移到新低这里，这里不需要管K线的方向。
-			if (pLow[i] < pLow[nLastD]) {
-				pOut[nLastD] = 0;
-				nLastD = i;
-				pOut[nLastD] = -1;
-				kCountUp = 1;
-			} else {
-                // 向下笔中遇到K线不出新低。
-				if (pInclude[i] == 0) {
-					if (pDirection[i] == 1) {
-						kCountUp++;
-					} else {
-						if (pOutHigh[i] > RangeHign(pOutHigh, nLastD)) {
-							kCountUp++;
-						} else {
-							kCountUp = 1;
-						}
-					}
-				}
-				if ((kCountUp >= 5 || IsStrongMove(i, nState, nLastD, nLastG, pHigh, pLow, pOut) || IsReverseJump(i, nState, nLastD, nLastG, pHigh, pLow)) && LastIsMax(pHigh, nLastD, i)) {
-					nState = 1;
-					nLastG = i;
-					pOut[nLastG] = 1;
-					kCountDown = 1;
-				}
-			}
-		} else if (nState == 1) {
-			// 向上笔中遇到K线出新高，顶就要移到新高这里，这里不需要管K线的方向。
-			if (pHigh[i] > pHigh[nLastG]) {
-				pOut[nLastG] = 0;
-				nLastG = i;
-				pOut[nLastG] = 1;
-				kCountDown = 1;
-			} else {
-                // 向上笔中遇到K线不出新高。
-				if (pInclude[i] == 0) {
-					if (pDirection[i] == -1) {
-						kCountDown++;
-					} else {
-						if (pOutLow[i] < RangeLow(pOutLow, nLastG)) {
-							kCountDown++;
-						} else {
-							kCountDown = 1;
-						}
-					}
-				}
-				if ((kCountDown >= 5 || IsStrongMove(i, nState, nLastD, nLastG, pHigh, pLow, pOut) || IsReverseJump(i, nState, nLastD, nLastG, pHigh, pLow)) && LastIsMin(pLow, nLastG, i)) {
-					// 转向到向下笔状态
-					nState = -1;
-					nLastD = i;
-					pOut[nLastD] = -1;
-					kCountUp = 1;
-				}
-			}
-
-		}
-
-		// 向下笔中有高点大于前高，前高要调整。
-		// 向上笔中有低点小于前低，低点要调整。
-		while (pOut[i] == -1 || pOut[i] == 1) {
-			if (pOut[i] == -1) {
-				// 中间如果有更高的K线，前面的顶要移到更高K线那里
-				int IsLastGMoved = 0;
-				int nTemp = 0;
-				if (nLastG >= 0) {
-					nTemp = nLastG + 1;
-					while (nTemp <= i) {
-						if (pHigh[nTemp] > pHigh[nLastG]) {
-							IsLastGMoved = 1;
-							break;
-						}
-						nTemp++;
-					}
-				}
-				if (IsLastGMoved == 1) {
-					pOut[nLastG] = 0; // 消掉原来顶
-					nLastG = nTemp;
-					pOut[nLastD] = 0;
-					pOut[nLastG] = 1; // 顶后移
-					nLastD = GetLastDIndex(nLastG, pOut); // 底归位
-					i = nLastG; // 从新的顶重新开始计算
-					kCountDown = 1; // 向下K线数量归位
-					nState = 1;
-				} else {
-					break;
-				}
-			} else if (pOut[i] == 1) {
-				// 中间如果有更低的K线，前面的底要移到更低K线那里
-				int IsLastDMoved = 0;
-				int nTemp = 0;
-				if (nLastD >= 0) {
-					nTemp = nLastD + 1;
-					while (nTemp <= i) {
-						if (pLow[nTemp] < pLow[nLastD]) {
-							IsLastDMoved = 1;
-							break;
-						}
-						nTemp++;
-					}
-				}
-				if (IsLastDMoved == 1) {
-					pOut[nLastD] = 0; // 消掉原来底
-					nLastD = nTemp;
-					pOut[nLastG] = 0;
-					pOut[nLastD] = -1; // 底后移
-					nLastG = GetLastGIndex(nLastD, pOut); // 底归位
-					i = nLastD; // 从新的顶重新开始计算
-					kCountUp = 1; // 向上K线数量归位
-					nState = -1;
-				} else {
-					break;
-				}
-			}
-		}
-	}
-
-	delete[] pDirection;
-	delete[] pOutHigh;
-	delete[] pOutLow;
-	delete[] pInclude;
-}
-
-void Bi1(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow) {
-	CIniReader iniReader(".\\T0002\\dlls\\ChanlunX.ini");
-	int iFenXingQuJian = iniReader.ReadInteger("PeiZhi", "FenXingQuJian", 2);
-
-	float *pDirection = new float[nCount];
-	float *pOutHigh = new float[nCount];
-	float *pOutLow = new float[nCount];
-	float *pInclude = new float[nCount];
-
-	BaoHan(nCount, pDirection, pOutHigh, pOutLow, pInclude, pHigh, pLow);
-
-	pOut[0] = -1; // -1表示笔底，1表示笔顶，初始化是第一根K线认为是一个底。
-	int nState = -1; // -1表示向下笔中，1表示向上笔中，初始化时候认为是向下笔的延续中
-	int nLastD = 0; // 底位置
-	int nLastG = -1; // 顶位置，初始化没有顶
-	int kCountDown = 5; // 计数K线数量，初始值假设已经向下笔第五根K线
-	int kCountDownRaw = 5;
-	int kCountUp = 1;
-	int kCountUpRaw = 1;
-
-	for (int i = 1; i < nCount; i++) {
-		if (nState == -1) {
-			// 向下笔中遇到K线出新低，底就要移到新低这里，这里不需要管K线的方向。
-			if (pLow[i] < pLow[nLastD]) {
-				pOut[nLastD] = 0;
-				nLastD = i;
-				pOut[nLastD] = -1;
-				kCountUp = 1;
-				kCountUpRaw = 1;
-			}
-			// 向下笔中遇到K线不出新低。
-			else {
-				if (pInclude[i] == 0) {
-					kCountUp++;
-				}
-				kCountUpRaw++;
-				if (((kCountUp >= 4 && kCountUpRaw >= 5)
-						|| IsStrongMove(i, nState, nLastD, nLastG, pHigh, pLow,
-								pOut)
-						|| IsReverseJump(i, nState, nLastD, nLastG, pHigh, pLow))
-						&& LastIsMax(pHigh, nLastD, i)
-						&& (iFenXingQuJian == 1 ?
-								pOutHigh[i] > RangeHign(pOutHigh, nLastD) :
-								pOutHigh[i] > pOutHigh[nLastD])) {
-					nState = 1;
-					nLastG = i;
-					pOut[nLastG] = 1;
-					kCountDown = 1;
-					kCountDownRaw = 1;
-				}
-			}
-		} else if (nState == 1) {
-			// 向上笔中遇到K线出新高，顶就要移到新高这里，这里不需要管K线的方向。
-			if (pHigh[i] > pHigh[nLastG]) {
-				pOut[nLastG] = 0;
-				nLastG = i;
-				pOut[nLastG] = 1;
-				kCountDown = 1;
-				kCountDownRaw = 1;
-			}
-			// 向上笔中遇到K线不出新高。
-			else {
-				if (pInclude[i] == 0) {
-					kCountDown++;
-				}
-				kCountDownRaw++;
-				if (((kCountDown >= 4 && kCountDownRaw >= 5)
-						|| IsStrongMove(i, nState, nLastD, nLastG, pHigh, pLow,
-								pOut)
-						|| IsReverseJump(i, nState, nLastD, nLastG, pHigh, pLow))
-						&& LastIsMin(pLow, nLastG, i)
-						&& (iFenXingQuJian == 1 ?
-								pOutLow[i] < RangeLow(pOutLow, nLastG) :
-								pOutLow[i] < pOutLow[nLastG])) {
-					// 转向到向下笔状态
-					nState = -1;
-					nLastD = i;
-					pOut[nLastD] = -1;
-					kCountUp = 1;
-					kCountUpRaw = 1;
-				}
-			}
-
-		}
-
-		// 向下笔中有高点大于前高，前高要调整。
-		// 向上笔中有低点小于前低，低点要调整。
-		while (pOut[i] == -1 || pOut[i] == 1) {
-			if (pOut[i] == -1) {
-				// 中间如果有更高的K线，前面的顶要移到更高K线那里
-				int IsLastGMoved = 0;
-				int nTemp = 0;
-				if (nLastG >= 0) {
-					nTemp = nLastG + 1;
-					while (nTemp <= i) {
-						if (pHigh[nTemp] > pHigh[nLastG]) {
-							IsLastGMoved = 1;
-							break;
-						}
-						nTemp++;
-					}
-				}
-				if (IsLastGMoved == 1) {
-					pOut[nLastG] = 0; // 消掉原来顶
-					nLastG = nTemp;
-					pOut[nLastD] = 0;
-					pOut[nLastG] = 1; // 顶后移
-					nLastD = GetLastDIndex(nLastG, pOut); // 底归位
-					i = nLastG; // 从新的顶重新开始计算
-					kCountDown = 1; // 向下K线数量归位
-					kCountDownRaw = 1;
-					nState = 1;
-				} else {
-					break;
-				}
-			} else if (pOut[i] == 1) {
-				// 中间如果有更低的K线，前面的底要移到更低K线那里
-				int IsLastDMoved = 0;
-				int nTemp = 0;
-				if (nLastD >= 0) {
-					nTemp = nLastD + 1;
-					while (nTemp <= i) {
-						if (pLow[nTemp] < pLow[nLastD]) {
-							IsLastDMoved = 1;
-							break;
-						}
-						nTemp++;
-					}
-				}
-				if (IsLastDMoved == 1) {
-					pOut[nLastD] = 0; // 消掉原来底
-					nLastD = nTemp;
-					pOut[nLastG] = 0;
-					pOut[nLastD] = -1; // 底后移
-					nLastG = GetLastGIndex(nLastD, pOut); // 底归位
-					i = nLastD; // 从新的顶重新开始计算
-					kCountUp = 1; // 向上K线数量归位
-					kCountUpRaw = 1;
-					nState = -1;
-				} else {
-					break;
-				}
-			}
-		}
-	}
-
-	delete[] pDirection;
-	delete[] pOutHigh;
-	delete[] pOutLow;
-	delete[] pInclude;
+void Bi1(int nCount, float *pOut, float *pHigh, float *pLow, float *pIgnore) {
+    ofstream fout("D:\\CHANLUN.TXT", ofstream::out);
+    KxianChuLi kxianChuLi;
+    for (int i = 0; i < nCount; i++) {
+        kxianChuLi.add(pHigh[i], pLow[i]);
+    }
+    for (vector<Kxian>::iterator iter = kxianChuLi.kxianList.begin(); iter != kxianChuLi.kxianList.end(); iter++)
+    {
+        fout<<" K线开始"<<(*iter).kaiShi<<" K线结束"<<(*iter).jieShu<<" K线高"<<(*iter).gao<<" K线低"<<(*iter).di<<" K线方向"<<(*iter).fangXiang<<endl;
+    }
+    for (unsigned int i = 1; i < kxianChuLi.kxianList.size(); i++)
+    {
+       if (kxianChuLi.kxianList.at(i-1).fangXiang != kxianChuLi.kxianList.at(i).fangXiang)
+       {
+           if (kxianChuLi.kxianList.at(i-1).fangXiang == 1)
+           {
+               pOut[kxianChuLi.kxianList.at(i-1).zhongJian] = 1;
+           } else if (kxianChuLi.kxianList.at(i-1).fangXiang == -1)
+           {
+                pOut[kxianChuLi.kxianList.at(i-1).zhongJian] = -1;
+           }
+       }
+    }
+    if(kxianChuLi.kxianList.back().fangXiang == 1)
+    {
+        pOut[kxianChuLi.kxianList.back().zhongJian] = 1;
+    }
+    else if(kxianChuLi.kxianList.back().fangXiang == -1)
+    {
+        pOut[kxianChuLi.kxianList.back().zhongJian] = -1;
+    }
 }
 
 void Bi2(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow) {

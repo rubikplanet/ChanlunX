@@ -22,6 +22,7 @@ struct Kxian
     int fangXiang; // K线方向
     int kaiShi;    // 开始K线坐标
     int jieShu;    // 结束K线坐标
+    int zhongJian;
 };
 
 class KxianChuLi
