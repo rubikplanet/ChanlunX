@@ -1,12 +1,8 @@
 ﻿#include <vector>
 #include "Duan.h"
 
-void Duan(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
-{
-    Duan0(nCount, pOut, pIn, pHigh, pLow);
-}
 
-void Duan0(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
+void Duan1(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
 {
     int nState = 0;
     int nLastD = 0; // 前一个向下线段的底
@@ -148,7 +144,7 @@ void Duan0(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
 
 }
 
-void Duan1(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
+void Duan2(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
 {
     int nState = 0;
     int nLastD = 0; // 前一个向下线段的底

@@ -74,7 +74,6 @@ bool ifChengbi(vector<Kxian> &tempKxianList, int direction)
 
 void BiChuLi::handle(vector<Kxian> &kxianList)
 {
-    ofstream fout(".\\T0002\\dlls\\BI.TXT", ofstream::out);
     try
     {
         vector<Kxian> tempKxianList; // 临时未成笔K线的保存
@@ -177,6 +176,5 @@ void BiChuLi::handle(vector<Kxian> &kxianList)
     }
     catch (exception& e)
     {
-        fout << e.what() << endl;
     }
 }

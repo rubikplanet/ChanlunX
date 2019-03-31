@@ -35,107 +35,25 @@ void Func2(int nCount, float *pOut, float *pHigh, float *pLow, float *pIgnore)
 }
 
 //=============================================================================
-// 输出函数3号：输出段的端点
+// 输出函数3号：输出段的端点标准画法
 //=============================================================================
 void Func3(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
 {
-    Duan(nCount, pOut, pIn, pHigh, pLow);
+    Duan1(nCount, pOut, pIn, pHigh, pLow);
 }
 
 //=============================================================================
-// 输出函数4号：包含处理后的K线低
+// 输出函数4号：输出段的端点1+1终结画法
 //=============================================================================
 void Func4(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
 {
-    float *pDirection = new float[nCount];
-    float *pOutHigh = new float[nCount];
-    float *pOutLow = new float[nCount];
-    float *pInclude = new float[nCount];
-
-    BaoHan(nCount, pDirection, pOutHigh, pOutLow, pInclude, pHigh, pLow);
-
-    for (int i = 0; i < nCount; i++)
-    {
-        pOut[i] = pOutLow[i];
-    }
-
-    delete []pDirection;
-    delete []pOutHigh;
-    delete []pOutLow;
-    delete []pInclude;
+    Duan2(nCount, pOut, pIn, pHigh, pLow);
 }
 
 //=============================================================================
-// 输出函数5号：处理一下包含信号，方便通达信画线
+// 输出函数5号：中枢高点数据
 //=============================================================================
-void Func5(int nCount, float *pOut, float *pIn1, float *pIn2, float *pInclude)
-{
-    pOut[0] = 0;
-    float n = 1;
-    for (int i = 1; i < nCount; i++)
-    {
-        if (pInclude[i-1] == 0 && pInclude[i] == 0)
-        {
-            pOut[i] = 0;
-        }
-        else if (pInclude[i-1] == 0 && pInclude[i] == 1)
-        {
-            pOut[i-1] = n;
-            pOut[i] = n;
-        }
-        else if (pInclude[i-1] == 1 && pInclude[i] == 1)
-        {
-            pOut[i] = n;
-        }
-        else if (pInclude[i-1] == 1 && pInclude[i] == 0)
-        {
-            pOut[i] = 0;
-            if (n == 1)
-            {
-                n = 2;
-            }
-            else
-            {
-                n = 1;
-            }
-
-        }
-    }
-}
-
-//=============================================================================
-// 输出函数6号：输出笔顶底端点
-//=============================================================================
-void Func6(int nCount, float *pOut, float *pHigh, float *pLow, float *pIgnore)
-{
-    Bi1(nCount, pOut, pHigh, pLow, pIgnore);
-}
-
-//=============================================================================
-// 输出函数7号：线段顶底信号
-//=============================================================================
-void Func7(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
-{
-    CIniReader IniReader(".\\T0002\\dlls\\ChanLunX.ini");
-    int iDuan = IniReader.ReadInteger("PeiZhi", "Duan", 0);
-    if (iDuan == 0)
-    {
-        Duan0(nCount, pOut, pIn, pHigh, pLow);
-    }
-    else if (iDuan == 1)
-    {
-        Duan1(nCount, pOut, pIn, pHigh, pLow);
-    }
-    else
-    {
-        Duan0(nCount, pOut, pIn, pHigh, pLow);
-    }
-}
-
-//=============================================================================
-// 输出函数8号：中枢高点数据
-//=============================================================================
-void Func8(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
+void Func5(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
 {
     ZhongShu ZhongShuOne;
 
@@ -287,9 +205,9 @@ void Func8(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
 }
 
 //=============================================================================
-// 输出函数9号：中枢低点数据
+// 输出函数6号：中枢低点数据
 //=============================================================================
-void Func9(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
+void Func6(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
 {
 
     ZhongShu ZhongShuOne;
@@ -442,9 +360,9 @@ void Func9(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
 }
 
 //=============================================================================
-// 输出函数10号：中枢起点、终点信号
+// 输出函数7号：中枢起点、终点信号
 //=============================================================================
-void Func10(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
+void Func7(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
 {
 
     //std::ofstream fout;
@@ -611,9 +529,9 @@ void Func10(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
 }
 
 //=============================================================================
-// 输出函数11号：中枢方向数据
+// 输出函数8号：中枢方向数据
 //=============================================================================
-void Func11(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
+void Func8(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
 {
 
     ZhongShu ZhongShuOne;
@@ -775,9 +693,6 @@ static PluginTCalcFuncInfo Info[] =
     { 6, &Func6},
     { 7, &Func7},
     { 8, &Func8},
-    { 9, &Func9},
-    {10, &Func10},
-    {11, &Func11},
     { 0, NULL}
 };
 
@@ -791,215 +706,4 @@ BOOL RegisterTdxFunc(PluginTCalcFuncInfo **pInfo)
     }
 
     return FALSE;
-}
-
-/********************************************************************/
-//************************交易师 大智慧******************************//
-/********************************************************************/
-__declspec(dllexport) int WINAPI RUNMODE()
-{
-    return 0;
-}
-
-__declspec(dllexport) int WINAPI KXFX(CALCINFO* pData)
-{
-    int nDataLen = pData->m_nNumData;
-    float *pHigh = new float[nDataLen];
-    float *pLow = new float[nDataLen];
-
-    for (int i = 0; i < nDataLen; i++)
-    {
-        pHigh[i] = pData->m_pData[i].m_fHigh;
-        pLow[i] = pData->m_pData[i].m_fLow;
-    }
-    Func1(nDataLen, pData->m_pResultBuf, NULL, pHigh, pLow);
-    delete []pHigh;
-    delete []pLow;
-    return 0;
-}
-
-__declspec(dllexport) int WINAPI KXBH(CALCINFO* pData)
-{
-    int nDataLen = pData->m_nNumData;
-    float *pHigh = new float[nDataLen];
-    float *pLow = new float[nDataLen];
-
-    for (int i = 0; i < nDataLen; i++)
-    {
-        pHigh[i] = pData->m_pData[i].m_fHigh;
-        pLow[i] = pData->m_pData[i].m_fLow;
-    }
-    Func2(nDataLen, pData->m_pResultBuf, NULL, pHigh, pLow);
-    delete []pHigh;
-    delete []pLow;
-    return 0;
-}
-
-__declspec(dllexport) int WINAPI KXBH2VAR(CALCINFO* pData)
-{
-    int nDataLen = pData->m_nNumData;
-    float *pIn = new float[nDataLen];
-    for (int i = 0; i < nDataLen; i++)
-    {
-        pIn[i] = pData->m_pfParam1[i];
-    }
-    Func5(nDataLen, pData->m_pResultBuf, NULL, NULL, pIn);
-    delete []pIn;
-    return 0;
-}
-
-__declspec(dllexport) int WINAPI KXBHG(CALCINFO* pData)
-{
-    int nDataLen = pData->m_nNumData;
-    float *pHigh = new float[nDataLen];
-    float *pLow = new float[nDataLen];
-
-    for (int i = 0; i < nDataLen; i++)
-    {
-        pHigh[i] = pData->m_pData[i].m_fHigh;
-        pLow[i] = pData->m_pData[i].m_fLow;
-    }
-    Func3(nDataLen, pData->m_pResultBuf, NULL, pHigh, pLow);
-    delete []pHigh;
-    delete []pLow;
-    return 0;
-}
-
-__declspec(dllexport) int WINAPI KXBHD(CALCINFO* pData)
-{
-    int nDataLen = pData->m_nNumData;
-    float *pHigh = new float[nDataLen];
-    float *pLow = new float[nDataLen];
-
-    for (int i = 0; i < nDataLen; i++)
-    {
-        pHigh[i] = pData->m_pData[i].m_fHigh;
-        pLow[i] = pData->m_pData[i].m_fLow;
-    }
-    Func4(nDataLen, pData->m_pResultBuf, NULL, pHigh, pLow);
-    delete []pHigh;
-    delete []pLow;
-    return 0;
-}
-
-__declspec(dllexport) int WINAPI BI(CALCINFO* pData)
-{
-    int nDataLen = pData->m_nNumData;
-    float *pHigh = new float[nDataLen];
-    float *pLow = new float[nDataLen];
-
-    for (int i = 0; i < nDataLen; i++)
-    {
-        pHigh[i] = pData->m_pData[i].m_fHigh;
-        pLow[i] = pData->m_pData[i].m_fLow;
-    }
-    Func6(nDataLen, pData->m_pResultBuf, NULL, pHigh, pLow);
-    delete []pHigh;
-    delete []pLow;
-    return 0;
-}
-
-__declspec(dllexport) int WINAPI DUANVAR(CALCINFO* pData)
-{
-    if(pData->m_pfParam1 && pData->m_nParam1Start >= 0)
-    {
-        int nDataLen = pData->m_nNumData;
-        float *pHigh = new float[nDataLen];
-        float *pLow = new float[nDataLen];
-        float *pIn = new float[nDataLen];
-
-        for (int i = 0; i < nDataLen; i++)
-        {
-            pHigh[i] = pData->m_pData[i].m_fHigh;
-            pLow[i] = pData->m_pData[i].m_fLow;
-            pIn[i] = pData->m_pfParam1[i];
-        }
-
-        Func7(nDataLen, pData->m_pResultBuf, pIn, pHigh, pLow);
-        delete []pHigh;
-        delete []pLow;
-        delete []pIn;
-        return 0;
-    }
-    return -1;
-}
-
-__declspec(dllexport) int WINAPI ZSZGVAR(CALCINFO* pData)
-{
-    int nDataLen = pData->m_nNumData;
-    float *pHigh = new float[nDataLen];
-    float *pLow = new float[nDataLen];
-    float *pIn = new float[nDataLen];
-
-    for (int i = 0; i < nDataLen; i++)
-    {
-        pHigh[i] = pData->m_pData[i].m_fHigh;
-        pLow[i] = pData->m_pData[i].m_fLow;
-        pIn[i] = pData->m_pfParam1[i];
-    }
-    Func8(nDataLen, pData->m_pResultBuf, pIn, pHigh, pLow);
-    delete []pHigh;
-    delete []pLow;
-    delete []pIn;
-    return 0;
-}
-
-__declspec(dllexport) int WINAPI ZSZDVAR(CALCINFO* pData)
-{
-    int nDataLen = pData->m_nNumData;
-    float *pHigh = new float[nDataLen];
-    float *pLow = new float[nDataLen];
-    float *pIn = new float[nDataLen];
-
-    for (int i = 0; i < nDataLen; i++)
-    {
-        pHigh[i] = pData->m_pData[i].m_fHigh;
-        pLow[i] = pData->m_pData[i].m_fLow;
-        pIn[i] = pData->m_pfParam1[i];
-    }
-    Func9(nDataLen, pData->m_pResultBuf, pIn, pHigh, pLow);
-    delete []pHigh;
-    delete []pLow;
-    delete []pIn;
-    return 0;
-}
-
-__declspec(dllexport) int WINAPI ZSSEVAR(CALCINFO* pData)
-{
-    int nDataLen = pData->m_nNumData;
-    float *pHigh = new float[nDataLen];
-    float *pLow = new float[nDataLen];
-    float *pIn = new float[nDataLen];
-
-    for (int i = 0; i < nDataLen; i++)
-    {
-        pHigh[i] = pData->m_pData[i].m_fHigh;
-        pLow[i] = pData->m_pData[i].m_fLow;
-        pIn[i] = pData->m_pfParam1[i];
-    }
-    Func10(nDataLen, pData->m_pResultBuf, pIn, pHigh, pLow);
-    delete []pHigh;
-    delete []pLow;
-    delete []pIn;
-    return 0;
-}
-
-__declspec(dllexport) int WINAPI ZSFXVAR(CALCINFO* pData)
-{
-    int nDataLen = pData->m_nNumData;
-    float *pHigh = new float[nDataLen];
-    float *pLow = new float[nDataLen];
-    float *pIn = new float[nDataLen];
-
-    for (int i = 0; i < nDataLen; i++)
-    {
-        pHigh[i] = pData->m_pData[i].m_fHigh;
-        pLow[i] = pData->m_pData[i].m_fLow;
-        pIn[i] = pData->m_pfParam1[i];
-    }
-    Func11(nDataLen, pData->m_pResultBuf, pIn, pHigh, pLow);
-    delete []pHigh;
-    delete []pLow;
-    delete []pIn;
-    return 0;
 }

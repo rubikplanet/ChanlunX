@@ -5,9 +5,8 @@
 
 #pragma pack(push,1)
 
-void Bi1(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow); // 严格笔
-void Bi2(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow); // 简单笔
-void Bi3(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow); // 极简笔
+void Bi1(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow); // 简笔
+void Bi2(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow); // 标准笔
 
 #pragma pack(pop)
 
