@@ -1,4 +1,4 @@
-﻿FRAC:=TDXDLL1(6,0,H,L);{计算分型顶底}
+﻿FRAC:=TDXDLL1(2,0,H,L);{计算分型顶底}
 
 VAR1:=BARSLAST(FRAC=-1);
 VAR2:=VAR1+REF(VAR1,VAR1+1)+1;
