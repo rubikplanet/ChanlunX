@@ -26,7 +26,8 @@ bool ifChengbi(vector<Kxian> &tempKxianList, int direction)
                 break;
             }
         }
-        if (i >= tempKxianList.size()) {
+        if (i >= tempKxianList.size())
+        {
             // 下降K线都没找到
             return false;
         }
@@ -54,7 +55,8 @@ bool ifChengbi(vector<Kxian> &tempKxianList, int direction)
                 break;
             }
         }
-        if (i >= tempKxianList.size()) {
+        if (i >= tempKxianList.size())
+        {
             // 上升K线都没找到
             return false;
         }
@@ -173,8 +175,47 @@ void BiChuLi::handle(vector<Kxian> &kxianList)
                 }
             }
         }
+        if (tempKxianList.size() >= 4)
+        {
+            if (this->biList.back().fangXiang == 1)
+            {
+                if (ifChengbi(tempKxianList, -1))
+                {
+                    Bi bi;
+                    bi.fangXiang = -1;
+                    bi.kaiShi = this->biList.back().jieShu;
+                    bi.jieShu = tempKxianList.back().jieShu;
+                    bi.di = tempKxianList.back().di;
+                    bi.gao = this->biList.back().gao;
+                    for (vector<Kxian>::iterator it = tempKxianList.begin(); it != tempKxianList.end(); it++)
+                    {
+                        bi.kxianList.push_back(*it);
+                    }
+                    tempKxianList.clear();
+                    this->biList.push_back(bi);
+                }
+            }
+            else if (this->biList.back().fangXiang == -1)
+            {
+                if (ifChengbi(tempKxianList, 1))
+                {
+                    Bi bi;
+                    bi.fangXiang = 1;
+                    bi.kaiShi = this->biList.back().jieShu;
+                    bi.jieShu = tempKxianList.back().jieShu;
+                    bi.gao = tempKxianList.back().gao;
+                    bi.di = this->biList.back().di;
+                    for (vector<Kxian>::iterator it = tempKxianList.begin(); it != tempKxianList.end(); it++)
+                    {
+                        bi.kxianList.push_back(*it);
+                    }
+                    tempKxianList.clear();
+                    this->biList.push_back(bi);
+                }
+            }
+        }
     }
-    catch (exception& e)
+    catch (exception &e)
     {
     }
 }
