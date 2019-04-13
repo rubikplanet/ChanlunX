@@ -37,3 +37,6 @@ cmake --build . --config Debug
 - 微信公众号: ChanlunX
 - WeChat: kldcty
 - QQ: 1106628276
+
+或者加入知识请求一起交流
+![xq](xq.png)
