@@ -38,5 +38,5 @@ cmake --build . --config Debug
 - WeChat: kldcty
 - QQ: 1106628276
 
-或者加入知识请求一起交流
+如果觉得插件有用，打赏可加知识星球
 ![xq](xq.png)
