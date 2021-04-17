@@ -1,10 +1,10 @@
-ï»¿# ChanlunX
+# ChanlunX
 
-## å¦‚ä½•ç¼–è¯‘
+## ÈçºÎ±àÒë
 
 ### Visual Studio 2019
 
-é€šè¾¾ä¿¡æ’ä»¶éœ€è¦ç¼–è¯‘æˆ32ä½ï¼Œä¸‹é¢ä»¥Visual Studio 2019ä¸¾ä¾‹ï¼Œä½œè€…ç”¨çš„æ˜¯Visual Studio 2019ç¤¾åŒºç‰ˆã€‚
+Í¨´ïÐÅ²å¼þÐèÒª±àÒë³É32Î»£¬ÏÂÃæÒÔVisual Studio 2019¾ÙÀý£¬×÷ÕßÓÃµÄÊÇVisual Studio 2019ÉçÇø°æ¡£
 
 ```cmd
 mkdir build
@@ -13,9 +13,9 @@ cmake -G "Visual Studio 16 2019" -A Win32 ..
 cmake --build . --config Release
 ```
 
-### Visual Studio 2015 æˆ–è€… Visual Studio 2017
+### Visual Studio 2015 »òÕß Visual Studio 2017
 
-åœ¨é¡¹ç›®æ ¹ç›®å½•ä¸‹ä¾æ¬¡æ‰§è¡Œä»¥ä¸‹å‘½ä»¤
+ÔÚÏîÄ¿¸ùÄ¿Â¼ÏÂÒÀ´ÎÖ´ÐÐÒÔÏÂÃüÁî
 
 ```cmd
 mkdir build
@@ -24,52 +24,52 @@ cmake ..
 cmake --build . --config Release
 ```
 
-## ä¸»å›¾ä»£ç 
+## Ö÷Í¼´úÂë
 
-æŠŠç¼–è¯‘å¥½çš„DLLæ”¾åˆ°é€šè¾¾ä¿¡çš„T0002\dllsç›®å½•ï¼Œç»‘å®šä¸º2å·å‡½æ•°ï¼Œä¸‹é¢çš„ä»£ç åšæˆé€šè¾¾ä¿¡ä¸»å›¾å…¬å¼ã€‚
+°Ñ±àÒëºÃµÄDLL·Åµ½Í¨´ïÐÅµÄT0002\dllsÄ¿Â¼£¬°ó¶¨Îª2ºÅº¯Êý£¬ÏÂÃæµÄ´úÂë×ö³ÉÍ¨´ïÐÅÖ÷Í¼¹«Ê½¡£
 
 ```text
-FRAC2:=TDXDLL2(2,H,L,0);{æ ‡å‡†ç¬”}
-NOTEXTç”»ä¸Šå‡ç¬”2:DRAWLINE(PERIOD==0 AND FRAC2=-1,L,FRAC2=+1,H,0), DOTLINE, COLORRED;
-NOTEXTç”»ä¸‹é™ç¬”2:DRAWLINE(PERIOD==0 AND FRAC2=+1,H,FRAC2=-1,L,0), DOTLINE, COLORRED;
+FRAC2:=TDXDLL2(2,H,L,0);{±ê×¼±Ê}
+NOTEXT»­ÉÏÉý±Ê2:DRAWLINE(FRAC2=-1,L,FRAC2=+1,H,0), DOTLINE, COLORYELLOW;
+NOTEXT»­ÏÂ½µ±Ê2:DRAWLINE(FRAC2=+1,H,FRAC2=-1,L,0), DOTLINE, COLORYELLOW;
 
-DUAN1:=TDXDLL2(3,FRAC2,H,L);{è®¡ç®—æ®µçš„ç«¯ç‚¹,3æ”¹æˆ4æ˜¯1+1ç»ˆç»“ç”»æ³•}
-NOTEXTç”»ä¸Šå‡æ®µ1:DRAWLINE(DUAN1=-1,L,DUAN1=+1,H,0), COLORFF8000;
-NOTEXTç”»ä¸‹é™æ®µ1:DRAWLINE(DUAN1=+1,H,DUAN1=-1,L,0), COLORFF8000;
+DUAN1:=TDXDLL2(3,FRAC2,H,L);{¼ÆËã¶ÎµÄ¶Ëµã,3¸Ä³É4ÊÇ1+1ÖÕ½á»­·¨}
+NOTEXT»­ÉÏÉý¶Î1:DRAWLINE(DUAN1=-1,L,DUAN1=+1,H,0), COLORFF8000;
+NOTEXT»­ÏÂ½µ¶Î1:DRAWLINE(DUAN1=+1,H,DUAN1=-1,L,0), COLORFF8000;
 
-DUANZG1:=TDXDLL2(5,DUAN1,H,L);{è¾“å‡ºæ®µä¸­æž¢é«˜}
-DUANZD1:=TDXDLL2(6,DUAN1,H,L);{è¾“å‡ºæ®µä¸­æž¢ä½Ž}
-DUANSE1:=TDXDLL2(7,DUAN1,H,L);{è¾“å‡ºæ®µä¸­æž¢å¼€å§‹å’Œç»“æŸ}
+DUANZG1:=TDXDLL2(5,DUAN1,H,L);{Êä³ö¶ÎÖÐÊà¸ß}
+DUANZD1:=TDXDLL2(6,DUAN1,H,L);{Êä³ö¶ÎÖÐÊàµÍ}
+DUANSE1:=TDXDLL2(7,DUAN1,H,L);{Êä³ö¶ÎÖÐÊà¿ªÊ¼ºÍ½áÊø}
 
-NOTEXT_DDUANZG1:IF(DUANZG1,DUANZG1,DRAWNULL),COLORFF8000;{ç”»æ®µä¸­æž¢é«˜}
-NOTEXT_DDUANZD1:IF(DUANZD1,DUANZD1,DRAWNULL),COLORFF8000;{ç”»æ®µä¸­æž¢ä½Ž}
-NOTEXT_DDUANSE1:STICKLINE(DUANSE1,DUANZD1,DUANZG1,0,0),COLORFF8000;{ç”»æ®µä¸­æž¢èµ·å§‹ç»“æŸ};
+NOTEXT_DDUANZG1:IF(DUANZG1,DUANZG1,DRAWNULL),COLORFF8000;{»­¶ÎÖÐÊà¸ß}
+NOTEXT_DDUANZD1:IF(DUANZD1,DUANZD1,DRAWNULL),COLORFF8000;{»­¶ÎÖÐÊàµÍ}
+NOTEXT_DDUANSE1:STICKLINE(DUANSE1,DUANZD1,DUANZG1,0,0),COLORFF8000;{»­¶ÎÖÐÊàÆðÊ¼½áÊø};
 
-{æ—¥çº¿å›¾ä¸Šç”»ä¸Š5æ—¥çº¿}
-MA5:IF(PERIOD=5,MA(C,5),DRAWNULL);
+BIZG:=TDXDLL2(5,FRAC2,H,L);
+BIZD:=TDXDLL2(6,FRAC2,H,L);
+BISE:=TDXDLL2(7,FRAC2,H,L);
 
-{ç”»ä¸Šåˆ†æ—¶å‡çº¿}
-T1:=DATE>REF(DATE,1);
-T2:=BARSLAST(T1)+1;
-åˆ†æ—¶å‡ä»·:IF(PERIOD=0 OR PERIOD=1,(SUM(AMO,T2)/SUM(VOL,T2))/100,DRAWNULL),COLORLIMAGENTA,DOTLINE;
+NOTEXT_BIZG:IF(BIZG,BIZG,DRAWNULL),COLORYELLOW;{»­±ÊÖÐÊà¸ß}
+NOTEXT_BIZD:IF(BIZD,BIZD,DRAWNULL),COLORYELLOW;{»­±ÊÖÐÊàµÍ}
+NOTEXT_BISE:STICKLINE(BISE,BIZD,BIZG,0,0),COLORYELLOW;{»­±ÊÖÐÊàÆðÊ¼½áÊø};
 
 ```
 
-## äº¤æµ
+## ½»Á÷
 
-å¾ˆé•¿ä¸€æ®µæ—¶é—´æ²¡æœ‰ç»´æŠ¤è¿™ä¸ªé¡¹ç›®ï¼ŒçŽ°åœ¨é‡æ–°å»ºç«‹QQç¾¤æ–¹ä¾¿å¤§å®¶äº¤æµï¼Œä½†æ˜¯å…¥ç¾¤è®¾ç½®äº†é—¨æ§›ï¼Œç•¥å¾®æ”¶å–å…¥ç¾¤è´¹ç”¨ä½œä¸ºé¡¹ç›®çš„æŒç»­ç»´æŠ¤ï¼Œå·¥å…·æœ¬èº«ä¼šæä¾›ç»™å¤§å®¶å…è´¹ä½¿ç”¨ã€‚æœ‰æ„å‘åŠ ç¾¤çš„å¯ä»¥é€šè¿‡ä¸‹é¢çš„æ–¹å¼å…ˆè”ç³»ä½œè€…ã€‚
+ºÜ³¤Ò»¶ÎÊ±¼äÃ»ÓÐÎ¬»¤Õâ¸öÏîÄ¿£¬ÏÖÔÚÖØÐÂ½¨Á¢QQÈº·½±ã´ó¼Ò½»Á÷£¬µ«ÊÇÈëÈºÉèÖÃÁËÃÅ¼÷£¬ÂÔÎ¢ÊÕÈ¡ÈëÈº·ÑÓÃ×÷ÎªÏîÄ¿µÄ³ÖÐøÎ¬»¤£¬¹¤¾ß±¾Éí»áÌá¹©¸ø´ó¼ÒÃâ·ÑÊ¹ÓÃ¡£ÓÐÒâÏò¼ÓÈºµÄ¿ÉÒÔÍ¨¹ýÏÂÃæµÄ·½Ê½ÏÈÁªÏµ×÷Õß¡£
 
 - WeChat: kldcty
 - QQ: 1106628276 9394908
-- å¾®ä¿¡å…¬ä¼—å·: zeroquant
+- Î¢ÐÅ¹«ÖÚºÅ: zeroquant
 
-## å¼€æºç‰ˆæ•ˆæžœå›¾
+## ¿ªÔ´°æÐ§¹ûÍ¼
 
-![](æ•ˆæžœå›¾.png)
+![](Ð§¹ûÍ¼.png)
 
 
-## åŠå¼€æºç‰ˆæ•ˆæžœå›¾
+## °ë¿ªÔ´°æÐ§¹ûÍ¼
 
-å…¥ç¾¤ç¦åˆ©è¿˜å¯ä»¥èŽ·å¾—åŠå¼€æºç‰ˆæœ¬ä»£ç ã€‚
+ÈëÈº¸£Àû»¹¿ÉÒÔ»ñµÃ°ë¿ªÔ´°æ±¾´úÂë¡£
 
-![](æ•ˆæžœå›¾2.png)
+![](Ð§¹ûÍ¼2.png)
