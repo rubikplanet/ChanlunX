@@ -12,6 +12,7 @@ using namespace std;
 //分型
 struct FenXing {
     int type; //1 顶分型， -1底分型, 0-不是分型
+    bool failure_status; //true，分型失败
     float gao, di;
     Kxian1 left, middle, right, free;
     int left_position; //顶、底分型的位置
@@ -37,6 +38,8 @@ class FenXingChuLi {
         FenXing __free_process(Kxian1 kx);
         FenXing __find_fenxing(Kxian1 kx);
         FenXing __back_temp_fx(Kxian1 kx);
+        Kxian1 __get_last_kxian();
+        FenXing __last_fx_process(Kxian1 kx);
     public:
         vector<Kxian1> kxianList;
         vector<FenXing> fenXingList;
