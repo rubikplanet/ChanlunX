@@ -4,78 +4,43 @@
 
 using namespace std;
 
-int FenXingChuLi::status = LEFT;
+int FenXingChuLi::status = 0;
 Kxian1 FenXingChuLi::left, FenXingChuLi::middle, FenXingChuLi::right, FenXingChuLi::free;
-float FenXingChuLi::comp_fx_di, FenXingChuLi::comp_fx_gao;
 
 void FenXingChuLi::__initial() {
     FenXingChuLi::status = 0;
-    Kxian1 kx = { 0 };
+    Kxian1 kx = {0};
     FenXingChuLi::left = kx;
     FenXingChuLi::middle = kx;
     FenXingChuLi::right = kx;
     FenXingChuLi::free = kx;
-    FenXingChuLi::comp_fx_di = 0;
-    FenXingChuLi::comp_fx_gao = 0;
-    this->fx = { 0 };
-    this->temp_fx = { 0 };
 }
 
-FenXing FenXingChuLi::set_fenxing(int fenxing_type) {
-    FenXing fx = FenXing();
-    float price;
-    switch (fenxing_type) {
-        case NORMAL:
-            fx = { 0 };
-            return(fx);
-        case TOP:
-            fx.gao = FenXingChuLi::middle.gao;
-            price = min(FenXingChuLi::left.di, FenXingChuLi::right.di);
-            //fx.di = fx.gao - (fx.gao - price) / 2;
-            fx.di = price;
-            break;
-        case BOTTOM:
-            fx.di = FenXingChuLi::middle.di;
-            price = max(FenXingChuLi::left.gao, FenXingChuLi::right.gao);
-            //fx.gao = fx.di + (price - fx.di) / 2;
-            fx.gao = price;
-            break;
-        case VERIFY_TOP:
-        case VERIFY_BOTTOM:
-            fx.di = this->temp_fx.di;
-            fx.gao = this->temp_fx.gao;
-            fx.free = FenXingChuLi::free;
-            fx.free_position = fx.free.position;
-            break;
-        case FAILURE_TOP:
-        case FAILURE_BOTTOM:
-            fx = this->fx;
-            fx.type = fenxing_type;
-            return(fx);
-    }
-    fx.type = fenxing_type;
-    fx.left = FenXingChuLi::left;
-    fx.left_position = fx.left.position;
-    fx.middle = FenXingChuLi::middle;
-    fx.middle_position = fx.middle.position;
-    fx.right = FenXingChuLi::right;
-    return(fx);
-}
-
-FenXing FenXingChuLi::__right_process(Kxian1 kxian){
+void FenXingChuLi::__right_process(Kxian1 kxian){
     if (FenXingChuLi::middle.gao > FenXingChuLi::left.gao) {
         //middle.gao > left.gao
         if (kxian.gao > FenXingChuLi::middle.gao) {
             //继续新高
             FenXingChuLi::left = FenXingChuLi::middle;
             FenXingChuLi::middle = kxian;
-            this->status = RIGHT;
+            this->status = 2;
         } else {
             //顶分型
+            //增加至少5笔判断
+            if (this->fenXingList.size() > 0) {
+                FenXing last_fx = this->fenXingList.back();
+                if (kxian.position - last_fx.middle_position < 5) {
+                    FenXingChuLi::left = FenXingChuLi::middle;
+                    FenXingChuLi::middle = kxian;
+                    FenXingChuLi::status = 2;
+                    return;
+                }
+            }
             FenXingChuLi::right = kxian;
-            FenXingChuLi::status = FREE_FIRST;
-            this->temp_fx = this->set_fenxing(TOP);
-            return(this->temp_fx);
+            FenXingChuLi::status = 3;
+            this->temp_fx.type = 1;
+            this->temp_fx.gao = FenXingChuLi::middle.gao;
+            this->temp_fx.di = min(FenXingChuLi::left.di, FenXingChuLi::right.di);
         }
     } else {
         //middle.gao < left.gao
@@ -83,66 +48,103 @@ FenXing FenXingChuLi::__right_process(Kxian1 kxian){
             //继续新低
             FenXingChuLi::left = FenXingChuLi::middle;
             FenXingChuLi::middle = kxian;
-            this->status = RIGHT;
+            this->status = 2;
         } else {
             //底分型
+            if (this->fenXingList.size() > 0) {
+                FenXing last_fx = this->fenXingList.back();
+                if (kxian.position - last_fx.middle_position < 5) {
+                    FenXingChuLi::left = FenXingChuLi::middle;
+                    FenXingChuLi::middle = kxian;
+                    FenXingChuLi::status = 2;
+                    return;
+                }
+            }
             FenXingChuLi::right = kxian;
-            FenXingChuLi::status = FREE_FIRST;
-            this->temp_fx = this->set_fenxing(BOTTOM);
-            return(this->temp_fx);
+            FenXingChuLi::status = 3;
+            this->temp_fx.type = -1;
+            this->temp_fx.di = FenXingChuLi::middle.di;
+            this->temp_fx.gao = max(FenXingChuLi::left.gao, FenXingChuLi::right.gao);
         }
     }
-    FenXing fx = { 0 };
-    return(fx);
 }
 
 FenXing FenXingChuLi::__free_process(Kxian1 kxian){
-    if (this->temp_fx.type == TOP) {
+    if (this->temp_fx.type == 1) {
         //顶分型
         if (kxian.gao > this->temp_fx.gao) {
             //创新高
-            if (FenXingChuLi::status == FREE_FIRST) {
+            if (FenXingChuLi::status == 3) {
                 FenXingChuLi::left = FenXingChuLi::right;
             }else {
                 FenXingChuLi::left = FenXingChuLi::free;
             }
             FenXingChuLi::middle = kxian;
-            FenXingChuLi::status = RIGHT;
+            FenXingChuLi::status = 2;
         } else {
-            if (kxian.di < this->temp_fx.di) {
+            if (kxian.gao <= this->temp_fx.di) {
                 //离开中阴段,顶分型成功
-                FenXingChuLi::free = kxian;
-                this->fx = this->set_fenxing(VERIFY_TOP);
-                FenXingChuLi::status = LEFT; //重新进入left
-                FenXingChuLi::comp_fx_di = kxian.di;
+                this->fx.type = this->temp_fx.type;
+                this->fx.gao = this->temp_fx.gao;
+                this->fx.di = this->temp_fx.di;
+                this->fx.left = FenXingChuLi::left;
+                this->fx.middle = FenXingChuLi::middle;
+                this->fx.right = FenXingChuLi::right;
+                this->fx.free = FenXingChuLi::free;
+                this->fx.failure_status = false;
+                this->fx.middle_position= this->fx.middle.position;
+                this->fx.left_position = this->fx.left.position;
+                this->fx.free_position = this->fx.free.position;
+                /*
+                 for(auto i = this->fx.left_position; i < this->fx.free_position; ++i)
+                    this->fx.kxianList.push_back(this->kxianList[i]);
+                this->fenXingList.push_back(this->fx);
+                */
+                FenXingChuLi::left = kxian;
+                FenXingChuLi::status = 1; //重新进入middle
                 return(this->fx);
             } else {
                 FenXingChuLi::free = kxian;
-                FenXingChuLi::status = FREE;
+                FenXingChuLi::status = 4;
             }
         }
     } else {
         //底分型
         if (kxian.di < this->temp_fx.di) {
             //创新低
-            if (FenXingChuLi::status == FREE_FIRST) {
+            if (FenXingChuLi::status == 3) {
                 FenXingChuLi::left = FenXingChuLi::right;
             }else {
                 FenXingChuLi::left = FenXingChuLi::free;
             }
             FenXingChuLi::middle = kxian;
-            FenXingChuLi::status = RIGHT;
+            FenXingChuLi::status = 2;
         } else {
-            if (kxian.di <= this->temp_fx.gao) {
+            if (kxian.di >= this->temp_fx.gao) {
                 //离开中阴段,底分型成功
-                FenXingChuLi::free = kxian;
-                this->fx = this->set_fenxing(VERIFY_BOTTOM);
-                FenXingChuLi::status = LEFT; //重新进入left
-                FenXingChuLi::comp_fx_gao = kxian.gao;
+                this->fx.type = this->temp_fx.type;
+                this->fx.gao = this->temp_fx.gao;
+                this->fx.di = this->temp_fx.di;
+                this->fx.left = FenXingChuLi::left;
+                this->fx.middle = FenXingChuLi::middle;
+                this->fx.right = FenXingChuLi::right;
+                this->fx.free = FenXingChuLi::free;
+                this->fx.failure_status = false;
+                this->fx.middle_position= this->fx.middle.position;
+                this->fx.left_position = this->fx.left.position;
+                this->fx.free_position = this->fx.free.position;
+                /*
+                for(auto i = this->fx.left_position; i < this->fx.free_position; ++i)
+                    this->fx.kxianList.push_back(this->kxianList[i]);
+                this->fenXingList.push_back(this->fx);
+                */
+
+                FenXingChuLi::left = kxian;
+                FenXingChuLi::status = 1; //重新进入middle
                 return(this->fx);
             } else {
                 FenXingChuLi::free = kxian;
-                FenXingChuLi::status = FREE;
+                FenXingChuLi::status = 4;
             }
         }
     }
@@ -151,8 +153,7 @@ FenXing FenXingChuLi::__free_process(Kxian1 kxian){
 }
 
 FenXing FenXingChuLi::handle(vector<Kxian1> &kxianList) {
-    FenXing fx = { 0 };
-    FenXingChuLi::status = LEFT;
+    FenXing fx;
     this->kxianList = kxianList;
     for (vector<Kxian1>::iterator iter = kxianList.begin(); iter != kxianList.end(); iter++) {
         fx = this->__find_fenxing((*iter));
@@ -176,7 +177,7 @@ FenXing FenXingChuLi::__back_temp_fx(Kxian1 kxian) {
 }
 
 Kxian1 FenXingChuLi::__get_last_kxian() {
-    Kxian1 last_kx = { 0 };
+    Kxian1 last_kx;
     switch (FenXingChuLi::status) {
         case 0:
             last_kx = FenXingChuLi::free;
@@ -192,157 +193,128 @@ Kxian1 FenXingChuLi::__get_last_kxian() {
             break;
         case 4:
             last_kx = FenXingChuLi::free;
-            break;
     }
     return(last_kx);
 }
 
 
-FenXing FenXingChuLi::__get_last_fx(FenXing fx) {
-    FenXing tmp_fx = { 0 };
-    int begin = 0, stop;
-    for (int num = this->fenXingList.size(); num > 0; num--) {
-        if (this->fenXingList[num] == fx) {
-            begin = num;
-            break;
-        }
-    }
-    if (begin > 0) {
-        for (int num = begin - 1; num > 0; num--) {
-            if (this->fenXingList[num].type == VERIFY_BOTTOM || this->fenXingList[num].type == VERIFY_TOP) {
-                tmp_fx = this->fenXingList[num];
-            }
-        }
-    }
-    return(tmp_fx);
-}
+FenXing FenXingChuLi::__last_fx_process(Kxian1 kxian) {
+    FenXing fx;
 
-FenXing FenXingChuLi::last_fx_process(Kxian1 kxian) {
-    FenXing fx = FenXing();
-    if (this->fx.type == 0) {
-        fx = { 0 };
+    fx.type = 0;
+
+    if (this->fenXingList.size() < 1)
         return(fx);
-    }
 
-    if (this->fx.type == VERIFY_TOP) {
-        //上一个为验证顶分型
-        if (kxian.gao > this->fx.gao) {
+    if (this->fenXingList.back().type == 1) {
+        //上一个为顶分型
+        if (kxian.gao > this->fenXingList.back().gao) {
             //创新高
-            fx = this->set_fenxing(FAILURE_TOP);
+            fx = this->fenXingList.back();
             FenXingChuLi::left = this->__get_last_kxian();
             FenXingChuLi::middle = kxian;
-            FenXingChuLi::status = RIGHT;
-            this->fx = this->__get_last_fx(this->fx);
+            FenXingChuLi::status = 2;
+            fx.failure_status = true;
             return(fx);
         }
         else {
-            if (kxian.gao > this->fx.di) {
+            if (kxian.gao > this->fenXingList.back().di) {
                 //回到上一个顶分型的中阴区间
-                fx = this->set_fenxing(FAILURE_TOP);
-                FenXingChuLi::free = kxian;
-                FenXingChuLi::status = FREE;
+                fx = this->fenXingList.back();
+                FenXingChuLi::status = 4;
+                this->__free_process(kxian);
+                fx.failure_status = true;
                 this->temp_fx = fx;
-                this->temp_fx.type = TOP;
-                this->fx = this->__get_last_fx(this->fx);
                 return(fx);
-            }
-            else {
-                if (kxian.di < FenXingChuLi::comp_fx_di) {
-                    if (FenXingChuLi::status == LEFT) {
-                        FenXingChuLi::left = kxian;
-                        FenXingChuLi::status = MIDDLE;
-                        FenXingChuLi::comp_fx_di = kxian.di;
-                    }
-                    else {
-                        if (FenXingChuLi::status == MIDDLE) {
-                            FenXingChuLi::middle = kxian;
-                            FenXingChuLi::status = RIGHT;
-                        }
-                    }
-                }
             }
         }
     }
     else {
-        if (this->fx.type == VERIFY_BOTTOM) {
+        if (this->fenXingList.back().type == -1) {
             //上一个为底分型
-            if (kxian.di < this->fx.di) {
-                //创新高
-                fx = this->set_fenxing(FAILURE_BOTTOM);
+            if (kxian.di < this->fenXingList.back().di) {
+                //创新低
+                fx = this->fenXingList.back();
                 FenXingChuLi::left = this->__get_last_kxian();
                 FenXingChuLi::middle = kxian;
-                FenXingChuLi::status = RIGHT;
-                this->fx = this->__get_last_fx(this->fx);
+                FenXingChuLi::status = 2;
+                fx.failure_status = true;
                 return(fx);
             }
             else {
-                if (kxian.gao > this->fenXingList.back().di) {
-                    //回到上一个顶分型的中阴区间
-                    fx = this->set_fenxing(FAILURE_BOTTOM);
-                    FenXingChuLi::free = kxian;
-                    FenXingChuLi::status = FREE;
+                if (kxian.di < this->fenXingList.back().gao) {
+                    //回到上一个底分型的中阴区间
+                    fx = this->fenXingList.back();
+                    FenXingChuLi::status = 4;
+                    this->__free_process(kxian);
+                    fx.failure_status = true;
                     this->temp_fx = fx;
-                    this->temp_fx.type = TOP;
-                    this->fx = this->__get_last_fx(this->fx);
                     return(fx);
                 }
-                else {
-                    if (kxian.gao > FenXingChuLi::comp_fx_gao) {
-                        if (FenXingChuLi::status == LEFT) {
-                            FenXingChuLi::left = kxian;
-                            FenXingChuLi::status = MIDDLE;
-                            FenXingChuLi::comp_fx_gao = kxian.gao;
-                        }
-                        else {
-                            if (FenXingChuLi::status == MIDDLE) {
-                                FenXingChuLi::middle = kxian;
-                                FenXingChuLi::status = RIGHT;
-                            }
-                        }
-                    }
-                }
             }
-        }
+        } 
     }
-    fx = { 0 };
     return(fx);
 }
 
 FenXing FenXingChuLi::__find_fenxing(Kxian1 kxian) {
-    FenXing tmp_fx = FenXing();
-
     switch (FenXingChuLi::status) {
-        case LEFT: //left
-            tmp_fx = this->last_fx_process(kxian);
-            if (tmp_fx.type != NORMAL) {
-                return(tmp_fx);
+        case 0: //left
+            if (kxian.status == false) {
+                //和上一根K线有包含关系, free处理
+                this->temp_fx = fenXingList.back();
+                this->fenXingList.pop_back();
+                FenXingChuLi::status = 4;
+                return(this->__free_process(kxian));
+            } else {
+                FenXing tmp_fx = this->__last_fx_process(kxian);
+                if (tmp_fx.type != 0) {
+                    return(tmp_fx);
+                }
+                else {
+                    FenXingChuLi::left = kxian;
+                    FenXingChuLi::status = 1;
+                }
             }
-            else {
+            break;
+        case 1: //middle
+            if (kxian.status == false){
+                //left处理
                 FenXingChuLi::left = kxian;
-                FenXingChuLi::status = MIDDLE;
+                FenXingChuLi::status = 1;
+            } else {
+                FenXing tmp_fx = this->__last_fx_process(kxian);
+                if (tmp_fx.type != 0) {
+                    return(tmp_fx);
+                }
+                else {
+                    FenXingChuLi::middle = kxian;
+                    FenXingChuLi::status = 2;
+                }
             }
             break;
-        case MIDDLE: //middle
-            //tmp_fx = this->last_fx_process(kxian);
-            if (tmp_fx.type != NORMAL) {
-                return(tmp_fx);
-            }
-            else {
-                FenXingChuLi::middle = kxian;
-                FenXingChuLi::status = RIGHT;
-            }
-            break;
-        case RIGHT: //right
+        case 2: //right
             //分型处理
-            return(this->__right_process(kxian));
+            if (kxian.status == false) {
+                FenXingChuLi::middle = kxian;
+                FenXingChuLi::status = 2;
+            } else {
+                this->__right_process(kxian);
+            }
             break;
-        case FREE_FIRST: //free_first
-            return(this->__free_process(kxian));
+        case 3: //free_first
+            if (kxian.status == false){
+                //right处理
+                this->__right_process(kxian);
+            } else {
+                return(this->__free_process(kxian));
+            }
             break;
-        case FREE: //free
+        case 4: //free
             return(this->__free_process(kxian));
     }
-    FenXing fx = { 0 };
+    FenXing fx;
+    fx.type = 0;
     return(fx);
 }
 
