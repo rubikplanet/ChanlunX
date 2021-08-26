@@ -21,21 +21,18 @@ void Bi3(int nCount, float *pOut, float *pHigh, float *pLow, float *pIn) {
     unsigned int count = fenXingChuLi.fenXingList.size();
     for (unsigned int i = 0; i < count; i++) {
         FenXing fx = fenXingChuLi.fenXingList[i];
-        if (fx.failure_status == false) {
-            if (fx.type == 1) {
-                pOut[fx.free_position] = 1.0;
-            }
-            else {
-                pOut[fx.free_position] = -1.0;
-            }
-        }
-        else {
-            if (fx.type == 1) {
-                pOut[fx.free_position] = -1.0;
-            }
-            else {
-                pOut[fx.free_position] = 1.0;
-            }
+        switch (fx.get_type()) {
+            case FenXingType::VERIFY_TOP:
+                pOut[fx.get_stop_position()] = 1;
+                break;
+            case FenXingType::VERIFY_BOTTOM:
+                pOut[fx.get_stop_position()] = -1;
+                break;
+            case FenXingType::FAILURE_BOTTOM:
+                pOut[fx.get_start_position()] = -2;
+                break;
+            case FenXingType::FAILURE_TOP:
+                pOut[fx.get_start_position()] = 2;
         }
     }
 

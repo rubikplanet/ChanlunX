@@ -9,44 +9,92 @@ using namespace std;
 
 #pragma pack(push, 1)
 
+enum class FenXingType {NONE, TOP, BOTTOM, NEW_TOP, NEW_BOTTOM, VERIFY_TOP, VERIFY_BOTTOM, FAILURE_TOP, FAILURE_BOTTOM};
+
 //分型
-struct FenXing {
-    int type; //1 顶分型， -1底分型, 0-不是分型
-    bool failure_status; //true，分型失败
-    float gao, di;
-    Kxian1 left, middle, right, free;
-    int left_position; //顶、底分型的位置
-    int middle_position;
-    int free_position; //确认分型的位置
-    vector<Kxian1> kxianList;
+class FenXing {
+    private:
+        FenXingType type = FenXingType::NONE;
+        float gao = 0;
+        float di = 0;
+        Kxian1 left = { 0 };
+        Kxian1 middle = { 0 };
+        Kxian1 right = { 0 };
+        Kxian1 free = { 0 };
+    public:
+        FenXing() {
+            this->type = FenXingType::NONE;
+            this->gao = 0;
+            this->di = 0;
+            this->left = this->middle = this->right = this->free = { 0 };
+        }
+
+        FenXing(FenXingType type, float gao, float di) {
+            this->type = type;
+            this->gao = gao;
+            this->di = di;
+        }
+
+        FenXing(FenXingType type, float gao, float di, Kxian1 left, Kxian1 middle, Kxian1 right, Kxian1 free) {
+            this->type = type;
+            this->gao = gao;
+            this->di = di;
+            this->left = left;
+            this->middle = middle;
+            this->right = right;
+            this->free = free;
+        }
+
+        FenXingType get_type() {
+            return(this->type);
+        }
+
+        void set_type(FenXingType type) {
+            this->type = type;
+        }
+
+        float get_high() {
+            return(this->gao);
+        }
+
+        float get_low() {
+            return(this->di);
+        }
+
+        int get_start_position() {
+            return(this->middle.position);
+        }
+
+        int get_stop_position() {
+            return(this->free.position);
+        }
 };
 
-#define LEFT 0
-#define MIDDLE 1
-#define RIGHT 2
-#define FREE_FIRST 3
-#define FREE 4
-#define SUCCESS 5
-#define FAILURE 6
+enum class FenXingStatus {LEFT, MIDDLE, RIGHT, FREE_FIRST, FREE};
 
 class FenXingChuLi {
     private:
-        static Kxian1 left, middle, right, free;
-        static int status; /* 0 left, 1 middle, 2 right, 3 free-first, 4 free, 5 success, 6 failure */
-        FenXing fx, temp_fx;
-        void __right_process(Kxian1 kx);
+        static Kxian1 left,middle, right, free;
+        static FenXingStatus status;
+        static float comp_fx_gao, comp_fx_di;
+        static FenXing fx, temp_fx;
+        FenXing __right_process(Kxian1 kx);
         FenXing __free_process(Kxian1 kx);
         FenXing __find_fenxing(Kxian1 kx);
+        FenXing __set_fenxing(FenXingType type, float gao, float di);
         FenXing __back_temp_fx(Kxian1 kx);
         Kxian1 __get_last_kxian();
         FenXing __last_fx_process(Kxian1 kx);
+        FenXing __get_last_fx(Kxian1 kx);
+        void __set_fx(FenXing fx);
+        void __set_temp_fx(FenXing fx);
     public:
         vector<Kxian1> kxianList;
         vector<FenXing> fenXingList;
         FenXing handle(vector<Kxian1> &kxianList);
         Kxian1 get_kx_item(string pos);
         int get_status();
-        void __initial();
+        FenXingChuLi();
         FenXing get_temp_fenxing();
 };
 
