@@ -9,7 +9,7 @@ using namespace std;
 
 #pragma pack(push, 1)
 
-enum class FenXingType {NONE, TOP, BOTTOM, NEW_TOP, NEW_BOTTOM, VERIFY_TOP, VERIFY_BOTTOM, FAILURE_TOP, FAILURE_BOTTOM};
+enum class FenXingType {NONE, TOP, BOTTOM, FAILURE_TOP, FAILURE_BOTTOM, VERIFY_TOP, VERIFY_BOTTOM, FAILURE_VERIFY_TOP, FAILURE_VERIFY_BOTTOM};
 
 //分型
 class FenXing {
@@ -29,10 +29,13 @@ class FenXing {
             this->left = this->middle = this->right = this->free = { 0 };
         }
 
-        FenXing(FenXingType type, float gao, float di) {
+        FenXing(FenXingType type, float gao, float di, Kxian1 left, Kxian1 middle, Kxian1 right) {
             this->type = type;
             this->gao = gao;
             this->di = di;
+            this->left = left;
+            this->middle = middle;
+            this->right = right;
         }
 
         FenXing(FenXingType type, float gao, float di, Kxian1 left, Kxian1 middle, Kxian1 right, Kxian1 free) {
@@ -91,6 +94,7 @@ class FenXingChuLi {
     public:
         vector<Kxian1> kxianList;
         vector<FenXing> fenXingList;
+        vector<FenXing> keyKxianList;
         FenXing handle(vector<Kxian1> &kxianList);
         Kxian1 get_kx_item(string pos);
         int get_status();
