@@ -18,9 +18,9 @@ void Bi3(int nCount, float *pOut, float *pHigh, float *pLow, float *pIn) {
     for (int i = 0; i < nCount; i++) {
         pOut[i] = 0;
     }
-    unsigned int count = fenXingChuLi.fenXingList.size();
+    unsigned int count = fenXingChuLi.keyKxianList.size();
     for (unsigned int i = 0; i < count; i++) {
-        FenXing fx = fenXingChuLi.fenXingList[i];
+        FenXing fx = fenXingChuLi.keyKxianList[i];
         switch (fx.get_type()) {
             case FenXingType::VERIFY_TOP:
                 pOut[fx.get_stop_position()] = 1;
@@ -28,10 +28,10 @@ void Bi3(int nCount, float *pOut, float *pHigh, float *pLow, float *pIn) {
             case FenXingType::VERIFY_BOTTOM:
                 pOut[fx.get_stop_position()] = -1;
                 break;
-            case FenXingType::FAILURE_BOTTOM:
+            case FenXingType::FAILURE_VERIFY_BOTTOM:
                 pOut[fx.get_start_position()] = -2;
                 break;
-            case FenXingType::FAILURE_TOP:
+            case FenXingType::FAILURE_VERIFY_TOP:
                 pOut[fx.get_start_position()] = 2;
         }
     }

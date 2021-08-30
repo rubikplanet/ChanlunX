@@ -71,9 +71,25 @@ class FenXing {
         int get_stop_position() {
             return(this->free.position);
         }
+
+        Kxian1 get_left() {
+            return(this->left);
+        }
+
+        Kxian1 get_middle() {
+            return(this->middle);
+        }
+
+        Kxian1 get_right() {
+            return(this->right);
+        }
+
+        Kxian1 get_free() {
+            return(this->free);
+        }
 };
 
-enum class FenXingStatus {LEFT, MIDDLE, RIGHT, FREE_FIRST, FREE};
+enum class FenXingStatus {LEFT, MIDDLE, RIGHT, FREE_FIRST, FREE, TOP, FREE_NEW_TOP, VERIFY_TOP, AFTER_VERIFY_TOP, VERIFY_NEW_TOP, BACK_ZHONGYIN_TOP,  BOTTOM, FREE_NEW_BOTTOM, VERIFY_BOTTOM, AFTER_VERIFY_BOTTOM, VERIFY_NEW_BOTTOM, BACK_ZHONGYIN_BOTTOM};
 
 class FenXingChuLi {
     private:
