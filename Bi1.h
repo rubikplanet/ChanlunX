@@ -7,6 +7,6 @@ using namespace std;
 
 //extern "C" _declspec(dllexport) void Bi3(int nCount, float* pOut, float* pHigh, float* pLow, float* pIn);
 void Bi3(int nCount, float* pOut, float* pHigh, float* pLow, float* pIn);
-
+void Bi4(int nCount, float* pOut, float* pHigh, float* pLow, float* pIn);
 #pragma pack(pop)
 #endif

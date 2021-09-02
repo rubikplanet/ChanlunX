@@ -687,6 +687,12 @@ void Func9(int nCount, float* pOut, float* pHigh, float* pLow, float* pIgnore)
 {
     Bi3(nCount, pOut, pHigh, pLow, pIgnore);
 }
+
+void Func10(int nCount, float* pOut, float* pHigh, float* pLow, float* pIgnore)
+{
+    Bi4(nCount, pOut, pHigh, pLow, pIgnore);
+}
+
 static PluginTCalcFuncInfo Info[] =
 {
     { 1, &Func1},
@@ -698,6 +704,7 @@ static PluginTCalcFuncInfo Info[] =
     { 7, &Func7},
     { 8, &Func8},
     { 9, &Func9},
+    {10, &Func10},
     { 0, NULL}
 };
 
