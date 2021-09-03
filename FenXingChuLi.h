@@ -93,7 +93,7 @@ enum class FenXingStatus {LEFT, MIDDLE, RIGHT, FREE_FIRST, FREE, TOP, FREE_NEW_T
 
 class FenXingChuLi {
     private:
-        static Kxian1 left,middle, right, free;
+        static Kxian1 left,middle, right, free, last_bar;
         static FenXingStatus status;
         static float comp_fx_gao, comp_fx_di;
         static int comp_fx_gao_count, comp_fx_di_count;
