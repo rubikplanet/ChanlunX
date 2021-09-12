@@ -99,6 +99,10 @@ class FenXingChuLi {
         static int comp_fx_gao_count, comp_fx_di_count;
         static FenXing fx, temp_fx;
         FenXing __right_process(Kxian1 kx);
+        FenXing __free_process(Kxian1 kx);
+        FenXing __find_fenxing(Kxian1 kx);
+        FenXing __set_fenxing(FenXingType type, float gao, float di);
+        FenXing __back_temp_fx(Kxian1 kx);
         Kxian1 __get_last_kxian();
         FenXing __last_fx_process(Kxian1 kx);
         FenXing __get_last_fx(Kxian1 kx);
@@ -109,9 +113,10 @@ class FenXingChuLi {
         vector<FenXing> fenXingList;
         vector<FenXing> keyKxianList;
         FenXing handle(vector<Kxian1> &kxianList);
-        FenXing __find_fenxing(Kxian1 kx);
         Kxian1 get_kx_item(string pos);
+        int get_status();
         FenXingChuLi();
+        FenXing get_temp_fenxing();
 };
 
 #pragma pack(pop)
