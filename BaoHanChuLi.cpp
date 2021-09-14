@@ -8,45 +8,36 @@ Kxian1 BaoHanChuLi::add(float gao, float di)
 
     if (this->kxianList.empty()) {
         //假设第一根K线方向向上
-        kxian.gao = gao;
-        kxian.di = di;
-        kxian.fangxiang = Kxian_UP;
-        kxian.position = BaoHanChuLi::count;
+        kxian = Kxian1(gao, di, Kxian_UP, BaoHanChuLi::count);
     }
     else {
-        if (gao > this->kxianList.back().gao && di > this->kxianList.back().di) {
+        if (gao > this->kxianList.back().get_high() && di > this->kxianList.back().get_low()) {
             //向上
-            kxian.gao = gao;
-            kxian.di = di;
-            kxian.fangxiang = Kxian_UP;
-            kxian.position = BaoHanChuLi::count;
+            kxian = Kxian1(gao, di, Kxian_UP, BaoHanChuLi::count);
         }
         else {
-            if (gao < this->kxianList.back().gao && di < this->kxianList.back().di) {
+            if (gao < this->kxianList.back().get_high() && di < this->kxianList.back().get_low()) {
                 //向下
-                kxian.gao = gao;
-                kxian.di = di;
-                kxian.fangxiang = Kxian_DOWN;
-                kxian.position = BaoHanChuLi::count;
+                kxian = Kxian1(gao, di, Kxian_UP, BaoHanChuLi::count);
             }
             else {
                 kxian = this->kxianList.back();
                 this->kxianList.pop_back();
-                if (gao <= kxian.gao && di >= kxian.di) {
+                if (gao <= kxian.get_high() && di >= kxian.get_low()) {
                     //1包含2
-                    if (kxian.fangxiang == Kxian_UP)
-                        kxian.di = di;
+                    if (kxian.get_direction() == Kxian_UP)
+                        kxian.set_low(di);
                     else
-                        kxian.gao = gao;
+                        kxian.set_high(gao);
                 }
                 else {
                     //2包含1
-                    if (kxian.fangxiang == Kxian_UP)
-                        kxian.gao = gao;
+                    if (kxian.get_direction() == Kxian_UP)
+                        kxian.set_high(gao);
                     else
-                        kxian.di = di;
+                        kxian.set_low(di);
                 }
-                kxian.position = BaoHanChuLi::count;
+                kxian.set_position(BaoHanChuLi::count);
                 this->kxianList.push_back(kxian);
                 BaoHanChuLi::count += 1;
                 return(kxian);

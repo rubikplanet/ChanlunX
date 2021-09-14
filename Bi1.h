@@ -8,7 +8,7 @@ using namespace std;
 
 #pragma pack(push, 1)
 
-enum class BiType {NONE, UP, DOWN, FAILURE_UP, FAILURE_DOWN, TEMP_TOP, TEMP_BOTTOM, FAILURE_TEMP_TOP, FAILURE_TEMP_BOTTOM, NEW_UP, NEW_DOWN};
+enum class BiType {NONE, UP, DOWN, FAILURE_UP, FAILURE_DOWN, TEMP_UP, TEMP_DOWN, FAILURE_TEMP_UP, FAILURE_TEMP_DOWN, NEW_UP, NEW_DOWN};
 class Bi {
 private:
     BiType type = BiType::NONE;
@@ -32,14 +32,14 @@ public:
         this->stop_fx = stop;
         if (start.get_type() == FenXingType::VERIFY_TOP) {
             this->type = BiType::DOWN;
-            this->high = start.get_middle().gao;
-            this->low = stop.get_middle().di;
+            this->high = start.get_middle().get_high();
+            this->low = stop.get_middle().get_low();
         }
         else {
             if (start.get_type() == FenXingType::VERIFY_BOTTOM) {
                 this->type = BiType::UP;
-                this->high = stop.get_middle().gao;
-                this->low = start.get_middle().di;
+                this->high = stop.get_middle().get_high();
+                this->low = start.get_middle().get_low();
             }
         }
         this->length = this->high - this->low;
@@ -86,15 +86,17 @@ private:
 public:
     vector<Bi> biList;
     Bi last_bi = Bi();
-    BiChuLi();
     void handle(vector<Kxian1> &kxlist);
     Bi __find_bi(Kxian1 kx);
+    Bi __find_fenxing(FenXing fx);
     Bi now_bi(Kxian1 kx);
+    BiChuLi();
 };
 
 
 //extern "C" _declspec(dllexport) void Bi3(int nCount, float* pOut, float* pHigh, float* pLow, float* pIn);
-void Bi3(int nCount, float* pOut, float* pHigh, float* pLow, float* pIn);
+void Bi3_bi(int nCount, float* pOut, float* pHigh, float* pLow, float* pIn);
+void Bi3_fenxing(int nCount, float* pOut, float* pHigh, float* pLow, float* pIn);
 void Bi4(int nCount, float* pOut, float* pHigh, float* pLow, float* pIn);
 #pragma pack(pop)
 #endif

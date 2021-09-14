@@ -685,7 +685,7 @@ void Func8(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
 
 void Func9(int nCount, float* pOut, float* pHigh, float* pLow, float* pIgnore)
 {
-    Bi3(nCount, pOut, pHigh, pLow, pIgnore);
+    Bi3_bi(nCount, pOut, pHigh, pLow, pIgnore);
 }
 
 void Func10(int nCount, float* pOut, float* pHigh, float* pLow, float* pIgnore)

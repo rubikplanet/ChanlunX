@@ -17,16 +17,16 @@ class FenXing {
         FenXingType type = FenXingType::NONE;
         float gao = 0;
         float di = 0;
-        Kxian1 left = { 0 };
-        Kxian1 middle = { 0 };
-        Kxian1 right = { 0 };
-        Kxian1 free = { 0 };
+        Kxian1 left = Kxian1();
+        Kxian1 middle = Kxian1();
+        Kxian1 right = Kxian1();
+        Kxian1 free = Kxian1();
     public:
         FenXing() {
             this->type = FenXingType::NONE;
             this->gao = 0;
             this->di = 0;
-            this->left = this->middle = this->right = this->free = { 0 };
+            this->left = this->middle = this->right = this->free = Kxian1();
         }
 
         FenXing(FenXingType type, float gao, float di, Kxian1 left, Kxian1 middle, Kxian1 right) {
@@ -65,11 +65,11 @@ class FenXing {
         }
 
         int get_start_position() {
-            return(this->middle.position);
+            return(this->middle.get_position());
         }
 
         int get_stop_position() {
-            return(this->free.position);
+            return(this->free.get_position());
         }
 
         Kxian1 get_left() {
@@ -86,6 +86,13 @@ class FenXing {
 
         Kxian1 get_free() {
             return(this->free);
+        }
+
+        bool operator==(FenXing comp) {
+            if (this->type == comp.type && this->left == comp.left && this->middle == comp.middle && this->right == comp.right)
+                return(true);
+            else
+                return(false);
         }
 };
 
@@ -108,7 +115,7 @@ class FenXingChuLi {
         vector<Kxian1> kxianList;
         vector<FenXing> fenXingList;
         vector<FenXing> keyKxianList;
-        FenXing handle(vector<Kxian1> &kxianList);
+        void handle(vector<Kxian1> &kxianList);
         FenXing __find_fenxing(Kxian1 kx);
         Kxian1 get_kx_item(string pos);
         FenXingChuLi();

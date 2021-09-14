@@ -8,7 +8,7 @@ using namespace std;
 
 #pragma pack(push, 1)
 
-struct Bi
+struct Bi11
 {
     int fangXiang;           // 笔方向
     int kaiShi;              // 笔起点
@@ -18,10 +18,10 @@ struct Bi
     vector<Kxian> kxianList; // 一笔当中的K线
 };
 
-class BiChuLi
+class BiChuLi1
 {
   public:
-    vector<Bi> biList; // 笔的表格
+    vector<Bi11> biList; // 笔的表格
     void handle(vector<Kxian> &kxianList);
 };
 

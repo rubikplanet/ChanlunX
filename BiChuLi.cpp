@@ -82,7 +82,7 @@ bool ifChengbi(vector<Kxian> &tempKxianList, int direction)
     return false;
 }
 
-void BiChuLi::handle(vector<Kxian> &kxianList)
+void BiChuLi1::handle(vector<Kxian> &kxianList)
 {
     vector<Kxian> tempKxianList; // 临时未成笔K线的保存
     for (vector<Kxian>::iterator iter = kxianList.begin(); iter != kxianList.end(); iter++)
@@ -90,7 +90,7 @@ void BiChuLi::handle(vector<Kxian> &kxianList)
         if (this->biList.empty())
         {
             // 第一笔生成中，也是假设第一笔是向上的
-            Bi bi;
+            Bi11 bi;
             bi.fangXiang = 1;
             bi.kaiShi = (*iter).kaiShi;
             bi.jieShu = (*iter).jieShu;
@@ -125,7 +125,7 @@ void BiChuLi::handle(vector<Kxian> &kxianList)
                     // 有没有成新的向下笔
                     if (ifChengbi(tempKxianList, -1))
                     {
-                        Bi bi;
+                        Bi11 bi;
                         bi.fangXiang = -1;
                         bi.kaiShi = this->biList.back().jieShu;
                         bi.jieShu = tempKxianList.back().jieShu;
@@ -164,7 +164,7 @@ void BiChuLi::handle(vector<Kxian> &kxianList)
                     // 有没有成新的向上笔
                     if (ifChengbi(tempKxianList, 1))
                     {
-                        Bi bi;
+                        Bi11 bi;
                         bi.fangXiang = 1;
                         bi.kaiShi = this->biList.back().jieShu;
                         bi.jieShu = tempKxianList.back().jieShu;
@@ -187,7 +187,7 @@ void BiChuLi::handle(vector<Kxian> &kxianList)
         {
             if (ifChengbi(tempKxianList, -1))
             {
-                Bi bi;
+                Bi11 bi;
                 bi.fangXiang = -1;
                 bi.kaiShi = this->biList.back().jieShu;
                 bi.jieShu = tempKxianList.back().jieShu;
@@ -205,7 +205,7 @@ void BiChuLi::handle(vector<Kxian> &kxianList)
         {
             if (ifChengbi(tempKxianList, 1))
             {
-                Bi bi;
+                Bi11 bi;
                 bi.fangXiang = 1;
                 bi.kaiShi = this->biList.back().jieShu;
                 bi.jieShu = tempKxianList.back().jieShu;

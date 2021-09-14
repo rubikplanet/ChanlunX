@@ -39,9 +39,9 @@ void Bi2(int nCount, float *pOut, float *pHigh, float *pLow, float *pIgnore) {
     for (int i = 0; i < nCount; i++) {
         kxianChuLi.add(pHigh[i], pLow[i]);
     }
-    BiChuLi biChuLi;
+    BiChuLi1 biChuLi;
     biChuLi.handle(kxianChuLi.kxianList);
-    for (vector<Bi>::iterator iter = biChuLi.biList.begin(); iter != biChuLi.biList.end(); iter++)
+    for (vector<Bi11>::iterator iter = biChuLi.biList.begin(); iter != biChuLi.biList.end(); iter++)
     {
         if ((*iter).fangXiang == 1)
         {
