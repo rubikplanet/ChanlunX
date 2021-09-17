@@ -104,6 +104,7 @@ class FenXingChuLi {
         static FenXingStatus status;
         static float comp_fx_gao, comp_fx_di;
         static int comp_fx_gao_count, comp_fx_di_count;
+        static float min_low, max_high;
         static FenXing fx, temp_fx;
         FenXing __right_process(Kxian1 kx);
         Kxian1 __get_last_kxian();

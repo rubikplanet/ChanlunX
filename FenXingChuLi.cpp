@@ -11,6 +11,7 @@ Kxian1 FenXingChuLi::left, FenXingChuLi::middle, FenXingChuLi::right, FenXingChu
 FenXing FenXingChuLi::fx, FenXingChuLi::temp_fx;
 float FenXingChuLi::comp_fx_gao, FenXingChuLi::comp_fx_di;
 int FenXingChuLi::comp_fx_gao_count, FenXingChuLi::comp_fx_di_count;
+float FenXingChuLi::max_high, FenXingChuLi::min_low;
 
 FenXingChuLi::FenXingChuLi() {
     FenXing fx = FenXing();
@@ -23,6 +24,8 @@ FenXingChuLi::FenXingChuLi() {
     FenXingChuLi::free = kx;
     FenXingChuLi::fx = fx;
     FenXingChuLi::temp_fx = fx;
+    FenXingChuLi::max_high = 0;
+    FenXingChuLi::min_low = 9999;
 }
 
 void FenXingChuLi::handle(vector<Kxian1>& kxianList) {
@@ -128,6 +131,30 @@ char* get_fenxing_status(FenXingStatus fx_type) {
 FenXing FenXingChuLi::__find_fenxing(Kxian1 kxian) {
     FenXing tmp_fx = FenXing();
     OutputDebugPrintf(" % s % f % f %d \n", get_fenxing_status(FenXingChuLi::status), kxian.get_high(), kxian.get_low(), kxian.get_position());
+    if (this->last_bar.get_high() == 0 && this->last_bar.get_low() == 0) {
+        this->last_bar = kxian;
+        this->left = kxian;
+        this->status = FenXingStatus::MIDDLE;
+        return(tmp_fx);
+    }
+    else {
+        if (kxian.get_high() > this->max_high) {
+            this->max_high = kxian.get_high();
+            this->left = this->last_bar;
+            this->middle = kxian;
+            this->status = FenXingStatus::RIGHT;
+            return(tmp_fx);
+        }
+        else {
+            if (kxian.get_low() < this->min_low) {
+                this->min_low = kxian.get_low();
+                this->left = this->last_bar;
+                this->middle = kxian;
+                this->status = FenXingStatus::RIGHT;
+                return(tmp_fx);
+            }
+        }
+    }
     switch (FenXingChuLi::status) {
     case FenXingStatus::LEFT:
         FenXingChuLi::left = kxian;
