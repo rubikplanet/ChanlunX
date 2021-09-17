@@ -3,7 +3,7 @@
 
 #pragma pack(push,1)
 
-struct ZhongShu
+struct ZhongShu11
 {
     bool  bValid;
     int   nTop1, nTop2, nTop3, nBot1, nBot2, nBot3;
@@ -13,8 +13,8 @@ struct ZhongShu
     int nDirection;
     int nTerminate;
 
-    ZhongShu();
-    ~ZhongShu();
+    ZhongShu11();
+    ~ZhongShu11();
 
     void Reset();
     bool PushHigh(int nIndex, float fValue);

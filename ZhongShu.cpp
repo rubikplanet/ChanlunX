@@ -1,6 +1,6 @@
 ﻿#include "ZhongShu.h"
 
-ZhongShu::ZhongShu()
+ZhongShu11::ZhongShu11()
 {
     this->bValid = false;
     this->nTop1  = 0;
@@ -24,11 +24,11 @@ ZhongShu::ZhongShu()
     this->nTerminate = 0;
 }
 
-ZhongShu::~ZhongShu()
+ZhongShu11::~ZhongShu11()
 {
 }
 
-void ZhongShu::Reset()
+void ZhongShu11::Reset()
 {
     this->bValid = false;
     this->nTop1  = 0;
@@ -53,7 +53,7 @@ void ZhongShu::Reset()
 }
 
 // 推入高点并计算状态
-bool ZhongShu::PushHigh(int nIndex, float fValue)
+bool ZhongShu11::PushHigh(int nIndex, float fValue)
 {
     nTop3 = nTop2;
     fTop3 = fTop2;
@@ -100,7 +100,7 @@ bool ZhongShu::PushHigh(int nIndex, float fValue)
     return false;
 }
 
-bool ZhongShu::PushLow(int nIndex, float fValue)
+bool ZhongShu11::PushLow(int nIndex, float fValue)
 {
     nBot3 = nBot2;
     fBot3 = fBot2;
