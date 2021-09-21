@@ -112,6 +112,7 @@ class FenXingChuLi {
         FenXing __get_last_fx(Kxian1 kx);
         void __set_fx(FenXing fx);
         void __set_temp_fx(FenXing fx);
+        bool _find_new_highlow(Kxian1 kx);
     public:
         vector<Kxian1> kxianList;
         vector<FenXing> fenXingList;
