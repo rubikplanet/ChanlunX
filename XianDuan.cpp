@@ -167,7 +167,7 @@ XianDuan XianDuanChuLi::find_xianduan(Bi bi) {
                             }
                             else {
                                 this->after_middle = bi;
-                                //this->zhongshu_a = ZhongShu1(this->left, this->after_left, this->middle, bi);
+                                this->zhongshu_a = ZhongShu1(this->left, this->after_left, this->middle, bi);
                                 XianDuanChuLi::status = XianDuanChuLiStatus::ZHONGSHU_A;
                             }
                         }
@@ -189,7 +189,7 @@ XianDuan XianDuanChuLi::find_xianduan(Bi bi) {
                     }
                     else {
                         this->after_middle = bi;
-                        //this->zhongshu_a = ZhongShu1(this->left, this->after_left, this->middle, bi);
+                        this->zhongshu_a = ZhongShu1(this->left, this->after_left, this->middle, bi);
                         XianDuanChuLi::status = XianDuanChuLiStatus::ZHONGSHU_A;
                     }
                 }
@@ -208,7 +208,7 @@ XianDuan XianDuanChuLi::find_xianduan(Bi bi) {
                         }
                         else {
                             this->after_middle = bi;
-                           // this->zhongshu_a = ZhongShu1(this->left, this->after_left, this->middle, bi);
+                           this->zhongshu_a = ZhongShu1(this->left, this->after_left, this->middle, bi);
                             XianDuanChuLi::status = XianDuanChuLiStatus::ZHONGSHU_A;
                         }
                     }
@@ -216,6 +216,7 @@ XianDuan XianDuanChuLi::find_xianduan(Bi bi) {
             }
             break;
         case XianDuanChuLiStatus::ZHONGSHU_A:
+
             break;
         }
     }

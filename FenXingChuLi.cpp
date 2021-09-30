@@ -64,18 +64,20 @@ void FenXingChuLi::handle(vector<Kxian1>& kxianList) {
         }
     }
 
-    FenXing start_fx = this->keyKxianList.back();
-    int count = this->fenXingList.size();
-    int start_num = 0;
-    for (int i = 0; i < count; i++) {
-        if (this->fenXingList[i] == start_fx) {
-            start_num = i;
-            break;
+    if (!this->keyKxianList.empty()) {
+        FenXing start_fx = this->keyKxianList.back();
+        int count = this->fenXingList.size();
+        int start_num = 0;
+        for (int i = 0; i < count; i++) {
+            if (this->fenXingList[i] == start_fx) {
+                start_num = i;
+                break;
+            }
         }
-    }
-    for (int i = start_num + 1; i < count; i++) {
-        FenXing fx = this->fenXingList[i];
-        this->keyKxianList.push_back(fx);
+        for (int i = start_num + 1; i < count; i++) {
+            FenXing fx = this->fenXingList[i];
+            this->keyKxianList.push_back(fx);
+        }
     }
 }
 
@@ -213,11 +215,24 @@ FenXing FenXingChuLi::__find_fenxing(Kxian1 kxian) {
             if (kxian.get_high()<= FenXingChuLi::temp_fx.get_low()) {
                 FenXingChuLi::free = kxian;
                 tmp_fx = FenXing(FenXingType::VERIFY_TOP, FenXingChuLi::temp_fx.get_high(), FenXingChuLi::temp_fx.get_low(), FenXingChuLi::left, FenXingChuLi::middle, FenXingChuLi::right, FenXingChuLi::free);
-                if (FenXingChuLi::fx.get_type() == FenXingType::VERIFY_TOP && tmp_fx.get_high() < FenXingChuLi::fx.get_high()) {
-                    FenXingChuLi::status = FenXingStatus::LEFT;
-                    FenXingChuLi::last_bar = kxian;
-                    return(FenXing());
+                if (FenXingChuLi::fx.get_type() == FenXingType::VERIFY_TOP) {
+                    if (tmp_fx.get_high() < FenXingChuLi::fx.get_high()) {
+                        FenXingChuLi::status = FenXingStatus::LEFT;
+                        FenXingChuLi::last_bar = kxian;
+                        return(FenXing());
+                    }
+                    else {
+                        if (!this->keyKxianList.empty()) {
+                            FenXing last_tmp_fx = this->keyKxianList.back();
+                            if (last_tmp_fx == this->fx) {
+                                this->keyKxianList.pop_back();
+                                last_tmp_fx.set_type(FenXingType::FAILURE_VERIFY_TOP);
+                                this->fenXingList.push_back(last_tmp_fx);
+                            }
+                        }
+                    }
                 }
+
                 FenXingChuLi:comp_fx_di = kxian.get_low();
                 FenXingChuLi::comp_fx_di_count += 1;
                 FenXingChuLi::status = FenXingStatus::AFTER_VERIFY_TOP;
@@ -252,11 +267,23 @@ FenXing FenXingChuLi::__find_fenxing(Kxian1 kxian) {
             if (kxian.get_low() >= FenXingChuLi::temp_fx.get_high()) {
                 FenXingChuLi::free = kxian;
                 tmp_fx = FenXing(FenXingType::VERIFY_BOTTOM, FenXingChuLi::temp_fx.get_high(), FenXingChuLi::temp_fx.get_low(), FenXingChuLi::left, FenXingChuLi::middle, FenXingChuLi::right, FenXingChuLi::free);
-                if (FenXingChuLi::fx.get_type() == FenXingType::VERIFY_BOTTOM && tmp_fx.get_low() > FenXingChuLi::fx.get_low()) {
-                    FenXingChuLi::status = FenXingStatus::LEFT;
-                    tmp_fx = FenXing();
-                    FenXingChuLi::last_bar = kxian;
-                    return(tmp_fx);
+                if (FenXingChuLi::fx.get_type() == FenXingType::VERIFY_BOTTOM) {
+                    if (tmp_fx.get_low() > FenXingChuLi::fx.get_low()) {
+                        FenXingChuLi::status = FenXingStatus::LEFT;
+                        tmp_fx = FenXing();
+                        FenXingChuLi::last_bar = kxian;
+                        return(tmp_fx);
+                    }
+                    else {
+                        if (!this->keyKxianList.empty()) {
+                            FenXing last_tmp_fx = this->keyKxianList.back();
+                            if (last_tmp_fx == this->fx) {
+                                this->keyKxianList.pop_back();
+                                last_tmp_fx.set_type(FenXingType::FAILURE_VERIFY_BOTTOM);
+                                this->fenXingList.push_back(last_tmp_fx);
+                            }
+                        }
+                    }
                 }
                FenXingChuLi::comp_fx_gao = kxian.get_high();
                 FenXingChuLi::comp_fx_gao_count += 1;

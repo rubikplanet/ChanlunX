@@ -72,6 +72,27 @@ public:
     FenXing get_stop_fx() {
         return(this->stop_fx);
     }
+
+    bool operator==(Bi comp) {
+        if (this->type == comp.type && this->start_fx == comp.start_fx && this->stop_fx == comp.stop_fx)
+            return(true);
+        else
+            return(false);
+    }
+
+    Bi generate_bi(Bi first_bi, Bi second_bi, Bi three_bi) {
+        FenXing start_fx, stop_fx;
+        start_fx = first_bi.get_start_fx();
+        stop_fx = three_bi.get_stop_fx();
+        return(Bi(start_fx, stop_fx));
+    }
+
+
+
+    Bi update_stop_bi(Bi bi, FenXing stop_fx) {
+        FenXing start_fx = bi.get_start_fx();
+        return(Bi(start_fx, stop_fx));
+    }
 };
 
 
@@ -85,6 +106,7 @@ private:
     Bi find_new_bi(FenXing tmp_fx);
 public:
     vector<Bi> biList;
+    vector<Bi> keyBiList;
     Bi last_bi = Bi();
     void handle(vector<Kxian1> &kxlist);
     Bi __find_bi(Kxian1 kx);

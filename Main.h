@@ -10,5 +10,6 @@
 #include "ZhongShu.h"
 #include "IniReader.h"
 #include "Bi1.h"
+#include "XianDuan.h"
 
 #endif

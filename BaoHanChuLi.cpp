@@ -18,7 +18,7 @@ Kxian1 BaoHanChuLi::add(float gao, float di)
         else {
             if (gao < this->kxianList.back().get_high() && di < this->kxianList.back().get_low()) {
                 //向下
-                kxian = Kxian1(gao, di, Kxian_UP, BaoHanChuLi::count);
+                kxian = Kxian1(gao, di, Kxian_DOWN, BaoHanChuLi::count);
             }
             else {
                 kxian = this->kxianList.back();
@@ -26,18 +26,17 @@ Kxian1 BaoHanChuLi::add(float gao, float di)
                 if (gao <= kxian.get_high() && di >= kxian.get_low()) {
                     //1包含2
                     if (kxian.get_direction() == Kxian_UP)
-                        kxian.set_low(di);
+                        kxian = Kxian1(kxian.get_high(), di, Kxian_UP, BaoHanChuLi::count);
                     else
-                        kxian.set_high(gao);
+                        kxian = Kxian1(gao, kxian.get_low(), Kxian_DOWN, BaoHanChuLi::count);
                 }
                 else {
                     //2包含1
                     if (kxian.get_direction() == Kxian_UP)
-                        kxian.set_high(gao);
+                        kxian = Kxian1(gao, kxian.get_low(), Kxian_UP, BaoHanChuLi::count);
                     else
-                        kxian.set_low(di);
+                        kxian = Kxian1(kxian.get_high(), di, Kxian_DOWN, BaoHanChuLi::count);
                 }
-                kxian.set_position(BaoHanChuLi::count);
                 this->kxianList.push_back(kxian);
                 BaoHanChuLi::count += 1;
                 return(kxian);

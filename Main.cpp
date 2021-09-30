@@ -55,7 +55,7 @@ void Func4(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
 //=============================================================================
 void Func5(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
 {
-    ZhongShu ZhongShuOne;
+    ZhongShu11 ZhongShuOne;
 
     for (int i = 0; i < nCount; i++)
     {
@@ -210,7 +210,7 @@ void Func5(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
 void Func6(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
 {
 
-    ZhongShu ZhongShuOne;
+    ZhongShu11 ZhongShuOne;
 
     for (int i = 0; i < nCount; i++)
     {
@@ -368,7 +368,7 @@ void Func7(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
     //std::ofstream fout;
     //fout.open("D:\\CHANLUN.TXT", std::ofstream::out);
 
-    ZhongShu ZhongShuOne;
+    ZhongShu11 ZhongShuOne;
 
     for (int i = 0; i < nCount; i++)
     {
@@ -534,7 +534,7 @@ void Func7(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
 void Func8(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
 {
 
-    ZhongShu ZhongShuOne;
+    ZhongShu11 ZhongShuOne;
 
     for (int i = 0; i < nCount; i++)
     {
@@ -685,7 +685,7 @@ void Func8(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
 
 void Func9(int nCount, float* pOut, float* pHigh, float* pLow, float* pIgnore)
 {
-    Bi3_bi(nCount, pOut, pHigh, pLow, pIgnore);
+    Bi3_xianduan(nCount, pOut, pHigh, pLow, pIgnore);
 }
 
 void Func10(int nCount, float* pOut, float* pHigh, float* pLow, float* pIgnore)
