@@ -5,7 +5,7 @@
 using namespace std;
 
 //定义DLL程序的入口函数
-BOOL APIENTRY DllMain( HANDLE hModule, DWORD ul_reason_for_call, LPVOID lpReserved)
+BOOL APIENTRY DllMain(HANDLE hModule, DWORD ul_reason_for_call, LPVOID lpReserved)
 {
     switch (ul_reason_for_call)
     {
@@ -23,7 +23,14 @@ BOOL APIENTRY DllMain( HANDLE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
 //=============================================================================
 void Func1(int nCount, float *pOut, float *pHigh, float *pLow, float *pIgnore)
 {
-    Bi1(nCount, pOut, pHigh, pLow, pIgnore);
+    std::vector<float> high(pHigh, pHigh + nCount);
+    std::vector<float> low(pLow, pLow + nCount);
+    std::vector<float> out = Bi1(nCount, high, low);
+    memset(pOut, 0, nCount);
+    for (int i = 0; i < nCount; i++)
+    {
+        pOut[i] = out[i];
+    }
 }
 
 //=============================================================================
@@ -31,7 +38,14 @@ void Func1(int nCount, float *pOut, float *pHigh, float *pLow, float *pIgnore)
 //=============================================================================
 void Func2(int nCount, float *pOut, float *pHigh, float *pLow, float *pIgnore)
 {
-    Bi2(nCount, pOut, pHigh, pLow, pIgnore);
+    std::vector<float> high(pHigh, pHigh + nCount);
+    std::vector<float> low(pLow, pLow + nCount);
+    std::vector<float> out = Bi2(nCount, high, low);
+    memset(pOut, 0, nCount);
+    for (int i = 0; i < nCount; i++)
+    {
+        pOut[i] = out[i];
+    }
 }
 
 //=============================================================================
@@ -39,7 +53,15 @@ void Func2(int nCount, float *pOut, float *pHigh, float *pLow, float *pIgnore)
 //=============================================================================
 void Func3(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
 {
-    Duan1(nCount, pOut, pIn, pHigh, pLow);
+    std::vector<float> bi(pIn, pIn + nCount);
+    std::vector<float> high(pHigh, pHigh + nCount);
+    std::vector<float> low(pLow, pLow + nCount);
+    std::vector<float> out = Duan1(nCount, bi, high, low);
+    memset(pOut, 0, nCount);
+    for (int i = 0; i < nCount; i++)
+    {
+        pOut[i] = out[i];
+    }
 }
 
 //=============================================================================
@@ -47,7 +69,15 @@ void Func3(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
 //=============================================================================
 void Func4(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
 {
-    Duan2(nCount, pOut, pIn, pHigh, pLow);
+    std::vector<float> bi(pIn, pIn + nCount);
+    std::vector<float> high(pHigh, pHigh + nCount);
+    std::vector<float> low(pLow, pLow + nCount);
+    std::vector<float> out = Duan2(nCount, bi, high, low);
+    memset(pOut, 0, nCount);
+    for (int i = 0; i < nCount; i++)
+    {
+        pOut[i] = out[i];
+    }
 }
 
 //=============================================================================
@@ -55,151 +85,17 @@ void Func4(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
 //=============================================================================
 void Func5(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
 {
-    ZhongShu ZhongShuOne;
-
-    for (int i = 0; i < nCount; i++)
+    std::vector<float> bi(pIn, pIn + nCount);
+    std::vector<float> high(pHigh, pHigh + nCount);
+    std::vector<float> low(pLow, pLow + nCount);
+    std::vector<Pivot> ZhongShuList = ZS(nCount, bi, high, low);
+    memset(pOut, 0, nCount);
+    for (size_t i = 0; i < ZhongShuList.size(); i++)
     {
-        if (pIn[i] == 1)
+        Pivot ZhongShuOne = ZhongShuList.at(i);
+        for (int j = ZhongShuOne.s + 1; j <= ZhongShuOne.e - 1; j++)
         {
-            // 遇到线段高点，推入中枢算法
-            if (ZhongShuOne.PushHigh(i, pHigh[i]))
-            {
-                bool bValid = true;
-                float fHighValue;
-                int nHignIndex;
-                int nLowIndex;
-                int nLowIndexTemp;
-                int nHighCount = 0;
-                if (ZhongShuOne.nDirection == 1 && ZhongShuOne.nTerminate == -1) // 向上中枢被向下终结
-                {
-                    bValid = false;
-                    for (int x = ZhongShuOne.nStart; x <= ZhongShuOne.nEnd; x++)
-                    {
-                        if (pIn[x] == 1)
-                        {
-                            if (nHighCount == 0)
-                            {
-                                nHighCount++;
-                                fHighValue = pHigh[x];
-                                nHignIndex = x;
-                            }
-                            else
-                            {
-                                nHighCount++;
-                                if (pHigh[x] >= fHighValue)
-                                {
-                                    if (nHighCount > 2)
-                                    {
-                                        bValid = true;
-                                    }
-                                    fHighValue = pHigh[x];
-                                    nHignIndex = x;
-                                    nLowIndex = nLowIndexTemp;
-                                }
-                            }
-                        }
-                        else if (pIn[x] == -1)
-                        {
-                            nLowIndexTemp = x;
-                        }
-                    }
-                    if (bValid)
-                    {
-                        ZhongShuOne.nEnd = nLowIndex; // 中枢结束点移到最高点的前一个低点。
-                    }
-                    i = nHignIndex - 1;
-                }
-                else
-                {
-                    i = ZhongShuOne.nEnd - 1;
-                }
-                if (bValid)
-                {
-                    // 区段内更新算得的中枢高数据
-                    for (int j = ZhongShuOne.nStart + 1; j <= ZhongShuOne.nEnd - 1; j++)
-                    {
-                        pOut[j] = ZhongShuOne.fHigh;
-                    }
-
-                }
-
-                ZhongShuOne.Reset();
-            }
-        }
-        else if (pIn[i] == -1)
-        {
-            // 遇到线段低点，推入中枢算法
-            if (ZhongShuOne.PushLow(i, pLow[i]))
-            {
-                bool bValid = true;
-                float fLowValue;
-                int nLowIndex;
-                int nHighIndex;
-                int nHighIndexTemp;
-                int nLowCount = 0;
-                if (ZhongShuOne.nDirection == -1 && ZhongShuOne.nTerminate == 1) // 向下中枢被向上终结
-                {
-                    bValid = false;
-                    for (int x = ZhongShuOne.nStart; x <= ZhongShuOne.nEnd; x++)
-                    {
-                        if (pIn[x] == -1)
-                        {
-                            if (nLowCount == 0)
-                            {
-                                nLowCount++;
-                                fLowValue = pLow[x];
-                                nLowIndex = x;
-                            }
-                            else
-                            {
-                                nLowCount++;
-                                if (pLow[x] <= fLowValue)
-                                {
-                                    if (nLowCount > 2)
-                                    {
-                                        bValid = true;
-                                    }
-                                    fLowValue = pLow[x];
-                                    nLowIndex = x;
-                                    nHighIndex = nHighIndexTemp;
-                                }
-                            }
-                        }
-                        else if (pIn[x] == 1)
-                        {
-                            nHighIndexTemp = x;
-                        }
-                    }
-                    if (bValid)
-                    {
-                        ZhongShuOne.nEnd = nHighIndex; // 中枢结束点移到最高点的前一个低点。
-                    }
-                    i = nLowIndex - 1;
-                }
-                else
-                {
-                    i = ZhongShuOne.nEnd - 1;
-                }
-                if (bValid)
-                {
-                    // 区段内更新算得的中枢高数据
-                    for (int j = ZhongShuOne.nStart + 1; j <= ZhongShuOne.nEnd - 1; j++)
-                    {
-                        pOut[j] = ZhongShuOne.fHigh;
-                    }
-
-                }
-
-                ZhongShuOne.Reset();
-            }
-        }
-    }
-    if (ZhongShuOne.bValid) // 最后一个还没有被终结的中枢。
-    {
-        // 区段内更新算得的中枢高数据
-        for (int j = ZhongShuOne.nStart + 1; j <= ZhongShuOne.nEnd - 1; j++)
-        {
-            pOut[j] = ZhongShuOne.fHigh;
+            pOut[j] = ZhongShuOne.zg;
         }
     }
 }
@@ -209,152 +105,17 @@ void Func5(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
 //=============================================================================
 void Func6(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
 {
-
-    ZhongShu ZhongShuOne;
-
-    for (int i = 0; i < nCount; i++)
+    std::vector<float> bi(pIn, pIn + nCount);
+    std::vector<float> high(pHigh, pHigh + nCount);
+    std::vector<float> low(pLow, pLow + nCount);
+    std::vector<Pivot> ZhongShuList = ZS(nCount, bi, high, low);
+    memset(pOut, 0, nCount);
+    for (size_t i = 0; i < ZhongShuList.size(); i++)
     {
-        if (pIn[i] == 1)
+        Pivot ZhongShuOne = ZhongShuList.at(i);
+        for (int j = ZhongShuOne.s + 1; j <= ZhongShuOne.e - 1; j++)
         {
-            // 遇到线段高点，推入中枢算法
-            if (ZhongShuOne.PushHigh(i, pHigh[i]))
-            {
-                bool bValid = true;
-                float fHighValue;
-                int nHignIndex;
-                int nLowIndex;
-                int nLowIndexTemp;
-                int nHighCount = 0;
-                if (ZhongShuOne.nDirection == 1 && ZhongShuOne.nTerminate == -1) // 向上中枢被向下终结
-                {
-                    bValid = false;
-                    for (int x = ZhongShuOne.nStart; x <= ZhongShuOne.nEnd; x++)
-                    {
-                        if (pIn[x] == 1)
-                        {
-                            if (nHighCount == 0)
-                            {
-                                nHighCount++;
-                                fHighValue = pHigh[x];
-                                nHignIndex = x;
-                            }
-                            else
-                            {
-                                nHighCount++;
-                                if (pHigh[x] >= fHighValue)
-                                {
-                                    if (nHighCount > 2)
-                                    {
-                                        bValid = true;
-                                    }
-                                    fHighValue = pHigh[x];
-                                    nHignIndex = x;
-                                    nLowIndex = nLowIndexTemp;
-                                }
-                            }
-                        }
-                        else if (pIn[x] == -1)
-                        {
-                            nLowIndexTemp = x;
-                        }
-                    }
-                    if (bValid)
-                    {
-                        ZhongShuOne.nEnd = nLowIndex; // 中枢结束点移到最高点的前一个低点。
-                    }
-                    i = nHignIndex - 1;
-                }
-                else
-                {
-                    i = ZhongShuOne.nEnd - 1;
-                }
-                if (bValid)
-                {
-                    // 区段内更新算得的中枢低数据
-                    for (int j = ZhongShuOne.nStart + 1; j <= ZhongShuOne.nEnd - 1; j++)
-                    {
-                        pOut[j] = ZhongShuOne.fLow;
-                    }
-
-                }
-
-                ZhongShuOne.Reset();
-            }
-        }
-        else if (pIn[i] == -1)
-        {
-            // 遇到线段低点，推入中枢算法
-            if (ZhongShuOne.PushLow(i, pLow[i]))
-            {
-                bool bValid = true;
-                float fLowValue;
-                int nLowIndex;
-                int nHighIndex;
-                int nHighIndexTemp;
-                int nLowCount = 0;
-                if (ZhongShuOne.nDirection == -1 && ZhongShuOne.nTerminate == 1) // 向下中枢被向上终结
-                {
-                    bValid = false;
-                    for (int x = ZhongShuOne.nStart; x <= ZhongShuOne.nEnd; x++)
-                    {
-                        if (pIn[x] == -1)
-                        {
-                            if (nLowCount == 0)
-                            {
-                                nLowCount++;
-                                fLowValue = pLow[x];
-                                nLowIndex = x;
-                            }
-                            else
-                            {
-                                nLowCount++;
-                                if (pLow[x] <= fLowValue)
-                                {
-                                    if (nLowCount > 2)
-                                    {
-                                        bValid = true;
-                                    }
-                                    fLowValue = pLow[x];
-                                    nLowIndex = x;
-                                    nHighIndex = nHighIndexTemp;
-                                }
-                            }
-                        }
-                        else if (pIn[x] == 1)
-                        {
-                            nHighIndexTemp = x;
-                        }
-                    }
-                    if (bValid)
-                    {
-                        ZhongShuOne.nEnd = nHighIndex; // 中枢结束点移到最高点的前一个低点。
-                    }
-                    i = nLowIndex - 1;
-                }
-                else
-                {
-                    i = ZhongShuOne.nEnd - 1;
-                }
-                if (bValid)
-                {
-                    // 区段内更新算得的中枢低数据
-                    for (int j = ZhongShuOne.nStart + 1; j <= ZhongShuOne.nEnd - 1; j++)
-                    {
-                        pOut[j] = ZhongShuOne.fLow;
-                    }
-
-                }
-
-                ZhongShuOne.Reset();
-            }
-        }
-    }
-    if (ZhongShuOne.bValid)
-    {
-        // 区段内更新算得的中枢低数据
-        for (int j = ZhongShuOne.nStart + 1; j <= ZhongShuOne.nEnd - 1; j++)
-        {
-            pOut[j] = ZhongShuOne.fLow;
+            pOut[j] = ZhongShuOne.zd;
         }
     }
 }
@@ -364,168 +125,17 @@ void Func6(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
 //=============================================================================
 void Func7(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
 {
-
-    //std::ofstream fout;
-    //fout.open("D:\\CHANLUN.TXT", std::ofstream::out);
-
-    ZhongShu ZhongShuOne;
-
-    for (int i = 0; i < nCount; i++)
+    std::vector<float> bi(pIn, pIn + nCount);
+    std::vector<float> high(pHigh, pHigh + nCount);
+    std::vector<float> low(pLow, pLow + nCount);
+    std::vector<Pivot> ZhongShuList = ZS(nCount, bi, high, low);
+    memset(pOut, 0, nCount);
+    for (size_t i = 0; i < ZhongShuList.size(); i++)
     {
-        if (pIn[i] == 1)
-        {
-            // 遇到线段高点，推入中枢算法
-            if (ZhongShuOne.PushHigh(i, pHigh[i]))
-            {
-                //fout<<"中枢终结"<<pHigh[i]<<endl;
-                bool bValid = true;
-                float fHighValue;
-                int nHignIndex;
-                int nLowIndex;
-                int nLowIndexTemp;
-                int nHighCount = 0;
-                if (ZhongShuOne.nDirection == 1 && ZhongShuOne.nTerminate == -1) // 向上中枢被向下终结
-                {
-                    //fout<<"向上中枢被向下终结"<<endl;
-                    bValid = false;
-                    for (int x = ZhongShuOne.nStart; x <= ZhongShuOne.nEnd; x++)
-                    {
-                        if (pIn[x] == 1)
-                        {
-                            if (nHighCount == 0)
-                            {
-                                nHighCount++;
-                                fHighValue = pHigh[x];
-                                nHignIndex = x;
-                            }
-                            else
-                            {
-                                nHighCount++;
-                                if (pHigh[x] >= fHighValue)
-                                {
-                                    if (nHighCount > 2)
-                                    {
-                                        bValid = true;
-                                    }
-                                    fHighValue = pHigh[x];
-                                    nHignIndex = x;
-                                    nLowIndex = nLowIndexTemp;
-                                }
-                            }
-                        }
-                        else if (pIn[x] == -1)
-                        {
-                            nLowIndexTemp = x;
-                        }
-                    }
-                    if (bValid)
-                    {
-                        //fout<<"同级别分解保留最后中枢"<<endl;
-                        //fout<<"中枢结束点移到"<<pLow[nLowIndex]<<endl;
-                        ZhongShuOne.nEnd = nLowIndex; // 中枢结束点移到最高点的前一个低点。
-                    }
-                    else
-                    {
-                        //fout<<"同级别分解最后中枢无效"<<endl;
-                    }
-                    i = nHignIndex - 1;
-                }
-                else
-                {
-                    //fout<<"向下中枢被向下终结"<<endl;
-                    i = ZhongShuOne.nEnd - 1;
-                }
-                if (bValid)
-                {
-                    // 进行标记
-                    pOut[ZhongShuOne.nStart + 1] = 1;
-                    pOut[ZhongShuOne.nEnd - 1]   = 2;
-                }
-                ZhongShuOne.Reset();
-            }
-        }
-        else if (pIn[i] == -1)
-        {
-            // 遇到线段低点，推入中枢算法
-            if (ZhongShuOne.PushLow(i, pLow[i]))
-            {
-                //fout<<"中枢终结"<<pHigh[i]<<endl;
-                bool bValid = true;
-                float fLowValue;
-                int nLowIndex;
-                int nHighIndex;
-                int nHighIndexTemp;
-                int nLowCount = 0;
-                if (ZhongShuOne.nDirection == -1 && ZhongShuOne.nTerminate == 1) // 向下中枢被向上终结
-                {
-                    //fout<<"向下中枢被向上终结"<<endl;
-                    bValid = false;
-                    for (int x = ZhongShuOne.nStart; x <= ZhongShuOne.nEnd; x++)
-                    {
-                        if (pIn[x] == -1)
-                        {
-                            if (nLowCount == 0)
-                            {
-                                nLowCount++;
-                                fLowValue = pLow[x];
-                                nLowIndex = x;
-                            }
-                            else
-                            {
-                                nLowCount++;
-                                if (pLow[x] <= fLowValue)
-                                {
-                                    if (nLowCount > 2)
-                                    {
-                                        bValid = true;
-                                    }
-                                    fLowValue = pLow[x];
-                                    nLowIndex = x;
-                                    nHighIndex = nHighIndexTemp;
-                                }
-                            }
-                            //fout<<"低点数量"<<nLowCount<<endl;
-                        }
-                        else if (pIn[x] == 1)
-                        {
-                            nHighIndexTemp = x;
-                        }
-                    }
-                    if (bValid)
-                    {
-                        //fout<<"同级别分解保留最后中枢"<<endl;
-                        //fout<<"中枢结束点移到"<<pHigh[nHighIndex]<<endl;
-                        ZhongShuOne.nEnd = nHighIndex; // 中枢结束点移到最高点的前一个低点。
-                    }
-                    else
-                    {
-                        //fout<<"同级别分解最后中枢无效"<<endl;
-                    }
-                    i = nLowIndex - 1;
-                }
-                else
-                {
-                    //fout<<"向上中枢被向上终结"<<endl;
-                    i = ZhongShuOne.nEnd - 1;
-                }
-                if (bValid)
-                {
-                    // 进行标记
-                    pOut[ZhongShuOne.nStart + 1] = 1;
-                    pOut[ZhongShuOne.nEnd - 1]   = 2;
-
-                }
-                ZhongShuOne.Reset();
-            }
-        }
+        Pivot ZhongShuOne = ZhongShuList.at(i);
+        pOut[ZhongShuOne.s + 1] = 1;
+        pOut[ZhongShuOne.e - 1] = 2;
     }
-    if (ZhongShuOne.bValid)
-    {
-        // 进行标记
-        pOut[ZhongShuOne.nStart + 1] = 1;
-        pOut[ZhongShuOne.nEnd - 1]   = 2;
-    }
-    //fout.close();
 }
 
 //=============================================================================
@@ -533,168 +143,65 @@ void Func7(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
 //=============================================================================
 void Func8(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
 {
-
-    ZhongShu ZhongShuOne;
-
-    for (int i = 0; i < nCount; i++)
+    std::vector<float> bi(pIn, pIn + nCount);
+    std::vector<float> high(pHigh, pHigh + nCount);
+    std::vector<float> low(pLow, pLow + nCount);
+    std::vector<Pivot> ZhongShuList = ZS(nCount, bi, high, low);
+    memset(pOut, 0, nCount);
+    for (size_t i = 0; i < ZhongShuList.size(); i++)
     {
-        if (pIn[i] == 1)
+        Pivot ZhongShuOne = ZhongShuList.at(i);
+        for (int j = ZhongShuOne.s + 1; j <= ZhongShuOne.e - 1; j++)
         {
-            // 遇到线段高点，推入中枢算法
-            if (ZhongShuOne.PushHigh(i, pHigh[i]))
-            {
-                bool bValid = true;
-                float fHighValue;
-                int nHignIndex;
-                int nLowIndex;
-                int nLowIndexTemp;
-                int nHighCount = 0;
-                if (ZhongShuOne.nDirection == 1 && ZhongShuOne.nTerminate == -1) // 向上中枢被向下终结
-                {
-                    bValid = false;
-                    for (int x = ZhongShuOne.nStart; x <= ZhongShuOne.nEnd; x++)
-                    {
-                        if (pIn[x] == 1)
-                        {
-                            if (nHighCount == 0)
-                            {
-                                nHighCount++;
-                                fHighValue = pHigh[x];
-                                nHignIndex = x;
-                            }
-                            else
-                            {
-                                nHighCount++;
-                                if (pHigh[x] >= fHighValue)
-                                {
-                                    if (nHighCount > 2)
-                                    {
-                                        bValid = true;
-                                    }
-                                    fHighValue = pHigh[x];
-                                    nHignIndex = x;
-                                    nLowIndex = nLowIndexTemp;
-                                }
-                            }
-                        }
-                        else if (pIn[x] == -1)
-                        {
-                            nLowIndexTemp = x;
-                        }
-                    }
-                    if (bValid)
-                    {
-                        ZhongShuOne.nEnd = nLowIndex; // 中枢结束点移到最高点的前一个低点。
-                    }
-                    i = nHignIndex - 1;
-                }
-                else
-                {
-                    i = ZhongShuOne.nEnd - 1;
-                }
-                if (bValid)
-                {
-                    // 区段内更新算得的中枢方向数据
-                    for (int j = ZhongShuOne.nStart + 1; j <= ZhongShuOne.nEnd - 1; j++)
-                    {
-                        pOut[j] = (float) ZhongShuOne.nDirection;
-                    }
-
-                }
-
-                ZhongShuOne.Reset();
-            }
-        }
-        else if (pIn[i] == -1)
-        {
-            // 遇到线段低点，推入中枢算法
-            if (ZhongShuOne.PushLow(i, pLow[i]))
-            {
-                bool bValid = true;
-                float fLowValue;
-                int nLowIndex;
-                int nHighIndex;
-                int nHighIndexTemp;
-                int nLowCount = 0;
-                if (ZhongShuOne.nDirection == -1 && ZhongShuOne.nTerminate == 1) // 向下中枢被向上终结
-                {
-                    bValid = false;
-                    for (int x = ZhongShuOne.nStart; x <= ZhongShuOne.nEnd; x++)
-                    {
-                        if (pIn[x] == -1)
-                        {
-                            if (nLowCount == 0)
-                            {
-                                nLowCount++;
-                                fLowValue = pLow[x];
-                                nLowIndex = x;
-                            }
-                            else
-                            {
-                                nLowCount++;
-                                if (pLow[x] <= fLowValue)
-                                {
-                                    if (nLowCount > 2)
-                                    {
-                                        bValid = true;
-                                    }
-                                    fLowValue = pLow[x];
-                                    nLowIndex = x;
-                                    nHighIndex = nHighIndexTemp;
-                                }
-                            }
-                        }
-                        else if (pIn[x] == 1)
-                        {
-                            nHighIndexTemp = x;
-                        }
-                    }
-                    if (bValid)
-                    {
-                        ZhongShuOne.nEnd = nHighIndex; // 中枢结束点移到最高点的前一个低点。
-                    }
-                    i = nLowIndex - 1;
-                }
-                else
-                {
-                    i = ZhongShuOne.nEnd - 1;
-                }
-                if (bValid)
-                {
-                    // 区段内更新算得的中枢方向数据
-                    for (int j = ZhongShuOne.nStart + 1; j <= ZhongShuOne.nEnd - 1; j++)
-                    {
-                        pOut[j] = (float) ZhongShuOne.nDirection;
-                    }
-
-                }
-
-                ZhongShuOne.Reset();
-            }
+            pOut[j] = (float)ZhongShuOne.direction;
         }
     }
-    if (ZhongShuOne.bValid)
+}
+
+//=============================================================================
+// 输出函数9号：同方向的第几个中枢
+//=============================================================================
+void Func9(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
+{
+    std::vector<float> bi(pIn, pIn + nCount);
+    std::vector<float> high(pHigh, pHigh + nCount);
+    std::vector<float> low(pLow, pLow + nCount);
+    std::vector<Pivot> ZhongShuList = ZS(nCount, bi, high, low);
+    memset(pOut, 0, nCount);
+    for (size_t i = 0; i < ZhongShuList.size(); i++)
     {
-        // 区段内更新算得的中枢方向数据
-        for (int j = ZhongShuOne.nStart + 1; j <= ZhongShuOne.nEnd - 1; j++)
+        Pivot ZhongShuOne = ZhongShuList.at(i);
+        float c = 1;
+        for (int j = i - 1; j >= 0; j--)
         {
-            pOut[j] = (float) ZhongShuOne.nDirection;
+            if (ZhongShuList.at(j).direction = ZhongShuList.at(i).direction)
+            {
+                c++;
+            }
+            else
+            {
+                break;
+            }
+        }
+        for (int j = ZhongShuOne.s + 1; j <= ZhongShuOne.e - 1; j++)
+        {
+            pOut[j] = c;
         }
     }
 }
 
 static PluginTCalcFuncInfo Info[] =
-{
-    { 1, &Func1},
-    { 2, &Func2},
-    { 3, &Func3},
-    { 4, &Func4},
-    { 5, &Func5},
-    { 6, &Func6},
-    { 7, &Func7},
-    { 8, &Func8},
-    { 0, NULL}
-};
+    {
+        {1, &Func1},
+        {2, &Func2},
+        {3, &Func3},
+        {4, &Func4},
+        {5, &Func5},
+        {6, &Func6},
+        {7, &Func7},
+        {8, &Func8},
+        {9, &Func9},
+        {0, NULL}};
 
 BOOL RegisterTdxFunc(PluginTCalcFuncInfo **pInfo)
 {

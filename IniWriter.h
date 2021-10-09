@@ -12,6 +12,7 @@ public:
     void WriteFloat(LPCTSTR szSection, LPCTSTR szKey, float fltValue);
     void WriteBoolean(LPCTSTR szSection, LPCTSTR szKey, bool bolValue);
     void WriteString(LPCTSTR szSection, LPCTSTR szKey, LPCTSTR szValue);
+
 private:
     TCHAR m_szFileName[255];
 };

@@ -6,37 +6,45 @@
 
 using namespace std;
 
-void Bi1(int nCount, float *pOut, float *pHigh, float *pLow, float *pIgnore) {
+std::vector<float> Bi1(int nCount, std::vector<float> pHigh, std::vector<float> pLow)
+{
+    std::vector<float> pOut(nCount);
     KxianChuLi kxianChuLi;
-    for (int i = 0; i < nCount; i++) {
+    for (int i = 0; i < nCount; i++)
+    {
         kxianChuLi.add(pHigh[i], pLow[i]);
     }
     for (unsigned int i = 1; i < kxianChuLi.kxianList.size(); i++)
     {
-       if (kxianChuLi.kxianList.at(i-1).fangXiang != kxianChuLi.kxianList.at(i).fangXiang)
-       {
-           if (kxianChuLi.kxianList.at(i-1).fangXiang == 1)
-           {
-               pOut[kxianChuLi.kxianList.at(i-1).zhongJian] = 1;
-           } else if (kxianChuLi.kxianList.at(i-1).fangXiang == -1)
-           {
-                pOut[kxianChuLi.kxianList.at(i-1).zhongJian] = -1;
-           }
-       }
+        if (kxianChuLi.kxianList.at(i - 1).fangXiang != kxianChuLi.kxianList.at(i).fangXiang)
+        {
+            if (kxianChuLi.kxianList.at(i - 1).fangXiang == 1)
+            {
+                pOut[kxianChuLi.kxianList.at(i - 1).zhongJian] = 1;
+            }
+            else if (kxianChuLi.kxianList.at(i - 1).fangXiang == -1)
+            {
+                pOut[kxianChuLi.kxianList.at(i - 1).zhongJian] = -1;
+            }
+        }
     }
-    if(kxianChuLi.kxianList.back().fangXiang == 1)
+    if (kxianChuLi.kxianList.back().fangXiang == 1)
     {
         pOut[kxianChuLi.kxianList.back().zhongJian] = 1;
     }
-    else if(kxianChuLi.kxianList.back().fangXiang == -1)
+    else if (kxianChuLi.kxianList.back().fangXiang == -1)
     {
         pOut[kxianChuLi.kxianList.back().zhongJian] = -1;
     }
+    return pOut;
 }
 
-void Bi2(int nCount, float *pOut, float *pHigh, float *pLow, float *pIgnore) {
+std::vector<float> Bi2(int nCount, std::vector<float> pHigh, std::vector<float> pLow)
+{
+    std::vector<float> pOut(nCount);
     KxianChuLi kxianChuLi;
-    for (int i = 0; i < nCount; i++) {
+    for (int i = 0; i < nCount; i++)
+    {
         kxianChuLi.add(pHigh[i], pLow[i]);
     }
     BiChuLi biChuLi;
@@ -52,4 +60,5 @@ void Bi2(int nCount, float *pOut, float *pHigh, float *pLow, float *pIgnore) {
             pOut[(*iter).kxianList.back().zhongJian] = -1;
         }
     }
+    return pOut;
 }

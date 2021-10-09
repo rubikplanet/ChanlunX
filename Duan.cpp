@@ -1,9 +1,9 @@
 ﻿#include <vector>
 #include "Duan.h"
 
-
-void Duan1(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
+std::vector<float> Duan1(int nCount, std::vector<float> pIn, std::vector<float> pHigh, std::vector<float> pLow)
 {
+    std::vector<float> pOut(nCount);
     int nState = 0;
     int nLastD = 0; // 前一个向下线段的底
     int nLastG = 0; // 前一个向上线段的顶
@@ -20,7 +20,8 @@ void Duan1(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
             fTop1 = fTop2;
             fTop2 = pHigh[i];
         }
-        else if (pIn[i] == -1) {
+        else if (pIn[i] == -1)
+        {
             fBot1 = fBot2;
             fBot2 = pLow[i];
         }
@@ -141,11 +142,12 @@ void Duan1(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
             }
         }
     }
-
+    return pOut;
 }
 
-void Duan2(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
+std::vector<float> Duan2(int nCount, std::vector<float> pIn, std::vector<float> pHigh, std::vector<float> pLow)
 {
+    std::vector<float> pOut(nCount);
     int nState = 0;
     int nLastD = 0; // 前一个向下线段的底
     int nLastG = 0; // 前一个向上线段的顶
@@ -160,7 +162,8 @@ void Duan2(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
             fTop1 = fTop2;
             fTop2 = pHigh[i];
         }
-        else if (pIn[i] == -1) {
+        else if (pIn[i] == -1)
+        {
             fBot1 = fBot2;
             fBot2 = pLow[i];
         }
@@ -235,4 +238,5 @@ void Duan2(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
             }
         }
     }
+    return pOut;
 }

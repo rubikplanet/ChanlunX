@@ -1,10 +1,10 @@
 ﻿#ifndef __DUAN_H__
 #define __DUAN_H__
 
-#pragma pack(push,1)
+#pragma pack(push, 1)
 
-void Duan1(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow); // 特征序列画段
-void Duan2(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow); // 1+1终结画段
+std::vector<float> Duan1(int nCount, std::vector<float> pIn, std::vector<float> pHigh, std::vector<float> pLow); // ĚŘŐ÷ĐňÁĐ
+std::vector<float> Duan2(int nCount, std::vector<float> pIn, std::vector<float> pHigh, std::vector<float> pLow); // 1+1ÖŐ˝á
 
 #pragma pack(pop)
 

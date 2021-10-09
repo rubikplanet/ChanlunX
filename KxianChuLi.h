@@ -27,9 +27,9 @@ struct Kxian
 
 class KxianChuLi
 {
-  public:
+public:
     vector<KxianRaw> kxianRawList; // 元素K线表
-    vector<Kxian> kxianList; // 包含处理后的K线表
+    vector<Kxian> kxianList;       // 包含处理后的K线表
     void add(float gao, float di); // 添加一根K线高和低进行处理
 };
 
