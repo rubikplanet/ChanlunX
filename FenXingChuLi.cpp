@@ -285,7 +285,7 @@ FenXing FenXingChuLi::__find_fenxing(Kxian1 kxian) {
                         }
                     }
                 }
-               FenXingChuLi::comp_fx_gao = kxian.get_high();
+                FenXingChuLi::comp_fx_gao = kxian.get_high();
                 FenXingChuLi::comp_fx_gao_count += 1;
                 FenXingChuLi::status = FenXingStatus::AFTER_VERIFY_BOTTOM;
                 FenXingChuLi::last_bar = kxian;

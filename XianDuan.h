@@ -87,9 +87,10 @@ private:
     Bi right = Bi();
     BiChuLi bicl;
     XianDuan find_xianduan(Bi bi);
+    XianDuan __find_xianduan(Bi bi);
+    void __backroll(Bi bi);
     XianDuan failure_xd(Bi first_bi, Bi second_bi);
-    Bi generate_bi(Bi a, Bi b, Bi c);
-    Bi update_stop_bi(Bi a, FenXing fx);
+    ZhongShuChuLi zscl;
 public:
     XianDuanChuLi();
     void handle(vector<Kxian1>& kxlist);

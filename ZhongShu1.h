@@ -3,8 +3,10 @@
 
 using namespace std;
 
+enum class ZhongShuType {NONE, PANZHENG, UP, DOWN, NEW_HIGH, NEW_LOW, REVERSE_THREE_BUY, REVERSE_THREE_SELL, FINISH};
 class ZhongShu1 {
 private:
+    ZhongShuType type = ZhongShuType::NONE;
     float zhongshu_high = 0;
     float zhongshu_low = 0;
     float max_high = 0;
@@ -59,16 +61,30 @@ public:
     void set_output_bi(Bi bi) {
         this->output_bi = bi;
     }
+
+    ZhongShuType get_type() {
+        return(this->type);
+    }
+
+    Bi get_input() {
+        return(this->input_bi);
+    }
+
+    void set_type(ZhongShuType type) {
+        this->type = type;
+    }
 };
 
-enum class ZhongShuChuLiStatus {NONE, INPUT, OUTPUT, THREE_BUY, THREE_SELL};
+enum class ZhongShuChuLiStatus {NONE, TOP_DOWN, BOTTOM_UP,  INPUT, OUTPUT, THREE_BUY, THREE_SELL, FINISH, AFTER_THREE_BUY, AFTER_THREE_SELL};
 
 class ZhongShuChuLi {
 private:
     ZhongShu1 zhongshu;
     ZhongShuChuLiStatus status;
 public:
+    ZhongShuChuLi();
     ZhongShuChuLi(ZhongShu1 zs);
     ZhongShu1 find_zhongshu(Bi bi);
     void set_status(ZhongShuChuLiStatus st);
+    Bi generate_bi(Bi bi);
 };

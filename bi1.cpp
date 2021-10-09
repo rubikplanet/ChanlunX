@@ -121,11 +121,14 @@ Bi BiChuLi::__find_fenxing(FenXing fx) {
         case FenXingType::FAILURE_VERIFY_BOTTOM:
             if (!this->keyBiList.empty()) {
                 this->keyBiList.pop_back();
-                this->last_bi = this->keyBiList.back();
-                if (this->last_bi.get_type() != BiType::NONE) {
-                    this->last_fx = this->last_bi.get_stop_fx();
+                if (!this->keyBiList.empty()) {
+                    this->last_bi = this->keyBiList.back();
+                    if (this->last_bi.get_type() != BiType::NONE) {
+                        this->last_fx = this->last_bi.get_stop_fx();
+                    }
                 }
                 else {
+                    this->last_bi = Bi();
                     this->last_fx = FenXing();
                 }
             }
@@ -140,11 +143,14 @@ Bi BiChuLi::__find_fenxing(FenXing fx) {
         case FenXingType::FAILURE_VERIFY_TOP:
             if (!this->keyBiList.empty()) {
                 this->keyBiList.pop_back();
-                this->last_bi = this->keyBiList.back();
-                if (this->last_bi.get_type() != BiType::NONE) {
-                    this->last_fx = this->last_bi.get_stop_fx();
+                if (!this->keyBiList.empty()) {
+                    this->last_bi = this->keyBiList.back();
+                    if (this->last_bi.get_type() != BiType::NONE) {
+                        this->last_fx = this->last_bi.get_stop_fx();
+                    }
                 }
                 else {
+                    this->last_bi = Bi();
                     this->last_fx = FenXing();
                 }
             }
