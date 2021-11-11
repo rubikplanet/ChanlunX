@@ -10,24 +10,23 @@ using namespace std;
 //包含处理后的K线
 
 //K线方向
-#define Kxian_UP        1   
-#define Kxian_DOWN      -1
-
+enum class Direction {UP, DOWN};
 class Kxian1
 {
 private:
     float gao;
     float di;
-    int fangxiang;
+    Direction fangxiang;
     int position; /*从起始K线开始的位置 */
+
 public:
     Kxian1() {
         this->di = 0;
         this->gao = 0;
-        this->fangxiang = 1;
+        this->fangxiang = Direction::UP;
         this->position = 0;
     }
-    Kxian1(float gao, float di, int direction, int position) {
+    Kxian1(float gao, float di, Direction direction, int position) {
         this->di = di;
         this->gao = gao;
         this->fangxiang = direction;
@@ -48,7 +47,7 @@ public:
         return(this->di);
     }
 
-    int get_direction() {
+    Direction get_direction() {
         return(this->fangxiang);
     }
     int get_position() {
@@ -63,7 +62,7 @@ public:
         this->di = low;
     }
 
-    void set_direction(int direction) {
+    void set_direction(Direction direction) {
         this->fangxiang = direction;
     }
 
@@ -79,6 +78,7 @@ class BaoHanChuLi
       vector<Kxian1> kxianList;
       Kxian1 add(float gao, float di);
       int count = 0;
+      void handle();
 };
 
 #pragma pack(pop)

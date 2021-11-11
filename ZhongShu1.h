@@ -58,6 +58,10 @@ public:
         return(this->min_low);
     }
 
+    Bi get_output_bi() {
+        return(this->output_bi);
+    }
+
     void set_output_bi(Bi bi) {
         this->output_bi = bi;
     }

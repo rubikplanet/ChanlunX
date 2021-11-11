@@ -23,7 +23,7 @@ BOOL APIENTRY DllMain( HANDLE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
 //=============================================================================
 void Func1(int nCount, float *pOut, float *pHigh, float *pLow, float *pIgnore)
 {
-    Bi1(nCount, pOut, pHigh, pLow, pIgnore);
+    Bi4_fenxing(nCount, pOut, pHigh, pLow, pIgnore);
 }
 
 //=============================================================================
@@ -31,7 +31,7 @@ void Func1(int nCount, float *pOut, float *pHigh, float *pLow, float *pIgnore)
 //=============================================================================
 void Func2(int nCount, float *pOut, float *pHigh, float *pLow, float *pIgnore)
 {
-    Bi2(nCount, pOut, pHigh, pLow, pIgnore);
+    Bi4_bi(nCount, pOut, pHigh, pLow, pIgnore);
 }
 
 //=============================================================================
@@ -39,7 +39,7 @@ void Func2(int nCount, float *pOut, float *pHigh, float *pLow, float *pIgnore)
 //=============================================================================
 void Func3(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
 {
-    Duan1(nCount, pOut, pIn, pHigh, pLow);
+    Bi4_xianduan(nCount, pOut, pIn, pHigh, pLow);
 }
 
 //=============================================================================
@@ -685,12 +685,17 @@ void Func8(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
 
 void Func9(int nCount, float* pOut, float* pHigh, float* pLow, float* pIgnore)
 {
-    Bi3_xianduan(nCount, pOut, pHigh, pLow, pIgnore);
+    Bi3_fenxing(nCount, pOut, pHigh, pLow, pIgnore);
 }
 
 void Func10(int nCount, float* pOut, float* pHigh, float* pLow, float* pIgnore)
 {
-    Bi4(nCount, pOut, pHigh, pLow, pIgnore);
+    Bi3_bi(nCount, pOut, pHigh, pLow, pIgnore);
+}
+
+void Func11(int nCount, float* pOut, float* pHigh, float* pLow, float* pIgnore)
+{
+    Bi3_xianduan(nCount, pOut, pHigh, pLow, pIgnore);
 }
 
 static PluginTCalcFuncInfo Info[] =
@@ -705,6 +710,7 @@ static PluginTCalcFuncInfo Info[] =
     { 8, &Func8},
     { 9, &Func9},
     {10, &Func10},
+    {11, &Func11},
     { 0, NULL}
 };
 

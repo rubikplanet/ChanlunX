@@ -143,47 +143,23 @@ ZhongShu1 ZhongShuChuLi::find_zhongshu(Bi bi) {
 
     case ZhongShuChuLiStatus::INPUT:
         if (input_bi.get_type() == BiType::UP) {
-            if (bi.get_low() < input_bi.get_low()) {
-                new_bi = this->generate_bi(bi);
-                this->zhongshu.biList.push_back(new_bi);
-                this->zhongshu.set_type(ZhongShuType::NEW_LOW);
-                return(this->zhongshu);
+            if (bi.get_high() >= this->zhongshu.get_zhongshu_high()) {
+                this->set_status(ZhongShuChuLiStatus::TOP_DOWN);
             }
             else {
-                if (bi.get_low() >= this->zhongshu.get_zhongshu_low()) {
-                    this->zhongshu.biList.push_back(bi);
-                    this->set_status(ZhongShuChuLiStatus::INPUT);
-                    return(zs);
-                }
-                else {
-                    this->zhongshu.biList.push_back(bi);
-                    this->set_status(ZhongShuChuLiStatus::BOTTOM_UP);
-                    return(zs);
-                }
+                this->set_status(ZhongShuChuLiStatus::INPUT);
             }
         }
         else {
-            if (input_bi.get_type() == BiType::DOWN) {
-                if (bi.get_high() > input_bi.get_high()) {
-                    new_bi = this->generate_bi(bi);
-                    this->zhongshu.biList.push_back(new_bi);
-                    this->zhongshu.set_type(ZhongShuType::NEW_HIGH);
-                    return(this->zhongshu);
-                }
-                else {
-                    if (bi.get_high() > this->zhongshu.get_zhongshu_high()) {
-                        this->zhongshu.biList.push_back(bi);
-                        this->set_status(ZhongShuChuLiStatus::TOP_DOWN);
-                        return(zs);
-                    }
-                    else {
-                        this->zhongshu.biList.push_back(bi);
-                        this->set_status(ZhongShuChuLiStatus::INPUT);
-                        return(zs);
-                    }
-                }
+            if (bi.get_low() <= this->zhongshu.get_zhongshu_low()) {
+                this->set_status(ZhongShuChuLiStatus::BOTTOM_UP);
+            }
+            else {
+                this->set_status(ZhongShuChuLiStatus::INPUT);
             }
         }
+        this->zhongshu.biList.push_back(bi);
+        return(zs);
         break;
 
     case ZhongShuChuLiStatus::FINISH:

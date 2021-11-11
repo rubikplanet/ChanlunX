@@ -21,21 +21,6 @@ void BiChuLi::handle(vector<Kxian1>& kxianList) {
             this->biList.push_back(bi);
         }
     }
-    if (!this->keyBiList.empty()) {
-        Bi start_bi = this->keyBiList.back();
-        int start_num = 0;
-        count = this->biList.size();
-        for (int i = 0; i < count; i++) {
-            if (this->biList[i] == start_bi) {
-                start_num = i + 1;
-                break;
-            }
-        }
-
-        for (int i = start_num; i < count; i++) {
-            this->keyBiList.push_back(this->biList[i]);
-        }
-    }
 }
 
 Bi BiChuLi::find_new_bi(FenXing stop_fx) {
@@ -43,14 +28,16 @@ Bi BiChuLi::find_new_bi(FenXing stop_fx) {
     Bi bi = Bi();
     if (!this->keyBiList.empty()) {
         last_bi = this->keyBiList.back();
-        this->keyBiList.pop_back();
-        bi = Bi(last_bi.get_start_fx(), stop_fx);
-        this->keyBiList.push_back(bi);
-        if (bi.get_type() == BiType::UP)
-            bi.set_type(BiType::NEW_UP);
-        else
-            bi.set_type(BiType::NEW_DOWN);
-        this->last_fx = stop_fx;
+        if (!this->keyBiList.empty()) {
+            this->keyBiList.pop_back();
+            bi = Bi(last_bi.get_start_fx(), stop_fx);
+            this->keyBiList.push_back(bi);
+            if (bi.get_type() == BiType::UP)
+                bi.set_type(BiType::NEW_UP);
+            else
+                bi.set_type(BiType::NEW_DOWN);
+            this->last_fx = stop_fx;
+        }
     }
     return(bi);
 }
@@ -178,15 +165,17 @@ Bi BiChuLi::__find_fenxing(FenXing fx) {
             break;
 
         case FenXingType::FAILURE_BOTTOM:
-            fx.set_type(FenXingType::BOTTOM);
-            bi = Bi(this->last_fx, fx);
-            bi.set_type(BiType::FAILURE_TEMP_DOWN);
+            if (last_fx_type == FenXingType::VERIFY_TOP) {
+                bi = Bi(this->last_fx, fx);
+                bi.set_type(BiType::FAILURE_TEMP_DOWN);
+            }
             break;
 
         case FenXingType::FAILURE_TOP:
-            fx.set_type(FenXingType::TOP);
-            bi = Bi(this->last_fx, fx);
-            bi.set_type(BiType::FAILURE_TEMP_UP);
+            if (last_fx_type == FenXingType::VERIFY_BOTTOM) {
+                bi = Bi(this->last_fx, fx);
+                bi.set_type(BiType::FAILURE_TEMP_UP);
+            }
             break;
         }
     }
@@ -217,12 +206,13 @@ void Bi3_bi(int nCount, float* pOut, float* pHigh, float* pLow, float* pIn) {
     for (int i = count - 1; i > 0; i--) {
         Bi bi = bichuli.biList[i];
         int start_pos = bi.get_stop_fx().get_middle().get_position();
+        int stop_pos = bi.get_stop_fx().get_free().get_position();
         switch (bi.get_type()) {
         case BiType::UP:
-            pOut[start_pos] = 1;
+            pOut[start_pos] = 3;
             break;
         case BiType::DOWN:
-            pOut[start_pos] = -1;
+            pOut[start_pos] = -3;
             break;
         case BiType::FAILURE_UP:
             pOut[start_pos] = 4;
@@ -231,85 +221,64 @@ void Bi3_bi(int nCount, float* pOut, float* pHigh, float* pLow, float* pIn) {
             pOut[start_pos] = -4;
             break;
         case BiType::TEMP_DOWN:
-            pOut[start_pos] = -2;
+            pOut[start_pos] = -1;
             break;
         case BiType::FAILURE_TEMP_DOWN:
-            pOut[start_pos] = -3;
+            pOut[start_pos] = -2;
             break;
         case BiType::TEMP_UP:
-            pOut[start_pos] = 2;
+            pOut[start_pos] = 1;
             break;
         case BiType::FAILURE_TEMP_UP:
-            pOut[start_pos] = 3;
+            pOut[start_pos] = 2;
             break;
         }
     }
 }
 
-void Bi3_fenxing(int nCount, float *pOut, float *pHigh, float *pLow, float *pIn) {
+void Bi4_bi(int nCount, float* pOut, float* pHigh, float* pLow, float* pIn) {
     BaoHanChuLi baohanChuli;
     for (int i = 0; i < nCount; i++) {
         baohanChuli.add(pHigh[i], pLow[i]);
     }
 
-    FenXingChuLi fenXingChuLi;
-    fenXingChuLi.handle(baohanChuli.kxianList);
+    BiChuLi bichuli;
+    bichuli.handle(baohanChuli.kxianList);
 
     for (int i = 0; i < nCount; i++) {
         pOut[i] = 0;
     }
 
-    int position_start, position_stop;
-    unsigned int count = fenXingChuLi.fenXingList.size();
-    if (count == 0) {
-        return;
-    }
-    bool find_top_bottom_flag = true;
-    for (unsigned int i = count - 1; i > 0; i--) {
-        FenXing fx = fenXingChuLi.fenXingList[i];
-        position_start = fx.get_start_position();
-        position_stop = fx.get_stop_position();
-        if (find_top_bottom_flag) {
-            if (fx.get_type() == FenXingType::VERIFY_BOTTOM || fx.get_type() == FenXingType::VERIFY_TOP) {
-                find_top_bottom_flag = false;
-            }
+    unsigned int count = bichuli.biList.size();
+    for (int i = count - 1; i > 0; i--) {
+        Bi bi = bichuli.biList[i];
+        int start_pos = bi.get_stop_fx().get_middle().get_position();
+        int stop_pos = bi.get_stop_fx().get_free().get_position();
+        switch (bi.get_type()) {
+        case BiType::UP:
+            pOut[stop_pos] = 3;
+            break;
+        case BiType::DOWN:
+            pOut[stop_pos] = -3;
+            break;
+        case BiType::FAILURE_UP:
+            pOut[stop_pos] = 4;
+            break;
+        case BiType::FAILURE_DOWN:
+            pOut[stop_pos] = -4;
+            break;
+        case BiType::TEMP_DOWN:
+            pOut[stop_pos] = -1;
+            break;
+        case BiType::FAILURE_TEMP_DOWN:
+            pOut[stop_pos] = -2;
+            break;
+        case BiType::TEMP_UP:
+            pOut[stop_pos] = 1;
+            break;
+        case BiType::FAILURE_TEMP_UP:
+            pOut[stop_pos] = 2;
+            break;
         }
-        if (pOut[position_start] == 0) {
-            switch (fx.get_type()) {
-            case FenXingType::BOTTOM:
-                if (find_top_bottom_flag)
-                    pOut[position_start] = -3;
-                break;
-            case FenXingType::FAILURE_BOTTOM:
-                if (find_top_bottom_flag)
-                    pOut[position_start] = -2;
-                break;
-            case FenXingType::VERIFY_BOTTOM:
-                pOut[position_start] = -1;
-                break;
-            case FenXingType::FAILURE_VERIFY_BOTTOM:
-                pOut[position_start] = -4;
-                break;
-            case FenXingType::TOP:
-                if (find_top_bottom_flag)
-                    pOut[position_start] = 3;
-                break;
-            case FenXingType::FAILURE_TOP:
-                if (find_top_bottom_flag)
-                    pOut[position_start] = 2;
-                break;
-            case FenXingType::VERIFY_TOP:
-                pOut[position_start] = 1;
-                break;
-            case FenXingType::FAILURE_VERIFY_TOP:
-                pOut[position_start] = 4;
-                break;
-            }
-        }
-
     }
-}
-
-void Bi4(int nCount, float* pOut, float* pHigh, float* pLow, float* pIn) {
-    Bi3_fenxing(nCount, pOut, pHigh, pLow, pIn);
 }
