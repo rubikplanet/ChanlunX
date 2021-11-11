@@ -297,11 +297,21 @@ FindXianDuanReturn XianDuanChuLi::__find_xianduan(Bi bi) {
                 this->status = XianDuanChuLiStatus::AFTER_MIDDLE;
             }
             else {
-                this->start = bi.generate_bi(this->start, this->left, this->after_left);
-                this->left = this->middle;
-                this->after_left = this->after_middle;
-                this->middle = bi;
-                this->status = XianDuanChuLiStatus::AFTER_MIDDLE;
+                if (this->start.get_type() == BiType::UP) {
+                    this->start = bi.generate_bi(this->start, this->left, this->after_left);
+                    this->left = this->middle;
+                    this->after_left = this->after_middle;
+                    this->middle = bi;
+                    this->status = XianDuanChuLiStatus::AFTER_MIDDLE;
+                }
+                else {
+                    //反向顶分型
+                    this->left = bi.generate_bi(this->left, this->after_left, this->middle);
+                    this->after_left = this->after_middle;
+                    this->middle = bi;
+                    this->status = XianDuanChuLiStatus::AFTER_MIDDLE;
+                }
+
             }
         }
         else {
@@ -321,11 +331,21 @@ FindXianDuanReturn XianDuanChuLi::__find_xianduan(Bi bi) {
                 this->status = XianDuanChuLiStatus::AFTER_MIDDLE;
             }
             else {
-                this->start = bi.generate_bi(this->start, this->left, this->after_left);
-                this->left = this->middle;
-                this->after_left = this->after_middle;
-                this->middle = bi;
-                this->status = XianDuanChuLiStatus::AFTER_MIDDLE;
+                if (this->start.get_type() == BiType::DOWN) {
+                    this->start = bi.generate_bi(this->start, this->left, this->after_left);
+                    this->left = this->middle;
+                    this->after_left = this->after_middle;
+                    this->middle = bi;
+                    this->status = XianDuanChuLiStatus::AFTER_MIDDLE;
+                }
+                else {
+                    //反向底分型
+                    this->left = bi.generate_bi(this->left, this->after_left, this->middle);
+                    this->after_left = this->after_middle;
+                    this->middle = bi;
+                    this->status = XianDuanChuLiStatus::AFTER_MIDDLE;
+                }
+
             }
         }
         break;
