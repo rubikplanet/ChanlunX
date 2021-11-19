@@ -417,6 +417,7 @@ FenXing FenXingChuLi::__find_fenxing(Kxian1 kxian) {
         break;
 
     case FenXingChuLiStatus::FREE:
+        /*
         if (this->fx.get_type() == FenXingType::VERIFY_TOP && kxian.get_high() > this->fx.get_high()) {
             //创新高
             tmp_fx = this->fx;
@@ -438,6 +439,8 @@ FenXing FenXingChuLi::__find_fenxing(Kxian1 kxian) {
                 tmp_fx = this->__free_process(kxian);
             }
         }
+        */
+        tmp_fx = this->__free_process(kxian);
         break;
     }
     this->last_bar = kxian;
@@ -536,10 +539,24 @@ FenXing FenXingChuLi::__free_process(Kxian1 kxian) {
                     if (kxian.get_high() < this->last_bar.get_low() + 0.01) {
                         //有缺口
                         this->comp_fx_di_count = 4;
+                        tmp_fx = this->temp_fx;
+                        tmp_fx.set_type(FenXingType::VERIFY_TOP);
+                        tmp_fx.set_free(kxian);
+                        this->left = this->last_bar;
+                        this->middle = kxian;
+                        this->status = FenXingChuLiStatus::RIGHT;
                     }
                     else {
                         this->comp_fx_di = kxian.get_low();
                         this->comp_fx_di_count++;
+                        if (this->comp_fx_di >= 4) {
+                            tmp_fx = this->temp_fx;
+                            tmp_fx.set_type(FenXingType::VERIFY_TOP);
+                            tmp_fx.set_free(kxian);
+                            this->left = this->last_bar;
+                            this->middle = kxian;
+                            this->status = FenXingChuLiStatus::RIGHT;
+                        }
                     }
                 }
             }
@@ -568,11 +585,24 @@ FenXing FenXingChuLi::__free_process(Kxian1 kxian) {
             else {
                 if (kxian.get_high() > this->comp_fx_gao) {
                     if (kxian.get_low() > this->last_bar.get_high() + 0.01) {
-                        this->comp_fx_gao_count = 4;
+                        tmp_fx = this->temp_fx;
+                        tmp_fx.set_type(FenXingType::VERIFY_BOTTOM);
+                        tmp_fx.set_free(kxian);
+                        this->left = this->last_bar;
+                        this->middle = kxian;
+                        this->status = FenXingChuLiStatus::RIGHT;
                     }
                     else {
                         this->comp_fx_gao = kxian.get_high();
                         this->comp_fx_gao_count++;
+                        if (this->comp_fx_gao_count >= 4) {
+                            tmp_fx = this->temp_fx;
+                            tmp_fx.set_type(FenXingType::VERIFY_BOTTOM);
+                            tmp_fx.set_free(kxian);
+                            this->left = this->last_bar;
+                            this->middle = kxian;
+                            this->status = FenXingChuLiStatus::RIGHT;
+                        }
                     }
                 }
             }
