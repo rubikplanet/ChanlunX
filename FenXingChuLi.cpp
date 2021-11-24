@@ -362,6 +362,7 @@ FenXing FenXingChuLi::__find_fenxing(Kxian1 kxian) {
 
     case FenXingChuLiStatus::RIGHT:
         //分型处理
+        /*
         if (this->fx.get_type() == FenXingType::VERIFY_TOP) {
             //上一个分型为顶分型
             if (kxian.get_high() > this->fx.get_high()) {
@@ -407,13 +408,9 @@ FenXing FenXingChuLi::__find_fenxing(Kxian1 kxian) {
                 tmp_fx = this->__right_process(kxian);
             }
         }
-
-        /*
-        tmp_fx = this->__last_fx_process(kxian);
-        if (tmp_fx.get_type() == FenXingType::NONE) {
-            tmp_fx = this->__right_process(kxian);
-        }
         */
+   
+        tmp_fx = this->__right_process(kxian);
         break;
 
     case FenXingChuLiStatus::FREE:
@@ -473,7 +470,7 @@ FenXing FenXingChuLi::__right_process(Kxian1 kxian) {
             tmp_fx.set_free(kxian);
             if (gao == this->max_high) {
                 tmp_fx.set_high_low_type(HighLowType::NEW_HIGH);
-                this->comp_fx_di_count = 4;
+                this->comp_fx_di_count = 5;
             }
 
             return(tmp_fx);
@@ -503,7 +500,7 @@ FenXing FenXingChuLi::__right_process(Kxian1 kxian) {
             tmp_fx.set_free(kxian);
             if (di == this->min_low) {
                 tmp_fx.set_high_low_type(HighLowType::NEW_LOW);
-                this->comp_fx_gao_count = 4;
+                this->comp_fx_gao_count = 5;
             }
 
             return(tmp_fx);
@@ -526,7 +523,7 @@ FenXing FenXingChuLi::__free_process(Kxian1 kxian) {
             this->status = FenXingChuLiStatus::RIGHT;
         }
         else {
-            if (this->comp_fx_di_count >= 4) {
+            if (this->comp_fx_di_count >= 5) {
                 tmp_fx = this->temp_fx;
                 tmp_fx.set_type(FenXingType::VERIFY_TOP);
                 tmp_fx.set_free(kxian);
@@ -538,7 +535,7 @@ FenXing FenXingChuLi::__free_process(Kxian1 kxian) {
                 if (kxian.get_low() < this->comp_fx_di) {
                     if (kxian.get_high() < this->last_bar.get_low() + 0.01) {
                         //有缺口
-                        this->comp_fx_di_count = 4;
+                        this->comp_fx_di_count = 5;
                         tmp_fx = this->temp_fx;
                         tmp_fx.set_type(FenXingType::VERIFY_TOP);
                         tmp_fx.set_free(kxian);
@@ -549,7 +546,7 @@ FenXing FenXingChuLi::__free_process(Kxian1 kxian) {
                     else {
                         this->comp_fx_di = kxian.get_low();
                         this->comp_fx_di_count++;
-                        if (this->comp_fx_di >= 4) {
+                        if (this->comp_fx_di_count >= 5) {
                             tmp_fx = this->temp_fx;
                             tmp_fx.set_type(FenXingType::VERIFY_TOP);
                             tmp_fx.set_free(kxian);
@@ -574,7 +571,7 @@ FenXing FenXingChuLi::__free_process(Kxian1 kxian) {
             this->status = FenXingChuLiStatus::RIGHT;
         }
         else {
-            if (this->comp_fx_gao_count >= 4) {
+            if (this->comp_fx_gao_count >= 5) {
                 tmp_fx = this->temp_fx;
                 tmp_fx.set_type(FenXingType::VERIFY_BOTTOM);
                 tmp_fx.set_free(kxian);
@@ -585,6 +582,7 @@ FenXing FenXingChuLi::__free_process(Kxian1 kxian) {
             else {
                 if (kxian.get_high() > this->comp_fx_gao) {
                     if (kxian.get_low() > this->last_bar.get_high() + 0.01) {
+                        this->comp_fx_gao_count = 5;
                         tmp_fx = this->temp_fx;
                         tmp_fx.set_type(FenXingType::VERIFY_BOTTOM);
                         tmp_fx.set_free(kxian);
@@ -595,7 +593,7 @@ FenXing FenXingChuLi::__free_process(Kxian1 kxian) {
                     else {
                         this->comp_fx_gao = kxian.get_high();
                         this->comp_fx_gao_count++;
-                        if (this->comp_fx_gao_count >= 4) {
+                        if (this->comp_fx_gao_count >= 5) {
                             tmp_fx = this->temp_fx;
                             tmp_fx.set_type(FenXingType::VERIFY_BOTTOM);
                             tmp_fx.set_free(kxian);
