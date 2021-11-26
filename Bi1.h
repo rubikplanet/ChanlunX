@@ -14,9 +14,12 @@ private:
     BiType type = BiType::NONE;
     FenXing start_fx = FenXing();
     FenXing stop_fx = FenXing();
+    int start_pos, stop_pos, verify_stop_pos;
     float high = 0.0;
     float low = 0.0;
     float length = 0.0;
+    HighLowType high_low_type = HighLowType::NONE;
+
 public:
     Bi() {
         this->type = BiType::NONE;
@@ -25,6 +28,10 @@ public:
         this->high = 0;
         this->low = 0;
         this->length = 0;
+        this->start_pos = 0;
+        this->stop_pos = 0;
+        this->verify_stop_pos = 0;
+        
     }
 
     Bi(FenXing start, FenXing stop) {
@@ -43,6 +50,10 @@ public:
             }
         }
         this->length = this->high - this->low;
+        this->start_pos = this->start_fx.get_start_position();
+        this->stop_pos = this->stop_fx.get_start_position();
+        this->verify_stop_pos = this->stop_fx.get_stop_position();
+        this->high_low_type = stop.get_high_low_type();
     }
 
     BiType get_type() {
@@ -92,6 +103,22 @@ public:
     Bi update_stop_bi(Bi bi, FenXing stop_fx) {
         FenXing start_fx = bi.get_start_fx();
         return(Bi(start_fx, stop_fx));
+    }
+
+    int get_start_pos() {
+        return(this->start_pos);
+    }
+
+    int get_stop_pos() {
+        return(this->stop_pos);
+    }
+
+    int get_stop_verify_position() {
+        return(this->verify_stop_pos);
+    }
+
+    HighLowType get_high_low_type() {
+        return(this->high_low_type);
     }
 };
 

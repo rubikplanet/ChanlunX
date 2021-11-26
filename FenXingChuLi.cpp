@@ -199,7 +199,9 @@ FenXing FenXingChuLi::__highlow_process(Kxian1 kxian) {
             if (this->status == FenXingChuLiStatus::FREE) {
                     tmp_fx = this->temp_fx;
                     if (this->temp_fx.get_type() == FenXingType::BOTTOM) {
-                        tmp_fx.set_type(FenXingType::VERIFY_BOTTOM);
+                        if (this->comp_fx_gao_count >= 5) {
+                            tmp_fx.set_type(FenXingType::VERIFY_BOTTOM);
+                        }
                     }
                     else {
                         tmp_fx.set_type(FenXingType::FAILURE_TOP);
@@ -224,8 +226,11 @@ FenXing FenXingChuLi::__highlow_process(Kxian1 kxian) {
             if (this->status == FenXingChuLiStatus::FREE) {
                 if (this->temp_fx.get_type() != FenXingType::NONE) {
                     tmp_fx = this->temp_fx;
-                    if (this->temp_fx.get_type() == FenXingType::TOP)
-                        tmp_fx.set_type(FenXingType::VERIFY_TOP);
+                    if (this->temp_fx.get_type() == FenXingType::TOP) {
+                        if (this->comp_fx_di_count >= 5) {
+                            tmp_fx.set_type(FenXingType::VERIFY_TOP);
+                        }
+                    }
                     else
                         tmp_fx.set_type(FenXingType::FAILURE_BOTTOM);
                 }
@@ -582,6 +587,7 @@ FenXing FenXingChuLi::__free_process(Kxian1 kxian) {
             else {
                 if (kxian.get_high() > this->comp_fx_gao) {
                     if (kxian.get_low() > this->last_bar.get_high() + 0.01) {
+                        //缺口
                         this->comp_fx_gao_count = 5;
                         tmp_fx = this->temp_fx;
                         tmp_fx.set_type(FenXingType::VERIFY_BOTTOM);

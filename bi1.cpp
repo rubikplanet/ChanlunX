@@ -14,6 +14,7 @@ void BiChuLi::handle(vector<Kxian1>& kxianList) {
     Bi bi = Bi();
     this->fxcl.handle(kxianList);
     int count = this->fxcl.keyKxianList.size();
+
     for (int i = 0; i < count; i++) {
         FenXing fx = this->fxcl.keyKxianList[i];
         bi = this->__find_fenxing(fx);
@@ -203,7 +204,7 @@ void Bi3_bi(int nCount, float* pOut, float* pHigh, float* pLow, float* pIn) {
     }
 
     unsigned int count = bichuli.biList.size();
-    for (int i = count - 1; i > 0; i--) {
+    for (int i = count - 1; i >= 0; i--) {
         Bi bi = bichuli.biList[i];
         int start_pos = bi.get_stop_fx().get_middle().get_position();
         int stop_pos = bi.get_stop_fx().get_free().get_position();
@@ -250,7 +251,7 @@ void Bi4_bi(int nCount, float* pOut, float* pHigh, float* pLow, float* pIn) {
     }
 
     unsigned int count = bichuli.biList.size();
-    for (int i = count - 1; i > 0; i--) {
+    for (int i = count - 1; i >= 0; i--) {
         Bi bi = bichuli.biList[i];
         int start_pos = bi.get_stop_fx().get_middle().get_position();
         int stop_pos = bi.get_stop_fx().get_free().get_position();

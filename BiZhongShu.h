@@ -5,7 +5,7 @@
 using namespace std;
 
 enum class BiZhongShuType {NONE, PANZHENG, UP, DOWN, NEW_HIGH, NEW_LOW, REVERSE_THREE_BUY, REVERSE_THREE_SELL, THREE_BUY, THREE_SELL, FINISH};
-class BiZhongShu1 {
+class BiZhongShu {
 private:
     BiZhongShuType type = BiZhongShuType::NONE;
     float zhongshu_high = 0;
@@ -16,14 +16,14 @@ private:
     Bi output_bi = Bi();
 public:
     vector<Bi> bi_list;
-    BiZhongShu1() {
+    BiZhongShu() {
         zhongshu_high = 0;
         zhongshu_low = 0;
         max_high = 0;
         min_low = 0;
     }
 
-    BiZhongShu1(Bi in, Bi a,  Bi b, Bi c) {
+    BiZhongShu(Bi in, Bi a,  Bi b, Bi c) {
         this->input_bi = in;
         this->bi_list.push_back(a);
         this->bi_list.push_back(b);
@@ -58,11 +58,11 @@ public:
         return(this->min_low);
     }
 
-    Bi get_output_bi() {
+    Bi get_output_xd() {
         return(this->output_bi);
     }
 
-    void set_output_bi(Bi bi) {
+    void set_output_xd(Bi bi) {
         this->output_bi = bi;
     }
 
@@ -83,12 +83,12 @@ enum class BiZhongShuChuLiStatus {NONE, TOP_DOWN, BOTTOM_UP,  INPUT, OUTPUT, THR
 
 class BiZhongShuChuLi {
 private:
-    BiZhongShu1 zhongshu;
+    BiZhongShu zhongshu;
     BiZhongShuChuLiStatus status;
 public:
     BiZhongShuChuLi();
     BiZhongShuChuLi(Bi input, Bi xd1, Bi xd2, Bi xd3);
-    BiZhongShu1 find_zhongshu(Bi xd);
+    BiZhongShu find_zhongshu(Bi xd);
     void set_status(BiZhongShuChuLiStatus st);
-    Bi generate_xd(Bi xd);
+    Bi generate_bi(Bi xd);
 };

@@ -1,6 +1,5 @@
 ﻿#pragma once
 #include "bi1.h"
-#include "ZhongShu1.h"
 #include<vector>
 
 using namespace std;
@@ -9,11 +8,12 @@ enum class XianDuanType {NONE, TEMP_UP, TEMP_DOWN, FAILURE_TEMP_UP, FAILURE_TEMP
 class XianDuan {
 private:
     XianDuanType type = XianDuanType::NONE;
-    Bi start, left, after_left, middle, after_middle, right, after_right;
+    vector <Bi>bi_list;
     Bi start_bi, stop_bi;
     int start_pos, stop_pos, verify_pos;
     float high, low;
     float length;
+    HighLowType high_low_type;
 
 public:
     XianDuan() {
@@ -23,13 +23,10 @@ public:
         this->length = 0;
         this->start_bi = Bi();
         this->stop_bi = Bi();
-        this->left = Bi();
-        this->after_left = Bi();
-        this->middle = Bi();
-        this->after_middle = Bi();
         this->start_pos = 0;
         this->stop_pos = 0;
         this->verify_pos = 0;
+        this->high_low_type = HighLowType::NONE;
     }
 
     XianDuan(Bi start_bi, Bi stop_bi) {
@@ -55,6 +52,7 @@ public:
                 this->type = XianDuanType::UP;
             }
         }
+        this->high_low_type = stop_bi.get_high_low_type();
     }
 
     XianDuanType get_type() {
@@ -63,6 +61,14 @@ public:
 
     void set_type(XianDuanType xd_type) {
         this->type = xd_type;
+    }
+
+    float get_high() {
+        return(this->high);
+    }
+
+    float get_low() {
+        return(this->low);
     }
 
     Bi get_start_bi() {
@@ -91,9 +97,26 @@ public:
         else
             return(false);
     }
+
+    void save_bi_list(vector<Bi> bilist) {
+        this->bi_list = bilist;
+    }
+
+    vector<Bi> get_bi_list() {
+        return(this->bi_list);
+    }
+    XianDuan generate_xd(XianDuan xd1, XianDuan xd2, XianDuan xd3) {
+        Bi start_bi, stop_bi;
+        XianDuan tmp_xd;
+
+        start_bi = xd1.get_start_bi();
+        stop_bi = xd3.get_stop_bi();
+        tmp_xd = XianDuan(start_bi, stop_bi);
+        return(tmp_xd);
+    }
 };
 
-enum class XianDuanChuLiStatus { START, LEFT, AFTER_LEFT, MIDDLE_HIGHLOW, MIDDLE_NORMAL,  AFTER_MIDDLE, RIGHT_HIGHLOW, RIGHT_NORMAL, AFTER_RIGHT, FREE, AFTER_FREE};
+enum class XianDuanChuLiStatus { START, LEFT, AFTER_LEFT, MIDDLE_HIGHLOW, MIDDLE_NORMAL, LEFT_INCLUDE_MIDDLE,  AFTER_MIDDLE, RIGHT_HIGHLOW, RIGHT_NORMAL,  MIDDLE_INCLUDE_RIGHT, AFTER_RIGHT, FREE, AFTER_FREE};
 
 enum class FindXianDuanReturnType {None, Failure, One, Two, Three};
 struct FindXianDuanReturn {
@@ -123,13 +146,15 @@ private:
     FindXianDuanReturn find_xianduan(Bi bi);
     FindXianDuanReturn __find_xianduan(Bi bi);
     void __backroll(Bi bi);
-    XianDuan failure_xd(Bi first_bi, Bi second_bi);
-    ZhongShuChuLi zscl;
+    FindXianDuanReturn failure_xd(Bi first_bi, Bi second_bi);
     FindXianDuanReturn __right_process(Bi bi);
 public:
     XianDuanChuLi();
     void handle(vector<Kxian1>& kxlist);
+    vector<Bi> get_xd_bi_list();
+    
     vector<XianDuan> xianDuanList;
+    vector<XianDuan> key_xianduan_list;
 };
 
 void Bi3_xianduan(int nCount, float* pOut, float* pHigh, float* pLow, float* pIn);
