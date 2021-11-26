@@ -199,9 +199,7 @@ FenXing FenXingChuLi::__highlow_process(Kxian1 kxian) {
             if (this->status == FenXingChuLiStatus::FREE) {
                     tmp_fx = this->temp_fx;
                     if (this->temp_fx.get_type() == FenXingType::BOTTOM) {
-                        if (this->comp_fx_gao_count >= 5) {
                             tmp_fx.set_type(FenXingType::VERIFY_BOTTOM);
-                        }
                     }
                     else {
                         tmp_fx.set_type(FenXingType::FAILURE_TOP);
@@ -226,11 +224,8 @@ FenXing FenXingChuLi::__highlow_process(Kxian1 kxian) {
             if (this->status == FenXingChuLiStatus::FREE) {
                 if (this->temp_fx.get_type() != FenXingType::NONE) {
                     tmp_fx = this->temp_fx;
-                    if (this->temp_fx.get_type() == FenXingType::TOP) {
-                        if (this->comp_fx_di_count >= 5) {
+                    if (this->temp_fx.get_type() == FenXingType::TOP) 
                             tmp_fx.set_type(FenXingType::VERIFY_TOP);
-                        }
-                    }
                     else
                         tmp_fx.set_type(FenXingType::FAILURE_BOTTOM);
                 }
@@ -367,7 +362,6 @@ FenXing FenXingChuLi::__find_fenxing(Kxian1 kxian) {
 
     case FenXingChuLiStatus::RIGHT:
         //分型处理
-        /*
         if (this->fx.get_type() == FenXingType::VERIFY_TOP) {
             //上一个分型为顶分型
             if (kxian.get_high() > this->fx.get_high()) {
@@ -413,9 +407,6 @@ FenXing FenXingChuLi::__find_fenxing(Kxian1 kxian) {
                 tmp_fx = this->__right_process(kxian);
             }
         }
-        */
-   
-        tmp_fx = this->__right_process(kxian);
         break;
 
     case FenXingChuLiStatus::FREE:
@@ -538,7 +529,7 @@ FenXing FenXingChuLi::__free_process(Kxian1 kxian) {
             }
             else {
                 if (kxian.get_low() < this->comp_fx_di) {
-                    if (kxian.get_high() < this->last_bar.get_low() + 0.01) {
+                    if (kxian.get_high() < this->last_bar.get_low() - 0.01) {
                         //有缺口
                         this->comp_fx_di_count = 5;
                         tmp_fx = this->temp_fx;
