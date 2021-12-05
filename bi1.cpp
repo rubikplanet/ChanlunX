@@ -2,6 +2,7 @@
 #include <fstream>
 #include "Bi1.h"
 #include <vector>
+#include "OutputDebug.h"
 
 using namespace std;
 
