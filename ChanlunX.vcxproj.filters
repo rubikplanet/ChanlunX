@@ -4,31 +4,7 @@
     <ClCompile Include="C:\Users\cao__\source\repos\chanlun5\BaoHanChuLi.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\cao__\source\repos\chanlun5\Bi.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\cao__\source\repos\chanlun5\BiChuLi.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\cao__\source\repos\chanlun5\BiZhongShu.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\cao__\source\repos\chanlun5\BiZouShi.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\cao__\source\repos\chanlun5\Duan.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="C:\Users\cao__\source\repos\chanlun5\FenXingChuLi.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\cao__\source\repos\chanlun5\IniReader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\cao__\source\repos\chanlun5\IniWriter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\cao__\source\repos\chanlun5\KxianChuLi.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="C:\Users\cao__\source\repos\chanlun5\Main.cpp">
