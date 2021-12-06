@@ -59,7 +59,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\..\..\..\tdx4\T0002\dlls</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">c:\tdx4\t0002\dlls</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\Debug</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">ChanlunX</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.dll</TargetExt>
@@ -99,6 +99,7 @@
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;CMAKE_INTDIR="Debug";ChanlunX_EXPORTS</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
+      <AdditionalIncludeDirectories>C:\Users\cao__\source\repos\chanlun7\ChanlunX;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;CMAKE_INTDIR=\"Debug\";ChanlunX_EXPORTS</PreprocessorDefinitions>
@@ -309,8 +310,10 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClCompile Include="C:\Users\cao__\source\repos\chanlun5\FenXingChuLi.cpp" />
     <ClCompile Include="C:\Users\cao__\source\repos\chanlun5\Main.cpp" />
     <ClCompile Include="C:\Users\cao__\source\repos\chanlun5\XianDuan.cpp" />
-    <ClCompile Include="C:\Users\cao__\source\repos\chanlun5\ZhongShu.cpp" />
     <ClCompile Include="C:\Users\cao__\source\repos\chanlun5\bi1.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ChanlunZb.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

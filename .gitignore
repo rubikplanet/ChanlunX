@@ -6,7 +6,5 @@ build
 .settings
 .idea/
 cmake-build-debug/
-.vs
-ChanlunX.dir/
+.vs/
 Debug/
-Release/
