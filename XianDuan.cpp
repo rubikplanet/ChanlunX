@@ -1,5 +1,4 @@
 ﻿#include "XianDuan.h"
-#include "ZhongShu1.h"
 
 using namespace std;
 
@@ -28,30 +27,42 @@ void XianDuanChuLi::handle(vector<Kxian1>& kxianList) {
         if (ret_fd.type != FindXianDuanReturnType::None) {
             switch (ret_fd.type) {
             case FindXianDuanReturnType::One:
+                debug_xianduan(ret_fd.xd1);
                 this->xianDuanList.push_back(ret_fd.xd1);
                 if (ret_fd.xd1.get_type() == XianDuanType::UP || ret_fd.xd1.get_type() == XianDuanType::DOWN)
                     this->key_xianduan_list.push_back(ret_fd.xd1);
                 break;
             case FindXianDuanReturnType::Two:
+                debug_xianduan(ret_fd.xd1);
                 this->xianDuanList.push_back(ret_fd.xd1);
                 if (ret_fd.xd1.get_type() == XianDuanType::UP || ret_fd.xd1.get_type() == XianDuanType::DOWN)
                     this->key_xianduan_list.push_back(ret_fd.xd1);
+                debug_xianduan(ret_fd.xd2);
                 this->xianDuanList.push_back(ret_fd.xd2);
                 if (ret_fd.xd2.get_type() == XianDuanType::UP || ret_fd.xd2.get_type() == XianDuanType::DOWN)
                     this->key_xianduan_list.push_back(ret_fd.xd2);
                 break;
             case FindXianDuanReturnType::Three:
+                debug_xianduan(ret_fd.xd1);
                 this->xianDuanList.push_back(ret_fd.xd1);
                 if (ret_fd.xd1.get_type() == XianDuanType::UP || ret_fd.xd1.get_type() == XianDuanType::DOWN)
                     this->key_xianduan_list.push_back(ret_fd.xd1);
+                debug_xianduan(ret_fd.xd2);
                 this->xianDuanList.push_back(ret_fd.xd2);
                 if (ret_fd.xd2.get_type() == XianDuanType::UP || ret_fd.xd2.get_type() == XianDuanType::DOWN)
                     this->key_xianduan_list.push_back(ret_fd.xd2);
+                debug_xianduan(ret_fd.xd3);
                 this->xianDuanList.push_back(ret_fd.xd3);
                 if (ret_fd.xd3.get_type() == XianDuanType::UP || ret_fd.xd3.get_type() == XianDuanType::DOWN)
                     this->key_xianduan_list.push_back(ret_fd.xd3);
                 break;
             case FindXianDuanReturnType::Failure:
+                if (ret_fd.xd1.get_type() == XianDuanType::UP) 
+                    OutputDebugPrintf("FAILURE XD: UP %f %f", ret_fd.xd1.get_low(), ret_fd.xd1.get_high());
+                else {
+                    if (ret_fd.xd1.get_type() == XianDuanType::DOWN)
+                        OutputDebugPrintf("FAILURE XD: DOWN %f %f", ret_fd.xd1.get_high(), ret_fd.xd1.get_low());
+                }
                 if (!this->xianDuanList.empty()) {
                     Bi start_bi = this->xianDuanList.back().get_start_bi();
                     Bi stop_bi = ret_fd.xd1.get_stop_bi();
@@ -284,10 +295,66 @@ void XianDuanChuLi::__backroll(Bi bi) {
     }
 }
 
+void XianDuanChuLi::debug_xianduan(XianDuan xd) {
+    XianDuanType xd_type = xd.get_type();
+    switch (xd_type) {
+    case XianDuanType::UP:
+        OutputDebugPrintf("UP %f %f", xd.get_low(), xd.get_high());
+        break;
+    case XianDuanType::FAILURE_UP:
+        OutputDebugPrintf("FAILURE UP %f %f", xd.get_low(), xd.get_high());
+        break;
+    case XianDuanType::DOWN:
+        OutputDebugPrintf("DOWN %f %f", xd.get_high(), xd.get_low());
+        break;
+    case XianDuanType::FAILURE_DOWN:
+        OutputDebugPrintf("FAILURE DOWN %f %f", xd.get_high(), xd.get_low());
+        break;
+    }
+}
+
+char* get_xianduan_status(XianDuanChuLiStatus status) {
+    switch (status) {
+    case XianDuanChuLiStatus::START:
+        return("START");
+    case XianDuanChuLiStatus::LEFT:
+        return("LEFT");
+    case XianDuanChuLiStatus::AFTER_LEFT:
+        return("AFTER_LEFT");
+    case XianDuanChuLiStatus::MIDDLE_HIGHLOW:
+        return("MIDDLE_HIGHLOW");
+    case XianDuanChuLiStatus::MIDDLE_NORMAL:
+        return("MIDDLE_NORMAL");
+    case XianDuanChuLiStatus::AFTER_MIDDLE:
+        return("AFTER_MIDDLE");
+    case XianDuanChuLiStatus::RIGHT_HIGHLOW:
+        return("RIGHT_HIGHLOW");
+    case XianDuanChuLiStatus::RIGHT_NORMAL:
+        return("RIGHT_NORMAL");
+    case XianDuanChuLiStatus::AFTER_RIGHT:
+        return("AFTER_RIGHT");
+    case XianDuanChuLiStatus::FREE:
+        return("FREE");
+    case XianDuanChuLiStatus::AFTER_FREE:
+        return("AFTER_RIGHT");
+    case XianDuanChuLiStatus::LEFT_INCLUDE_MIDDLE:
+        return("LEFT_INCLUDE_MIDDLE");
+    case XianDuanChuLiStatus::MIDDLE_INCLUDE_RIGHT:
+        return("MIDDLE_INCLUDE_RIGHT");
+    default:
+        return("Not Process Item");
+    }
+}
+
+
 FindXianDuanReturn XianDuanChuLi::__find_xianduan(Bi bi) {
     XianDuan xd = XianDuan();
     FindXianDuanReturn ret_xd;
-    BiZhongShu1 zs = BiZhongShu1();
+
+    if (bi.get_type() == BiType::UP)
+        OutputDebugPrintf("%s 【UP %f  %f】", get_xianduan_status(this->status), bi.get_low(), bi.get_high());
+    else
+        OutputDebugPrintf("%s 【DOWN %f  %f】", get_xianduan_status(this->status), bi.get_high(), bi.get_low());
 
     switch (this->status) {
     case XianDuanChuLiStatus::START:

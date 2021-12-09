@@ -32,10 +32,17 @@ public:
         this->left = this->middle = this->right = this->free = Kxian1();
     }
 
-    FenXing(FenXingType type, float gao, float di, Kxian1 left, Kxian1 middle, Kxian1 right, Kxian1 free) {
-        this->type = type;
-        this->gao = gao;
-        this->di = di;
+    FenXing(Kxian1 left, Kxian1 middle, Kxian1 right, Kxian1 free) {
+        if (middle.get_high() > left.get_high()) {
+            this->type = FenXingType::TOP;
+            this->gao = middle.get_high();
+            this->di = min(left.get_low(), right.get_low());
+        }
+        else {
+            this->type = FenXingType::BOTTOM;
+            this->di = middle.get_low();
+            this->gao = max(left.get_high(), right.get_high());
+        }
         this->left = left;
         this->middle = middle;
         this->right = right;
@@ -102,20 +109,19 @@ public:
     }
 };
 
-enum class FenXingChuLiStatus { LEFT, MIDDLE, RIGHT, FREE };
+//enum class FenXingChuLiStatus { LEFT, MIDDLE, RIGHT, FREE };
+enum class FenXingChuLiStatus {ONE, TWO, THREE, FOUR, FIVE, SIX, FENXING_END};
 
 class FenXingChuLi {
 private:
-    static Kxian1 left, middle, right, free, last_bar;
+    //static Kxian1 left, middle, right, free, last_bar;
+    static Kxian1 one, two, three, four, five, six, last_bar;
     static float min_low, max_high;
     static FenXingChuLiStatus status;
     static float comp_fx_gao, comp_fx_di;
     static int comp_fx_gao_count, comp_fx_di_count;
     static FenXing fx, temp_fx, last_fx;
-    FenXing __right_process(Kxian1 kx);
-    FenXing __free_process(Kxian1 kx);
-    FenXing __last_fx_process(Kxian1 kx);
-    FenXing __highlow_process(Kxian1 kx);
+    bool __highlow_process(Kxian1 kx);
     FenXing __quekou_process(Kxian1 kx);
 
 public:

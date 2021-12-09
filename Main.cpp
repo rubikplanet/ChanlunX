@@ -1,11 +1,13 @@
 ﻿#include "Main.h"
 #include <iostream>
 #include <fstream>
+#include <Windows.h>
+#include "ChanlunZb.h"
 
 using namespace std;
 
 //定义DLL程序的入口函数
-BOOL APIENTRY DllMain( HANDLE hModule, DWORD ul_reason_for_call, LPVOID lpReserved)
+BOOL  APIENTRY DllMain( HANDLE hModule, DWORD ul_reason_for_call, LPVOID lpReserved)
 {
     switch (ul_reason_for_call)
     {
