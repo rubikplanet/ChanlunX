@@ -1,5 +1,4 @@
 ﻿#include "XianDuan.h"
-#include "ZhongShu1.h"
 
 using namespace std;
 
@@ -287,7 +286,6 @@ void XianDuanChuLi::__backroll(Bi bi) {
 FindXianDuanReturn XianDuanChuLi::__find_xianduan(Bi bi) {
     XianDuan xd = XianDuan();
     FindXianDuanReturn ret_xd;
-    BiZhongShu1 zs = BiZhongShu1();
 
     switch (this->status) {
     case XianDuanChuLiStatus::START:

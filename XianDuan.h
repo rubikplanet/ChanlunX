@@ -105,6 +105,7 @@ public:
     vector<Bi> get_bi_list() {
         return(this->bi_list);
     }
+    
     XianDuan generate_xd(XianDuan xd1, XianDuan xd2, XianDuan xd3) {
         Bi start_bi, stop_bi;
         XianDuan tmp_xd;
