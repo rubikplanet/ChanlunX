@@ -147,6 +147,7 @@ private:
     FindXianDuanReturn find_xianduan(Bi bi);
     FindXianDuanReturn __find_xianduan(Bi bi);
     void __backroll(Bi bi);
+    void debug_xianduan(XianDuan xd);
     FindXianDuanReturn failure_xd(Bi first_bi, Bi second_bi);
     FindXianDuanReturn __right_process(Bi bi);
 public:
@@ -160,3 +161,4 @@ public:
 
 void Bi3_xianduan(int nCount, float* pOut, float* pHigh, float* pLow, float* pIn);
 void Bi4_xianduan(int nCount, float* pOut, float* pHigh, float* pLow, float* pIn);
+void OutputDebugPrintf(const char* strOutputString, ...);
