@@ -66,6 +66,16 @@ void Func6(int nCount, float *pOut, float *pHigh, float *pLow, float *pIgnore)
     Bi4_xianduan(nCount, pOut, pHigh, pLow, pIgnore);
 }
 
+void Func7(int nCount, float *pOut, float *pHigh, float *pLow, float *pIgnore)
+{
+    Bi3_zoushi(nCount, pOut, pHigh, pLow, pIgnore);
+}
+
+void Func8(int nCount, float *pOut, float *pHigh, float *pLow, float *pIgnore)
+{
+    Bi4_zoushi(nCount, pOut, pHigh, pLow, pIgnore);
+}
+
 static PluginTCalcFuncInfo Info[] =
 {
     { 1, &Func1},
@@ -74,6 +84,8 @@ static PluginTCalcFuncInfo Info[] =
     { 4, &Func4},
     { 5, &Func5},
     { 6, &Func6},
+    { 7, &Func7},
+    { 8, &Func8},
     { 0, NULL}
 };
 
