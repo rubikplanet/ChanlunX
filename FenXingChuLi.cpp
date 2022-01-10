@@ -1,5 +1,6 @@
 ﻿#include "FenXingChuLi.h"
 #include "BaoHanChuLi.h"
+#include "OutputDebug.h"
 
 using namespace std;
 
