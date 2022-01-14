@@ -133,10 +133,8 @@ public:
     FenXingChuLi();
 };
 
-//extern "C" _declspec(dllexport) void Bi3(int nCount, float* pOut, float* pHigh, float* pLow, float* pIn);
 void Bi3_fenxing(int nCount, float* pOut, float* pHigh, float* pLow, float* pIn);
 void Bi4_fenxing(int nCount, float* pOut, float* pHigh, float* pLow, float* pIn);
-void OutputDebugPrintf(const char* strOutputString, ...);
 
 #pragma pack(pop)
 

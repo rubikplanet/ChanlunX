@@ -310,6 +310,27 @@ FenXing FenXingChuLi::__find_fenxing(Kxian1 kxian) {
     if (tmp_fx.get_type() == FenXingType::VERIFY_TOP || tmp_fx.get_type() == FenXingType::VERIFY_BOTTOM)
         return(tmp_fx);
 
+    if (this->fx.get_type() == FenXingType::VERIFY_TOP && kxian.get_high() > this->fx.get_high()) {
+        this->one = this->last_bar;
+        this->two = kxian;
+        this->status = FenXingChuLiStatus::THREE;
+        this->last_bar = kxian;
+        tmp_fx = this->fx;
+        tmp_fx.set_type(FenXingType::FAILURE_VERIFY_TOP);
+        return(tmp_fx);
+    }
+    else {
+        if (this->fx.get_type() == FenXingType::VERIFY_BOTTOM && kxian.get_low() < this->fx.get_low()) {
+            this->one = this->last_bar;
+            this->two = kxian;
+            this->status = FenXingChuLiStatus::THREE;
+            this->last_bar = kxian;
+            tmp_fx = this->fx;
+            tmp_fx.set_type(FenXingType::FAILURE_VERIFY_BOTTOM);
+            return(tmp_fx);
+        }
+    }
+
     switch (FenXingChuLi::status) {
     case FenXingChuLiStatus::ONE:
         this->one = kxian;
