@@ -121,7 +121,7 @@ private:
     static float comp_fx_gao, comp_fx_di;
     static int comp_fx_gao_count, comp_fx_di_count;
     static FenXing fx, temp_fx, last_fx;
-    bool __highlow_process(Kxian1 kx);
+    FenXing __highlow_process(Kxian1 kx);
     FenXing __quekou_process(Kxian1 kx);
 
 public:
