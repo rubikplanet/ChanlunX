@@ -203,10 +203,23 @@ char* get_fenxing_status(FenXingChuLiStatus fx_type) {
  FenXing FenXingChuLi::__highlow_process(Kxian1 kxian) {
      FenXing tmp_fx = FenXing();
     if (kxian.get_high() > this->max_high) {
-        if (this->fx.get_type() == FenXingType::VERIFY_TOP) {
-            tmp_fx = this->fx;
-            tmp_fx.set_type(FenXingType::FAILURE_VERIFY_TOP);
+        if (this->status == FenXingChuLiStatus::THREE && this->two.get_low() < this->one.get_low()) {
+            tmp_fx = FenXing(this->one, this->two, kxian, kxian);
+            tmp_fx.set_type(FenXingType::VERIFY_BOTTOM);
         }
+        else {
+            if (this->temp_fx.get_type() == FenXingType::BOTTOM) {
+                tmp_fx = this->temp_fx;
+                tmp_fx.set_type(FenXingType::VERIFY_BOTTOM);
+            }
+            else {
+                if (this->fx.get_type() == FenXingType::VERIFY_TOP) {
+                    tmp_fx = this->fx;
+                    tmp_fx.set_type(FenXingType::FAILURE_VERIFY_TOP);
+                }
+            }
+        }
+
         this->one = this->last_bar;
         this->two = kxian;
         this->status = FenXingChuLiStatus::THREE;
@@ -215,9 +228,21 @@ char* get_fenxing_status(FenXingChuLiStatus fx_type) {
     }
     else {
         if (kxian.get_low() < this->min_low) {
-            if (this->fx.get_type() == FenXingType::VERIFY_BOTTOM) {
-                tmp_fx = this->fx;
-                tmp_fx.set_type(FenXingType::FAILURE_VERIFY_BOTTOM);
+            if (this->status == FenXingChuLiStatus::THREE && this->two.get_high() > this->one.get_high()) {
+                tmp_fx = FenXing(this->one, this->two, kxian, kxian);
+                tmp_fx.set_type(FenXingType::VERIFY_TOP);
+            }
+            else {
+                if (this->temp_fx.get_type() == FenXingType::TOP) {
+                    tmp_fx = this->temp_fx;
+                    tmp_fx.set_type(FenXingType::VERIFY_BOTTOM);
+                }
+                else {
+                    if (this->fx.get_type() == FenXingType::VERIFY_BOTTOM) {
+                        tmp_fx = this->fx;
+                        tmp_fx.set_type(FenXingType::FAILURE_VERIFY_BOTTOM);
+                    }
+                }
             }
             this->one = this->last_bar;
             this->two = kxian;
@@ -339,7 +364,6 @@ FenXing FenXingChuLi::__find_fenxing(Kxian1 kxian) {
             return(tmp_fx);
         }
     }
-
     switch (FenXingChuLi::status) {
     case FenXingChuLiStatus::ONE:
         this->one = kxian;
@@ -482,6 +506,7 @@ FenXing FenXingChuLi::__find_fenxing(Kxian1 kxian) {
         }
         break;
     }
+
     this->last_bar = kxian;
     return(tmp_fx);
 }
