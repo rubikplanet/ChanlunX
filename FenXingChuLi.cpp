@@ -235,7 +235,7 @@ char* get_fenxing_status(FenXingChuLiStatus fx_type) {
             else {
                 if (this->temp_fx.get_type() == FenXingType::TOP) {
                     tmp_fx = this->temp_fx;
-                    tmp_fx.set_type(FenXingType::VERIFY_BOTTOM);
+                    tmp_fx.set_type(FenXingType::VERIFY_TOP);
                 }
                 else {
                     if (this->fx.get_type() == FenXingType::VERIFY_BOTTOM) {
