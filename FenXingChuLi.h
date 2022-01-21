@@ -121,13 +121,15 @@ private:
     static float comp_fx_gao, comp_fx_di;
     static int comp_fx_gao_count, comp_fx_di_count;
     static FenXing fx, temp_fx, last_fx;
-    FenXing __highlow_process(Kxian1 kx);
-    FenXing __quekou_process(Kxian1 kx);
+    void __init_fenxing(Kxian1 kx);
+    void __high_process(Kxian1 kx);
+    void __low_process(Kxian1 kx);
+    void __high_low_process(Kxian1 kx);
 
 public:
     vector<Kxian1> kxianList;
     vector<FenXing> fenXingList;
-    vector<FenXing> keyKxianList;
+    vector<FenXing> keyFenXingList;
     void handle(vector<Kxian1>& kxianList);
     FenXing __find_fenxing(Kxian1 kx);
     FenXingChuLi();
