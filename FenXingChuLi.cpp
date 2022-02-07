@@ -110,7 +110,6 @@ void FenXingChuLi::handle(vector<Kxian1>& kxianList) {
                 }
                 if (tmp_fx.get_type() != FenXingType::NONE) {
                     this->fx = tmp_fx;
-                    this->fenXingList.push_back(tmp_fx);
                 }
                 break;
             case FenXingType::VERIFY_TOP:
@@ -136,7 +135,6 @@ void FenXingChuLi::handle(vector<Kxian1>& kxianList) {
                 }
                 if (tmp_fx.get_type() != FenXingType::NONE) {
                     this->fx = tmp_fx;
-                    this->fenXingList.push_back(tmp_fx);
                 }
                 break;
 
@@ -207,25 +205,60 @@ void FenXingChuLi::__init_fenxing(Kxian1 kx) {
     this->status = FenXingChuLiStatus::THREE;
 }
 
-void FenXingChuLi::__high_process(Kxian1 kxian) {
-    this->__init_fenxing(kxian);
-    this->max_high = kxian.get_high();
-}
-
-void FenXingChuLi::__low_process(Kxian1 kxian){
-    this->__init_fenxing(kxian);
-    this->min_low = kxian.get_low();
+FenXing FenXingChuLi::__high_process(Kxian1 kxian) {
     FenXing tmp_fx = FenXing();
-}
-
-void FenXingChuLi::__high_low_process(Kxian1 kxian){
-    if (kxian.get_high() > this->max_high) {
-        this->__high_process(kxian);
+    if (this->fx.get_type() == FenXingType::VERIFY_TOP) {
+        tmp_fx = this->fx;
+        tmp_fx.set_type(FenXingType::FAILURE_VERIFY_TOP);
     } else {
-        if (kxian.get_low() < this->min_low) {
-            this->__low_process(kxian);
+        if (this->temp_fx.get_type() == FenXingType::BOTTOM) {
+            tmp_fx = this->temp_fx;
+            tmp_fx.set_type(FenXingType::FAILURE_BOTTOM);
+        } else {
+            if (this->temp_fx.get_type() == FenXingType::TOP) {
+                tmp_fx = this->temp_fx;
+                tmp_fx.set_type(FenXingType::FAILURE_TOP);
+            }
         }
     }
+
+    this->__init_fenxing(kxian);
+    this->max_high = kxian.get_high();
+    return(tmp_fx);
+}
+
+FenXing FenXingChuLi::__low_process(Kxian1 kxian){
+    FenXing tmp_fx = FenXing();
+    if (this->fx.get_type() == FenXingType::VERIFY_BOTTOM) {
+        tmp_fx = this->fx;
+        tmp_fx.set_type(FenXingType::FAILURE_VERIFY_BOTTOM);
+    } else {
+        if (this->temp_fx.get_type() == FenXingType::BOTTOM) {
+            tmp_fx = this->temp_fx;
+            tmp_fx.set_type(FenXingType::FAILURE_BOTTOM);
+        } else {
+            if (this->temp_fx.get_type() == FenXingType::TOP) {
+                tmp_fx = this->temp_fx;
+                tmp_fx.set_type(FenXingType::FAILURE_TOP);
+            }
+        }
+    }
+
+    this->__init_fenxing(kxian);
+    this->min_low = kxian.get_low();
+    return(tmp_fx);
+}
+
+FenXing FenXingChuLi::__high_low_process(Kxian1 kxian){
+    FenXing tmp_fx = FenXing();
+    if (kxian.get_high() > this->max_high) {
+        tmp_fx = this->__high_process(kxian);
+    } else {
+        if (kxian.get_low() < this->min_low) {
+            tmp_fx = this->__low_process(kxian);
+        }
+    }
+    return(tmp_fx);
 }
 
 FenXing FenXingChuLi::__failure_verify_top(Kxian1 kxian) {
@@ -271,7 +304,7 @@ FenXing FenXingChuLi::__find_fenxing(Kxian1 kxian) {
 
     case FenXingChuLiStatus::TWO:
         if (kx_gao > this->max_high || kx_di < this->min_low) {
-            this->__high_low_process(kxian);
+            tmp_fx = this->__high_low_process(kxian);
         } else {
             this->two = kxian;
             this->status = FenXingChuLiStatus::THREE;
@@ -282,7 +315,7 @@ FenXing FenXingChuLi::__find_fenxing(Kxian1 kxian) {
         if (kx_gao > this->two.get_high()) {
             if (kx_gao > this->max_high) {
                 //创新高
-                this->__high_process(kxian);
+                tmp_fx = this->__high_process(kxian);
             } else {
                 if (this->fx.get_type() == FenXingType::VERIFY_TOP && kx_gao > this->fx.get_high()) {
                     //验证顶分型失败
@@ -303,7 +336,7 @@ FenXing FenXingChuLi::__find_fenxing(Kxian1 kxian) {
         } else {
             if (kx_di < this->min_low) {
                 //创新低
-                this->__low_process(kxian);
+                tmp_fx = this->__low_process(kxian);
             } else {
                 if (this->fx.get_type() == FenXingType::VERIFY_BOTTOM && kx_di < this->fx.get_low()) {
                     //验证底分型失败
@@ -327,7 +360,7 @@ FenXing FenXingChuLi::__find_fenxing(Kxian1 kxian) {
         if (kx_gao > this->three.get_high()) {
             if (kx_gao > this->max_high) {
                 //创新高
-                this->__high_process(kxian);
+                tmp_fx = this->__high_process(kxian);
             } else {
                 if (this->fx.get_type() == FenXingType::VERIFY_TOP && kx_gao > this->fx.get_high()) {
                     //顶分型失败
@@ -354,7 +387,7 @@ FenXing FenXingChuLi::__find_fenxing(Kxian1 kxian) {
             }
         } else {
             if (kx_di < this->min_low) {
-                this->__low_process(kxian);
+                tmp_fx = this->__low_process(kxian);
             } else {
                 if (this->fx.get_type() == FenXingType::VERIFY_BOTTOM && kx_di < this->fx.get_low()) {
                     return(this->__failue_verify_bottom(kxian));
@@ -384,7 +417,7 @@ FenXing FenXingChuLi::__find_fenxing(Kxian1 kxian) {
     case FenXingChuLiStatus::FIVE:
         if (kx_gao > this->four.get_high()) {
             if (kx_gao > this->max_high) {
-                this->__high_process(kxian);
+                tmp_fx = this->__high_process(kxian);
             } else {
                 if (this->fx.get_type() == FenXingType::VERIFY_TOP && kx_gao > this->fx.get_high()) {
                     return(this->__failure_verify_top(kxian));
@@ -409,7 +442,7 @@ FenXing FenXingChuLi::__find_fenxing(Kxian1 kxian) {
             }
         } else {
             if (kx_di < this->min_low) {
-                this->__low_process(kxian);
+                tmp_fx = this->__low_process(kxian);
             } else {
                 if (this->fx.get_type() == FenXingType::VERIFY_BOTTOM && kx_di < this->fx.get_low()) {
                     return(this->__failue_verify_bottom(kxian));
@@ -440,7 +473,7 @@ FenXing FenXingChuLi::__find_fenxing(Kxian1 kxian) {
     case FenXingChuLiStatus::SIX:
         if (kx_gao > this->five.get_high()) {
             if (kx_gao > this->max_high) {
-                this->__high_process(kxian);
+                tmp_fx = this->__high_process(kxian);
             } else {
                 if (this->fx.get_type() == FenXingType::VERIFY_TOP && kx_gao > this->fx.get_high()) {
                     return(this->__failure_verify_top(kxian));
@@ -460,7 +493,7 @@ FenXing FenXingChuLi::__find_fenxing(Kxian1 kxian) {
             }
         } else {
             if (kx_di < this->min_low) {
-                this->__low_process(kxian);
+                tmp_fx = this->__low_process(kxian);
             } else {
                 if (this->fx.get_type() == FenXingType::VERIFY_BOTTOM && kx_di < this->fx.get_low()) {
                     return(this->__failue_verify_bottom(kxian));

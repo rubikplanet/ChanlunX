@@ -122,9 +122,9 @@ private:
     static int comp_fx_gao_count, comp_fx_di_count;
     static FenXing fx, temp_fx, last_fx;
     void __init_fenxing(Kxian1 kx);
-    void __high_process(Kxian1 kx);
-    void __low_process(Kxian1 kx);
-    void __high_low_process(Kxian1 kx);
+    FenXing __high_process(Kxian1 kx);
+    FenXing __low_process(Kxian1 kx);
+    FenXing __high_low_process(Kxian1 kx);
     FenXing __failure_verify_top(Kxian1 kx);
     FenXing __failue_verify_bottom(Kxian1 kx);
 
