@@ -98,7 +98,12 @@ public:
         return(Bi(start_fx, stop_fx));
     }
 
-
+    bool equal(Bi bi) {
+        if (abs(this->high - bi.get_high()) <= 0.10 && abs(this->low - bi.get_low()) <= 0.10)
+            return(true);
+        else
+            return(false);
+    }
 
     Bi update_stop_bi(Bi bi, FenXing stop_fx) {
         FenXing start_fx = bi.get_start_fx();
@@ -136,9 +141,7 @@ public:
     vector<Bi> keyBiList;
     Bi last_bi = Bi();
     void handle(vector<Kxian1> &kxlist);
-    Bi __find_bi(Kxian1 kx);
-    Bi __find_fenxing(FenXing fx);
-    Bi now_bi(Kxian1 kx);
+    Bi __find_bi(FenXing fx);
     BiChuLi();
 };
 
@@ -146,5 +149,7 @@ public:
 //extern "C" _declspec(dllexport) void Bi3(int nCount, float* pOut, float* pHigh, float* pLow, float* pIn);
 void Bi3_bi(int nCount, float* pOut, float* pHigh, float* pLow, float* pIn);
 void Bi4_bi(int nCount, float* pOut, float* pHigh, float* pLow, float* pIn);
+extern void OutputDebugPrintf(const char* strOutputString, ...);
+
 #pragma pack(pop)
 #endif
