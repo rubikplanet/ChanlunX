@@ -253,6 +253,8 @@
   <ItemGroup>
     <ClCompile Include="BaoHanChuLi.cpp" />
     <ClCompile Include="bi1.cpp" />
+    <ClCompile Include="bi_zhongshu.cpp" />
+    <ClCompile Include="bi_zoushi.cpp" />
     <ClCompile Include="FenXingChuLi.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="XianDuan.cpp" />
@@ -262,6 +264,8 @@
   <ItemGroup>
     <ClInclude Include="BaoHanChuLi.h" />
     <ClInclude Include="Bi1.h" />
+    <ClInclude Include="bi_zhongshu.h" />
+    <ClInclude Include="bi_zoushi.h" />
     <ClInclude Include="ChanlunZb.h" />
     <ClInclude Include="FenXingChuLi.h" />
     <ClInclude Include="Main.h" />

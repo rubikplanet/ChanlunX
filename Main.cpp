@@ -21,7 +21,7 @@ BOOL  APIENTRY DllMain( HANDLE hModule, DWORD ul_reason_for_call, LPVOID lpReser
 }
 
 //=============================================================================
-// 输出函数1号：主图的分型处理
+// 输出函数1号：主动-分型
 //=============================================================================
 void Func1(int nCount, float *pOut, float *pHigh, float *pLow, float *pIgnore)
 {
@@ -29,7 +29,7 @@ void Func1(int nCount, float *pOut, float *pHigh, float *pLow, float *pIgnore)
 }
 
 //=============================================================================
-// 输出函数2号：附图的分型处理
+// 输出函数2号：被动-分型
 //=============================================================================
 void Func2(int nCount, float *pOut, float *pHigh, float *pLow, float *pIgnore)
 {
@@ -37,7 +37,7 @@ void Func2(int nCount, float *pOut, float *pHigh, float *pLow, float *pIgnore)
 }
 
 //=============================================================================
-// 输出函数3号：主图的笔处理
+// 输出函数3号：主动-笔
 //=============================================================================
 void Func3(int nCount, float *pOut, float *pHigh, float *pLow, float *pIgnore)
 {
@@ -45,7 +45,7 @@ void Func3(int nCount, float *pOut, float *pHigh, float *pLow, float *pIgnore)
 }
 
 //=============================================================================
-// 输出函数4号：附图的笔处理
+// 输出函数4号：被动-笔
 //=============================================================================
 void Func4(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
 {
@@ -53,7 +53,7 @@ void Func4(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
 }
 
 //=============================================================================
-// 输出函数5号：主图线段
+// 输出函数5号：主动-线段
 //=============================================================================
 void Func5(int nCount, float *pOut, float *pHigh, float *pLow, float *pIgnore)
 {
@@ -61,23 +61,62 @@ void Func5(int nCount, float *pOut, float *pHigh, float *pLow, float *pIgnore)
 }
 
 //=============================================================================
-// 输出函数6号：附图线段
+// 输出函数6号：被动-线段
 //=============================================================================
 void Func6(int nCount, float *pOut, float *pHigh, float *pLow, float *pIgnore)
 {
     Bi4_xianduan(nCount, pOut, pHigh, pLow, pIgnore);
 }
 
+//============================================================================
+// 输出函数7号：主动-走势
+//============================================================================
 void Func7(int nCount, float *pOut, float *pHigh, float *pLow, float *pIgnore)
 {
     Bi3_zoushi(nCount, pOut, pHigh, pLow, pIgnore);
 }
 
+//============================================================================
+//输出函数8号：被动-走势
+//============================================================================
 void Func8(int nCount, float *pOut, float *pHigh, float *pLow, float *pIgnore)
 {
     Bi4_zoushi(nCount, pOut, pHigh, pLow, pIgnore);
 }
 
+//============================================================================
+// 输出函数9号：主动-笔走势
+//============================================================================
+void Func9(int nCount, float *pOut, float *pHigh, float *pLow, float *pIgnore)
+{
+    Bi3_bi_zoushi(nCount, pOut, pHigh, pLow, pIgnore);
+}
+
+//============================================================================
+//输出函数8号：被动-笔走势
+//============================================================================
+void Func10(int nCount, float *pOut, float *pHigh, float *pLow, float *pIgnore)
+{
+    Bi4_bi_zoushi(nCount, pOut, pHigh, pLow, pIgnore);
+}
+
+//笔中枢开始结束
+void Func11(int nCount, float *pOut, float *pHigh, float *pLow, float *pIgnore)
+{
+    bi_zhongshu_start_stop(nCount, pOut, pHigh, pLow, pIgnore);
+}
+
+//笔中枢--高
+void Func12(int nCount, float *pOut, float *pHigh, float *pLow, float *pIgnore)
+{
+    bi_zhongshu_high(nCount, pOut, pHigh, pLow, pIgnore);
+}
+
+//笔中枢--低
+void Func13(int nCount, float *pOut, float *pHigh, float *pLow, float *pIgnore)
+{
+    bi_zhongshu_low(nCount, pOut, pHigh, pLow, pIgnore);
+}
 static PluginTCalcFuncInfo Info[] =
 {
     { 1, &Func1},
@@ -88,6 +127,11 @@ static PluginTCalcFuncInfo Info[] =
     { 6, &Func6},
     { 7, &Func7},
     { 8, &Func8},
+    { 9, &Func9},
+    {10, &Func10},
+    {11, &Func11},
+    {12, &Func12},
+    {13, &Func13},
     { 0, NULL}
 };
 

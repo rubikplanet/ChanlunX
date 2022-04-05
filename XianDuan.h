@@ -4,7 +4,7 @@
 
 using namespace std;
 
-enum class XianDuanType {NONE, TEMP_UP, TEMP_DOWN, FAILURE_TEMP_UP, FAILURE_TEMP_DOWN, UP, DOWN, FAILURE_UP, FAILURE_DOWN, LONG_XIANDUAN };
+enum class XianDuanType { NONE, TEMP_UP, TEMP_DOWN, FAILURE_TEMP_UP, FAILURE_TEMP_DOWN, UP, DOWN, FAILURE_UP, FAILURE_DOWN, LONG_XIANDUAN };
 class XianDuan {
 private:
     XianDuanType type = XianDuanType::NONE;
@@ -91,6 +91,10 @@ public:
         return(this->verify_pos);
     }
 
+    float get_length() {
+        return(this->length);
+    }
+
     bool operator==(XianDuan that) {
         if (this->start_bi == that.start_bi && this->stop_bi == that.stop_bi && this->type == that.type)
             return(true);
@@ -105,7 +109,7 @@ public:
     vector<Bi> get_bi_list() {
         return(this->bi_list);
     }
-    
+
     XianDuan generate_xd(XianDuan xd1, XianDuan xd2, XianDuan xd3) {
         Bi start_bi, stop_bi;
         XianDuan tmp_xd;
@@ -117,9 +121,9 @@ public:
     }
 };
 
-enum class XianDuanChuLiStatus { START, LEFT, AFTER_LEFT, MIDDLE_HIGHLOW, MIDDLE_NORMAL, LEFT_INCLUDE_MIDDLE,  AFTER_MIDDLE, RIGHT_HIGHLOW, RIGHT_NORMAL,  MIDDLE_INCLUDE_RIGHT, AFTER_RIGHT, FREE, AFTER_FREE};
+enum class XianDuanChuLiStatus { START, LEFT, AFTER_LEFT, MIDDLE_HIGHLOW, MIDDLE_NORMAL, LEFT_INCLUDE_MIDDLE, LEFT_INCLUDE_MIDDLE_NORMAL, LEFT_INCLUDE_MIDDLE_NORMAL_NORMAL, AFTER_MIDDLE, RIGHT, AFTER_RIGHT, FREE, AFTER_FREE, AFTER_FREE_NORMAL, AFTER_FREE_NORMAL_NORMAL, LONGXIANDUAN, LONGXIANDUAN_NORMAL, LONGXIANDUAN_NORMAL_NORMAL, LONGXIANDUAN_NORMAL_NORMAL_NORMAL };
 
-enum class FindXianDuanReturnType {None, Failure, One, Two, Three};
+enum class FindXianDuanReturnType { None, Failure, One, Two, Three };
 struct FindXianDuanReturn {
     FindXianDuanReturnType type;
     XianDuan xd1;
@@ -142,6 +146,8 @@ private:
     Bi after_right = Bi();
     Bi free = Bi();
     Bi after_free = Bi();
+    Bi after_free_1 = Bi();
+    Bi after_free_2 = Bi();
     BiChuLi bicl;
 
     FindXianDuanReturn find_xianduan(Bi bi);
@@ -150,15 +156,16 @@ private:
     void debug_xianduan(XianDuan xd);
     FindXianDuanReturn failure_xd(Bi first_bi, Bi second_bi);
     FindXianDuanReturn __right_process(Bi bi);
+    bool __middle_process(Bi bi);
 public:
     XianDuanChuLi();
     void handle(vector<Kxian1>& kxlist);
     vector<Bi> get_xd_bi_list();
-    
+
     vector<XianDuan> xianDuanList;
     vector<XianDuan> key_xianduan_list;
 };
 
 void Bi3_xianduan(int nCount, float* pOut, float* pHigh, float* pLow, float* pIn);
 void Bi4_xianduan(int nCount, float* pOut, float* pHigh, float* pLow, float* pIn);
-void OutputDebugPrintf(const char* strOutputString, ...);
+extern void OutputDebugPrintf(const char* strOutputString, ...);

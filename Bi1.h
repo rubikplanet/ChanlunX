@@ -50,9 +50,9 @@ public:
             }
         }
         this->length = this->high - this->low;
-        this->start_pos = this->start_fx.get_start_position();
-        this->stop_pos = this->stop_fx.get_start_position();
-        this->verify_stop_pos = this->stop_fx.get_stop_position();
+        this->start_pos = this->start_fx.get_stop_position();
+        this->stop_pos = this->stop_fx.get_stop_position();
+        this->verify_stop_pos = this->stop_fx.get_verify_stop_position();
         this->high_low_type = stop.get_high_low_type();
     }
 

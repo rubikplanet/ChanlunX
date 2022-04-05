@@ -1,5 +1,4 @@
 ﻿#include "ZouShi.h"
-#include "Bi1.h"
 
 using namespace std;
 
@@ -12,6 +11,21 @@ XianDuan ZouShiChuLi::generate_xd(XianDuan xd1, XianDuan xd2, XianDuan xd3) {
     return(ret_xd);
 }
 
+bool ZouShiChuLi::match_zhongshu_xianduan(XianDuan xd1, XianDuan xd2) {
+    float bilv = 0;
+
+    if (xd1.get_length() > xd2.get_length()) {
+        bilv = xd1.get_length() / xd2.get_length();
+    } else {
+        bilv = xd2.get_length() / xd1.get_length();
+    }
+
+    if (bilv > 0.618)
+        return(true);
+    else
+        return(false);
+}
+
 ZouShiChuLi::ZouShiChuLi(){
     this->status = ZouShiChuLiStatus::a;
     this->xdcl = XianDuanChuLi();
@@ -19,7 +33,7 @@ ZouShiChuLi::ZouShiChuLi(){
 }
 
 void ZouShiChuLi::handle(vector<Kxian1>& kxianList) {
-    ZouShi ret_zoushi = ZouShi();
+    FindZouShiReturn ret_zoushi;
     ZouShi zoushi = ZouShi();
     XianDuan xd = XianDuan();
     this->xdcl.handle(kxianList);
@@ -31,9 +45,9 @@ void ZouShiChuLi::handle(vector<Kxian1>& kxianList) {
     }
 }
 
-ZouShi ZouShiChuLi::find_zoushi(XianDuan xd) {
+FindZouShiReturn ZouShiChuLi::find_zoushi(XianDuan xd) {
     ZhongShu ret_zhongshu;
-    ZouShi ret_zoushi;
+    FindZouShiReturn ret_zoushi;
 
     switch(this->status) {
         case ZouShiChuLiStatus::a:
@@ -41,51 +55,267 @@ ZouShi ZouShiChuLi::find_zoushi(XianDuan xd) {
             this->status = ZouShiChuLiStatus::A_xd1;
             break;
         case ZouShiChuLiStatus::A_xd1:
-            this->A_xd1 = xd;
-            this->status = ZouShiChuLiStatus::A_xd2;
+            if (this->match_zhongshu_xianduan(xd, this->a)) {
+                //和this->a相差不多
+                this->A_xd1 = this->a;
+                this->A_xd2 = xd;
+                this->status = ZouShiChuLiStatus::A_xd3;
+            } else {
+                if (xd.get_type() == XianDuanType::DOWN && xd.get_low() < this->a.get_low()) {
+                        //创新低
+                        this->status = ZouShiChuLiStatus::a;
+                        ret_zoushi.type = FindZouShiReturnType::Failure;
+                        ret_zoushi.zoushi1 = ZouShi(ZouShiType::DOWN, this->A_xd1, this->A_xd1);
+
+                } else {
+                    if (xd.get_type() == XianDuanType::UP && xd.get_high() > this->a.get_high()) {
+                        //创新高
+                        this->status = ZouShiChuLiStatus::a;
+                        ret_zoushi.type = FindZouShiReturnType::Failure;
+                        ret_zoushi.zoushi1 = ZouShi(ZouShiType::UP, this->A_xd1, this->A_xd1);
+
+                    } else {
+                        this->A_xd1 = xd;
+                        this->status = ZouShiChuLiStatus::A_xd2;
+                    }
+                }
+            }
             break;
         case ZouShiChuLiStatus::A_xd2:
-            this->A_xd2 = xd;
-            this->status = ZouShiChuLiStatus::A_xd3;
-            break;
-        case ZouShiChuLiStatus::A_xd3:
-            this->A_xd3 = xd;
-            this->status = ZouShiChuLiStatus::A;
-            break;
-        case ZouShiChuLiStatus::A:
-            this->zhongshucl = ZhongShuChuLi(this->a, this->A_xd1, this->A_xd2, this->A_xd3);
-            ret_zhongshu = this->zhongshucl.find_zhongshu(xd);
-            if (ret_zhongshu.get_high() > 0.0) {
-                this->A = ret_zhongshu;
-                this->b_0 = this->A.get_output();
-                this->b_1 = xd;
-                this->status = ZouShiChuLiStatus::b;
+            if (this->match_zhongshu_xianduan(xd, this->A_xd1)) {
+                this->A_xd2 = xd;
+                this->status = ZouShiChuLiStatus::A_xd3;
             } else {
-                this->status = ZouShiChuLiStatus::A;
+                if (xd.get_type() == XianDuanType::UP && xd.get_high() > this->a.get_high()) {
+                    this->a = this->generate_xd(this->a, this->A_xd1, xd);
+                    this->status = ZouShiChuLiStatus::A_xd1;
+                } else {
+                    if (xd.get_type() == XianDuanType::DOWN && xd.get_low() < this->a.get_low()) {
+                        this->a = this->generate_xd(this->a, this->A_xd1, xd);
+                        this->status = ZouShiChuLiStatus::A_xd1;
+                    } else {
+                        this->a_0 = this->A_xd1;
+                        this->a_1 = xd;
+                        this->status = ZouShiChuLiStatus::A_xd2_normal;
+                    }
+                }
             }
             break;
-        case ZouShiChuLiStatus::b:
+
+        case ZouShiChuLiStatus::A_xd2_highlow:
             if (xd.get_type() == XianDuanType::UP) {
-                if (xd.get_high() < this->b_0.get_high()) {
-                    ret_zoushi = ZouShi(ZouShiType::PANZHENG, this->a, this->b_0);
-                    return(ret_zoushi);
+                //上升线段
+                if (xd.get_high() > this->a.get_high()) {
+                    //创新高
+                    ret_zoushi.type = FindZouShiReturnType::One;
+                    ret_zoushi.zoushi1 = ZouShi(ZouShiType::PANZHENG, this->a, this->A_xd2);
+                    this->a = xd;
+                    this->status = ZouShiChuLiStatus::A_xd1;
+                } else {
+                    if (xd.get_high() < this->a.get_low() - 0.01) {
+                        //有缺口
+                        this->a = this->generate_xd(this->a, this->A_xd1, this->A_xd2);
+                        this->A_xd1 = xd;
+                        this->status = ZouShiChuLiStatus::A_xd2;                        
+                    } else {
+                        //生成中枢
+                        this->zhongshucl = ZhongShuChuLi(this->a, this->A_xd1, this->A_xd2, xd);
+                        this->status = ZouShiChuLiStatus::A;
+                    }
                 }
+
             } else {
-                if (xd.get_type() == XianDuanType::DOWN) {
-                    ret_zoushi = ZouShi(ZouShiType::PANZHENG, this->a, this->b_0);
-                    return(ret_zoushi);
+                //下降线段
+                if (xd.get_low() < this->a.get_low()) {
+                    //创新低
+                    ret_zoushi.type = FindZouShiReturnType::One;
+                    ret_zoushi.zoushi1 = ZouShi(ZouShiType::PANZHENG, this->a, this->A_xd2);
+                    this->a = xd;
+                    this->status = ZouShiChuLiStatus::A_xd1;
+                } else {
+                    if (xd.get_low() > this->a.get_high() + 0.01) {
+                        //有缺口
+                        this->a = this->generate_xd(this->a, this->A_xd1, this->A_xd2);
+                        this->A_xd1 = xd;
+                        this->status = ZouShiChuLiStatus::A_xd2;
+                    } else {
+                        //生成中枢
+                        this->zhongshucl = ZhongShuChuLi(this->a, this->A_xd1, this->A_xd2, xd);
+                        this->status = ZouShiChuLiStatus::A;
+                    }
                 }
             }
-            this->b = this->generate_xd(this->b_0, this->b_1, xd);
-            this->status = ZouShiChuLiStatus::B_xd1;
             break;
+        case ZouShiChuLiStatus::A_xd2_normal:
+            if (xd.get_type() == XianDuanType::UP) {
+                //上升线段
+                if (xd.get_high() > this->a.get_high()) {
+                    //创新高
+                    this->A_xd1 = this->a;
+                    this->A_xd2 = this->generate_xd(this->A_xd1, this->A_xd2, xd);
+                    this->status = ZouShiChuLiStatus::A_xd3;
+                } else {
+                    this->zhongshucl = ZhongShuChuLi(this->a, this->A_xd1, this->A_xd2, xd);
+                    this->status = ZouShiChuLiStatus::A;
+                }
+            } else {
+                //下降线段
+                if (xd.get_low() < this->a.get_low()) {
+                    //创新低
+                    this->A_xd1 = this->a;
+                    this->A_xd2 = this->generate_xd(this->A_xd1, this->A_xd2, xd);
+                    this->status = ZouShiChuLiStatus::A_xd3;
+                } else {
+                    this->zhongshucl = ZhongShuChuLi(this->a, this->A_xd1, this->A_xd2, xd);
+                    this->status = ZouShiChuLiStatus::A;
+                }
+            }
+            break;
+
+        case ZouShiChuLiStatus::A:
+            if (xd.get_type() == XianDuanType::UP) {
+                //上升线段
+                if (xd.get_high() < this->zhongshucl.get_zhongshu().get_low()) {
+                    //3卖
+                    this->b_0 = this->zhongshucl.get_zhongshu().xd_list[-1];
+                    this->b_1 = xd;
+                    if (this->a.get_type() == XianDuanType::UP) {
+                        this->status = ZouShiChuLiStatus::A_REVERSE_THREESELL;
+                    } else {
+                        this->status = ZouShiChuLiStatus::A_THREESELL;
+                    }
+                }
+            } else {
+                //下降线段
+                if (xd.get_low() > this->zhongshucl.get_zhongshu().get_high()) {
+                    //3买
+                    this->b_0 = this->zhongshucl.get_zhongshu().xd_list[-1];
+                    this->b_1 = xd;
+                    if (this->a.get_type() == XianDuanType::DOWN) {
+                        this->status = ZouShiChuLiStatus::A_REVERSE_THREEBUY;
+                    } else {
+                        this->status = ZouShiChuLiStatus::A_THREEBUY;
+                    }
+                } else {
+                    ret_zhongshu = this->zhongshucl.find_zhongshu(xd);
+                    this->status = ZouShiChuLiStatus::A;
+                }
+            }
+            break;
+        
+        case ZouShiChuLiStatus::A_THREEBUY:
+            if (xd.get_high() > this->b_0.get_high()) {
+                this->b = this->generate_xd(this->b_0, this->b_1, xd);
+                this->A = this->zhongshucl.get_zhongshu();
+                this-A.stop(this->b);
+                this->status = ZouShiChuLiStatus::B_xd1;
+            } else {
+                this->status = ZouShiChuLiStatus::A_THREEBUY_NORMAL;
+            }
+            break;
+        case ZouShiChuLiStatus::A_THREESELL:
+            if (xd.get_low() < this->b_0.get_low()) {
+                this->b = this->generate_xd(this->b_0, this->b_1, xd);
+                this->A = this->zhongshucl.get_zhongshu();
+                this->A.stop(xd);
+                this->status = ZouShiChuLiStatus::B_xd1;
+            } else {
+                this->b_2 = this->b_1;
+                this->b_1 = this->b_0;
+                this->status = ZouShiChuLiStatus::A_THREESELL_NORMAL;
+            }
+            break;
+        case ZouShiChuLiStatus::A_REVERSE_THREEBUY:
+            ret_zoushi.type = FindZouShiReturnType::Two;
+            ret_zoushi.zoushi1 = ZouShi(ZouShiType::PANZHENG, this->a, this->A_xd2);
+            ret_zoushi.zoushi2 = ZouShi(ZouShiType::PANZHENG, this->b_0, xd);
+            this->status = ZouShiChuLiStatus::a;
+            break;
+        case ZouShiChuLiStatus::A_REVERSE_THREESELL:
+            ret_zoushi.type = FindZouShiReturnType::Two;
+            ret_zoushi.zoushi1 = ZouShi(ZouShiType::PANZHENG, this->a, this->A_xd2);
+            ret_zoushi.zoushi2 = ZouShi(ZouShiType::PANZHENG, this->b_0, xd);
+            this->status = ZouShiChuLiStatus::a;
+            break;
+        case ZouShiChuLiStatus::A_THREEBUY_NORMAL:
+            if (xd.get_low() > this->zhongshucl.get_zhongshu().get_high()) {
+                this->b_1 = this->generate_xd(this->b_1, this->b_2, xd);
+                this->status = ZouShiChuLiStatus::A_THREEBUY;
+            } else {
+                ret_zoushi.type = FindZouShiReturnType::One;
+                ret_zoushi.zoushi1 = ZouShi(ZouShiType::PANZHENG, this->a, this->b_0);
+                this->a = this->generate_xd(this->b_1, this->b_2, xd);
+                this->status = ZouShiChuLiStatus::A_xd1;
+            }
+            break;
+        case ZouShiChuLiStatus::A_THREESELL_NORMAL:
+            if (xd.get_high() < this->zhongshucl.get_zhongshu().get_low()) {
+                this->b_1 = this->generate_xd(this->b_1, this->b_2, xd);
+                this->status = ZouShiChuLiStatus::A_THREESELL;
+            } else {
+                ret_zoushi.type = FindZouShiReturnType::One;
+                ret_zoushi.zoushi1 = ZouShi(ZouShiType::PANZHENG, this->a, this->b_0);
+                this->a = this->generate_xd(this->b_1, this->b_2, xd);
+                this->status = ZouShiChuLiStatus::A_xd1;                
+            }
+            break;
+
+        case ZouShiChuLiStatus::b:
+            break;
+
         case ZouShiChuLiStatus::B_xd1:
-            this->B_xd1 = xd;
-            this->status = ZouShiChuLiStatus::B_xd2;
+            if (xd.get_type() == XianDuanType::UP) {
+                //上升线段
+                if (xd.get_high() < this->A.get_low()) {
+                    this->B_xd1 = xd;
+                    this->status = ZouShiChuLiStatus::B_xd2;
+                } else {
+                    ret_zoushi.type = FindZouShiReturnType::One;
+                    ret_zoushi.zoushi1 = ZouShi(ZouShiType::PANZHENG, this->a, xd);
+                }
+            } else {
+                //下降线段
+                if (xd.get_low() > this->A.get_high()) {
+                    this->B_xd1 = xd;
+                    this->status = ZouShiChuLiStatus::B_xd2;
+                } else {
+                    ret_zoushi.type = FindZouShiReturnType::One;
+                    ret_zoushi.zoushi1 = ZouShi(ZouShiType::PANZHENG, this->a, xd);
+                    this->a = xd;
+
+                }
+            }
             break;
         case ZouShiChuLiStatus::B_xd2:
-            this->B_xd2 = xd;
-            this->status = ZouShiChuLiStatus::B_xd3;
+            if (this->match_zhongshu_xianduan(xd, this->B_xd1)) {
+                this->B_xd2 = xd;
+                this->status = ZouShiChuLiStatus::B_xd3;
+            } else {
+                if (xd.get_type() == XianDuanType::UP && xd.get_high() > this->b.get_high()) {
+                    this->b = this->generate_xd(this->b, this->B_xd1, xd);
+                    this->status = ZouShiChuLiStatus::B_xd1;
+                } else {
+                    if (xd.get_type() == XianDuanType::DOWN && xd.get_low() < this->b.get_low()) {
+                        this->b = this->generate_xd(this->b, this->B_xd1, xd);
+                        this->status = ZouShiChuLiStatus::B_xd1;
+                    } else {
+                        this->b_0 = this->B_xd1;
+                        this->b_1 = xd;
+                        this->status = ZouShiChuLiStatus::B_xd2_normal;
+                    }
+
+                }
+            }
+            break;
+        case ZouShiChuLiStatus::B_xd2_normal:
+            if (xd.get_type() == XianDuanType::UP) {
+                //上升线段
+            }else {
+                //下降线段
+                if (xd.get_low() > this->A.get_high()) {
+
+                }
+            }
             break;
         case ZouShiChuLiStatus::B_xd3:
             this->B_xd3 = xd;

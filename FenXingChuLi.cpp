@@ -5,12 +5,11 @@
 using namespace std;
 
 bool debug_fenxing_status = true;
-FenXingChuLiStatus FenXingChuLi::status;
-Kxian1 FenXingChuLi::one, FenXingChuLi::two, FenXingChuLi::three, FenXingChuLi::four,  FenXingChuLi::five, FenXingChuLi::six, FenXingChuLi::last_bar;
-FenXing FenXingChuLi::fx, FenXingChuLi::temp_fx, FenXingChuLi::last_fx;
+
+
 float FenXingChuLi::comp_fx_gao, FenXingChuLi::comp_fx_di;
 int FenXingChuLi::comp_fx_gao_count, FenXingChuLi::comp_fx_di_count;
-float FenXingChuLi::max_high, FenXingChuLi::min_low;
+
 
 FenXingChuLi::FenXingChuLi() {
     FenXing fx = FenXing();
@@ -332,8 +331,14 @@ FenXing FenXingChuLi::__find_fenxing(Kxian1 kxian) {
                     this->__init_fenxing(kxian);
                 } else {
                     tmp_fx = FenXing(this->one, this->two, kxian, kxian);
-                    this->three = kxian;
-                    this->status = FenXingChuLiStatus::FOUR;
+                    if (kx_gao <  this->two.get_low() - 0.01) {
+                        tmp_fx.set_type(FenXingType::VERIFY_TOP);
+                        this->__init_fenxing(kxian);
+                    }
+                    else {
+                        this->three = kxian;
+                        this->status = FenXingChuLiStatus::FOUR;
+                    }
                 }
             }
         } else {
@@ -354,8 +359,14 @@ FenXing FenXingChuLi::__find_fenxing(Kxian1 kxian) {
                     this->__init_fenxing(kxian);
                 } else {
                     tmp_fx = FenXing(this->one, this->two, kxian, kxian);
-                    this->three = kxian;
-                    this->status = FenXingChuLiStatus::FOUR;
+                    if (kx_di > this->two.get_high() + 0.01) {
+                        tmp_fx.set_type(FenXingType::VERIFY_BOTTOM);
+                        this->__init_fenxing(kxian);
+                    }
+                    else {
+                        this->three = kxian;
+                        this->status = FenXingChuLiStatus::FOUR;
+                    }
                 }
             }
         }
@@ -367,6 +378,10 @@ FenXing FenXingChuLi::__find_fenxing(Kxian1 kxian) {
             if (kx_di < this->three.get_low()) {
                 if (kx_di < this->min_low) {
                     this->min_low = kx_di;
+                    if (this->fx.get_type() == FenXingType::VERIFY_BOTTOM) {
+                        tmp_fx = this->fx;
+                        tmp_fx.set_type(FenXingType::FAILURE_VERIFY_BOTTOM);
+                    }
                     this->__init_fenxing(kxian);
                 } else {
                     if (kx_gao < this->three.get_low() - 0.01) {
@@ -437,16 +452,26 @@ FenXing FenXingChuLi::__find_fenxing(Kxian1 kxian) {
             if (kx_di < this->four.get_low()) {
                 if (kx_di < this->min_low) {
                     this->min_low = kx_di;
+                    tmp_fx = FenXing(this->one, this->two, this->three, kxian);
+                    tmp_fx.set_type(FenXingType::VERIFY_TOP);
                     this->__init_fenxing(kxian);
                 } else {
-                    if (kx_gao < this->four.get_low() - 0.01) {
-                        //有缺口
-                        tmp_fx = this->temp_fx;
+                    if (this->fx.get_type() == FenXingType::VERIFY_BOTTOM && kx_di < this->fx.get_low()) {
+                        tmp_fx = FenXing(this->one, this->two, this->three, kxian);
                         tmp_fx.set_type(FenXingType::VERIFY_TOP);
                         this->__init_fenxing(kxian);
-                    } else {
-                        this->five = kxian;
-                        this->status = FenXingChuLiStatus::SIX;
+                    }
+                    else {
+                        if (kx_gao < this->four.get_low() - 0.01) {
+                            //有缺口
+                            tmp_fx = this->temp_fx;
+                            tmp_fx.set_type(FenXingType::VERIFY_TOP);
+                            this->__init_fenxing(kxian);
+                        }
+                        else {
+                            this->five = kxian;
+                            this->status = FenXingChuLiStatus::SIX;
+                        }
                     }
                 }
             } else {
@@ -473,14 +498,22 @@ FenXing FenXingChuLi::__find_fenxing(Kxian1 kxian) {
                     this->max_high = kx_gao;
                     this->__init_fenxing(kxian);
                 } else {
-                    if (kx_di > this->four.get_high() + 0.01) {
-                        //有缺口
-                        tmp_fx = this->temp_fx;
+                    if (this->fx.get_type() == FenXingType::VERIFY_TOP && kx_gao > this->fx.get_high()) {
+                        tmp_fx = FenXing(this->one, this->two, this->three, kxian);
                         tmp_fx.set_type(FenXingType::VERIFY_BOTTOM);
                         this->__init_fenxing(kxian);
-                    } else {
-                        this->five = kxian;
-                        this->status = FenXingChuLiStatus::SIX;
+                    }
+                    else {
+                        if (kx_di > this->four.get_high() + 0.01) {
+                            //有缺口
+                            tmp_fx = this->temp_fx;
+                            tmp_fx.set_type(FenXingType::VERIFY_BOTTOM);
+                            this->__init_fenxing(kxian);
+                        }
+                        else {
+                            this->five = kxian;
+                            this->status = FenXingChuLiStatus::SIX;
+                        }
                     }
                 }
 
@@ -585,28 +618,28 @@ void Bi3_fenxing(int nCount, float* pOut, float* pHigh, float* pLow, float* pIn)
         position_stop = fx.get_stop_position();
         switch (fx.get_type()) {
         case FenXingType::BOTTOM:
-            pOut[position_start] = -1;
+            pOut[position_stop] = -1;
             break;
         case FenXingType::FAILURE_BOTTOM:
-            pOut[position_start] = -2;
+            pOut[position_stop] = -2;
             break;
         case FenXingType::VERIFY_BOTTOM:
-            pOut[position_start] = -3;
+            pOut[position_stop] = -3;
             break;
         case FenXingType::FAILURE_VERIFY_BOTTOM:
-            pOut[position_start] = -4;
+            pOut[position_stop] = -4;
             break;
         case FenXingType::TOP:
-            pOut[position_start] = 1;
+            pOut[position_stop] = 1;
             break;
         case FenXingType::FAILURE_TOP:
-            pOut[position_start] = 2;
+            pOut[position_stop] = 2;
             break;
         case FenXingType::VERIFY_TOP:
-            pOut[position_start] = 3;
+            pOut[position_stop] = 3;
             break;
         case FenXingType::FAILURE_VERIFY_TOP:
-            pOut[position_start] = 4;
+            pOut[position_stop] = 4;
             break;
         }
     }
@@ -630,13 +663,13 @@ void Bi4_fenxing(int nCount, float* pOut, float* pHigh, float* pLow, float* pIn)
     for (unsigned int i = 0; i < count; i++) {
         FenXing fx = fenXingChuLi.keyFenXingList[i];
         position_start = fx.get_start_position();
-        position_stop = fx.get_stop_position();
+        position_stop = fx.get_verify_stop_position();
         switch (fx.get_type()) {
         case FenXingType::BOTTOM:
-            pOut[position_start] = -1;
+            pOut[position_stop] = -1;
             break;
         case FenXingType::FAILURE_BOTTOM:
-            pOut[position_start] = -2;
+            pOut[position_stop] = -2;
             break;
         case FenXingType::VERIFY_BOTTOM:
             pOut[position_stop] = -3;
@@ -645,10 +678,10 @@ void Bi4_fenxing(int nCount, float* pOut, float* pHigh, float* pLow, float* pIn)
             pOut[position_stop] = -4;
             break;
         case FenXingType::TOP:
-            pOut[position_start] = 1;
+            pOut[position_stop] = 1;
             break;
         case FenXingType::FAILURE_TOP:
-            pOut[position_start] = 2;
+            pOut[position_stop] = 2;
             break;
         case FenXingType::VERIFY_TOP:
             pOut[position_stop] = 3;

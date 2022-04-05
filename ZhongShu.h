@@ -29,8 +29,8 @@ class ZhongShu {
             return(1);           
         } 
 
-        int stop() {
-            this->output_xd = this->xd_list[-1];
+        int stop(XianDuan xd) {
+            this->output_xd = xd;
             return(1);
         }
 
@@ -76,4 +76,5 @@ class ZhongShuChuLi {
         ZhongShuChuLi();
         ZhongShuChuLi(XianDuan input, XianDuan xd1, XianDuan xd2, XianDuan xd3);
         ZhongShu find_zhongshu(XianDuan xd);
+        ZhongShu get_zhongshu();
 };

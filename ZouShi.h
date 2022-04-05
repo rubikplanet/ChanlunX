@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "XianDuan.h"
 #include "ZhongShu.h"
 
@@ -56,22 +56,31 @@ class ZouShi {
         }
 };
 
-enum class ZouShiChuLiStatus {NONE, START, a, A_xd1, A_xd2, A_xd3, A, b, B_xd1, B_xd2, B_xd3, B, c};
+enum class FindZouShiReturnType {None, Failure, One, Two};
+struct FindZouShiReturn{
+    FindZouShiReturnType type;
+    ZouShi zoushi1;
+    ZouShi zoushi2;
+};
+
+enum class ZouShiChuLiStatus {NONE, START, a, A_xd1, A_xd2, A_xd2_highlow, A_xd2_normal, A_THREEBUY, A_THREESELL, A_REVERSE_THREESELL, A_REVERSE_THREEBUY, A_THREEBUY_NORMAL, A_THREESELL_NORMAL,  A_xd3, A, b, B_xd1, B_xd2, B_xd2_normal, B_xd3, B, c};
 class ZouShiChuLi {
     private:
         XianDuanChuLi xdcl;
         ZouShiChuLiStatus status;
         XianDuan a, b, c;
         XianDuan A_xd1, A_xd2, A_xd3, B_xd1, B_xd2, B_xd3;
-        XianDuan b_0, b_1;
-        XianDuan c_0, c_1;
+        XianDuan a_0, a_1, a_2;
+        XianDuan b_0, b_1, b_2;
+        XianDuan c_0, c_1, c_2;
         ZhongShu A, B;
         ZhongShuChuLi zhongshucl;
     public:
         ZouShiChuLi();
         XianDuan generate_xd(XianDuan xd1, XianDuan xd2, XianDuan xd3);
+        bool match_zhongshu_xianduan(XianDuan xd1, XianDuan xd2);
         void handle(vector<Kxian1>& kxianList);
-        ZouShi find_zoushi(XianDuan xd);
+        FindZouShiReturn find_zoushi(XianDuan xd);
         vector<ZouShi> zoushi_list;
 };
 

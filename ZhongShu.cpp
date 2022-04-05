@@ -19,6 +19,10 @@ ZhongShuChuLi::ZhongShuChuLi(XianDuan input, XianDuan xd1, XianDuan xd2, XianDua
     }
 }
 
+ZhongShu ZhongShuChuLi::get_zhongshu() {
+    return(this->zhongshu);
+}
+
 ZhongShu ZhongShuChuLi::find_zhongshu(XianDuan xd) {
     this->zhongshu.xd_list.push_back(xd);
     ZhongShu ret_zhongshu = ZhongShu();
@@ -52,7 +56,7 @@ ZhongShu ZhongShuChuLi::find_zhongshu(XianDuan xd) {
                 if (xd.get_low() >= this->zhongshu.get_high()) {
                     //Three Buy
                     this->status = ZhongShuChuLiStatus::THREE_BUY;
-                    this->zhongshu.stop();
+                    this->zhongshu.stop(xd);
                     return(this->zhongshu);
                 } else {
                     if (xd.get_low() < this->zhongshu.get_low())
@@ -66,7 +70,7 @@ ZhongShu ZhongShuChuLi::find_zhongshu(XianDuan xd) {
                 if (xd.get_high() <= this->zhongshu.get_low()) {
                     //Three Sell
                     this->status = ZhongShuChuLiStatus::THREE_SELL;
-                    this->zhongshu.stop();
+                    this->zhongshu.stop(xd);
                     return(this->zhongshu);
                 } else {
                     if (xd.get_high() > this->zhongshu.get_high()) 
