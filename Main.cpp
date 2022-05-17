@@ -174,7 +174,7 @@ void Func9(int nCount, float *pOut, float *pIn, float *pHigh, float *pLow)
         float c = 1;
         for (int j = i - 1; j >= 0; j--)
         {
-            if (ZhongShuList.at(j).direction = ZhongShuList.at(i).direction)
+            if (ZhongShuList.at(j).direction == ZhongShuList.at(i).direction)
             {
                 c++;
             }
