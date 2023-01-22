@@ -56,8 +56,9 @@ NOTEXT_DDUANSE1:STICKLINE(DUANSE1,DUANZD1,DUANZG1,0,0),COLORFF8000;{画段中枢
 
 ## 交流
 
-公众号赞赏累计满100可以联系作者加入QQ交流群，QQ群中还有新版本下载福利。
-
+- 缠论X星球: https://t.zsxq.com/0aDUuhQC5
 - WeChat: kldcty
 - QQ: 1106628276
 - 微信公众号: rubikquant
+
+缠论X星球和QQ群福利: 有新版本下载。
