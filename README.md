@@ -59,6 +59,6 @@ NOTEXT_DDUANSE1:STICKLINE(DUANSE1,DUANZD1,DUANZG1,0,0),COLORFF8000;{画段中枢
 - 缠论X星球: https://t.zsxq.com/0aDUuhQC5
 - WeChat: kldcty
 - QQ: 1106628276
-- 微信公众号: rubikquant
+- 微信公众号: mywildquant
 
 缠论X星球和QQ群福利: 有新版本下载。
